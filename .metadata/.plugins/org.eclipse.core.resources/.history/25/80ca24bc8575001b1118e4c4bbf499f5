@@ -1,0 +1,6 @@
+package src;
+// java에서 한 줄 주석
+
+public class Ex01 { //Ex01 클래스 시작
+
+} //Ex01 클래스 끝

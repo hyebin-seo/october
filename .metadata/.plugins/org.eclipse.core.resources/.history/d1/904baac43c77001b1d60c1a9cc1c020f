@@ -1,0 +1,23 @@
+package sist;
+
+import javax.swing.JOptionPane;
+
+/*
+ * [문제] 키보드로 입력받은 숫자가 홀수인지 짝수인지 판별해 보세요.
+ */
+
+public class Ex12 {
+
+	public static void main(String[] args) {
+		
+		int num = Integer.parseInt(JOptionPane.showInputDialog("점수를 입력하세요."));
+		
+		if(num % 2 == 0) {
+			System.out.println(num + "(은)는 짝수입니다.");
+		} else {
+			System.out.println(num + "(은)는 홀수입니다.");
+		}
+
+	}
+
+}

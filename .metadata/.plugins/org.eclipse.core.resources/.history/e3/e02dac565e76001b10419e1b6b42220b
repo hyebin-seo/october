@@ -1,0 +1,17 @@
+package sist;
+
+public class Ex02 {
+	
+	/*
+	 * 2. 관계연산자(비교연산자)
+	 *    - 크거나 같다(>=), 크다(>), 작거나 같다(<=), 작다(<), 같다(==), 같지 않다(!=)
+	 *    - 결과는 boolean형으로 반환됨
+	 */
+
+	public static void main(String[] args) {
+		
+		
+
+	}
+
+}

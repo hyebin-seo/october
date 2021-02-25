@@ -1,0 +1,29 @@
+package sist;
+
+// 국어, 영어, 수학, 자바 점수를 키보드로 입력 받아 성적을 처리해 보자.(총점, 평균)
+
+public class Exam_01 {
+
+	public static void main(String[] args) {
+		
+		// 1. 키보드로 국어, 영어, 수학, 자바 점수를 입력 받자.
+		int kor  = Integer.parseInt(args[0]);
+		int eng  = Integer.parseInt(args[1]);
+		int math = Integer.parseInt(args[2]);
+		int java = Integer.parseInt(args[3]);
+		
+		// 2. 국어 + 영어 + 수학 + 자바 점수 ==> 총점
+		System.out.println("총점 >>> " + (kor + eng + math + java));
+
+		// 3. 총점 / 과목 수 ==> 평균
+		System.out.println("평균 >>> " + ((kor + eng+ math + java)/4));
+		
+		// 4. 화면에 성적을 출력해 주자.
+		System.out.println("국어 >>> " + korean);
+		System.out.println("영어 >>> " + english);
+		System.out.println("수학 >>> " + math);
+		System.out.println("자바 >>> " + java);
+
+	}
+
+}

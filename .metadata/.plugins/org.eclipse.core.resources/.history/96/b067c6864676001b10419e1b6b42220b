@@ -1,0 +1,14 @@
+package sist;
+
+/*
+ * 단일 문자형 : char형(0 ~ 65535) ==> 2byte
+ */
+
+public class Ex04 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,22 @@
+package sist;
+
+// java에서 한 줄 주석
+
+/*
+ * java에서 두 줄 이상 주석문
+ * 내 용 : java 기초
+ * 작성자 : 임 정 훈
+ * 작성일자 : 2021. 02. 23
+ */
+
+public class Ex01 { // { : Ex01 클래스 시작
+
+	// 프로그램의 시작 위치를 의미함.
+	// 가장 먼저 실행되는 놈이다.
+	public static void main(String[] args) {
+		
+		System.out.println("안녕하세요? 자바에 오신걸 환영합니다.");
+		
+	}
+	
+} // } : Ex01 클래스 끝
