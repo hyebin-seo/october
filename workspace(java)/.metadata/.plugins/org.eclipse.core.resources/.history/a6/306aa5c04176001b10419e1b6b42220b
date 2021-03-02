@@ -1,0 +1,13 @@
+package sist;
+
+public class Ex03 {
+
+	public static void main(String[] args) {
+		
+		double dNum = 123.45666;
+		
+		System.out.println("dNum >>> " + dNum);
+
+	}
+
+}
