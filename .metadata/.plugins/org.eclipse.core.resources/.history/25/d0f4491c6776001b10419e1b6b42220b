@@ -1,0 +1,29 @@
+package sist;
+
+/*
+ * 4. 단항연산자 / 이항연산자 / 3항연산자
+ *    - 단항연산자 : 1개의 항을 대상으로 연산을 수행.
+ *    - 이항연산자 : 2개의 항을 대상으로 연산을 수행.
+ *    - 3항 연산자 : 3개의 항을 대상으로 연산을 수행.
+ */
+
+public class Ex04 {
+
+	public static void main(String[] args) {
+		
+		// 단항연산자(++, --)
+		int su1 = 10, su2 = 10;
+		
+		System.out.println("su1++ >>> " + su1++);
+		System.out.println("++su1 >>> " + ++su1);
+		System.out.println();
+		
+		/*
+		 * 단항연산자(++, --)
+		 * - 전위연산자 : 단항연산자가 변수명 앞에 온다.
+		 * - 후위연산자 : 단항연산자가 변수명 뒤에 온다.
+		 */
+
+	}
+
+}

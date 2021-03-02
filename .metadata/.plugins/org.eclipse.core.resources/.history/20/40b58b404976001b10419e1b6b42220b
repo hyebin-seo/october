@@ -1,0 +1,15 @@
+package sist;
+
+/*
+ * 논리 자료형(boolean)형
+ * - 참이나 거짓을 처리하는 자료형
+ */
+
+public class Ex05 {
+
+	public static void main(String[] args) {
+		
+
+	}
+
+}

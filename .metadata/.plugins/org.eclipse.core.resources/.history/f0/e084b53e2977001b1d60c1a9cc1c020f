@@ -1,0 +1,14 @@
+package sist;
+
+/*
+ * [문제] 키보드로 입력 받은 정수값이 음수이면 "입력 받은 숫자가 음수입니다." 출력해 보세요.
+ */
+
+public class Ex04 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
