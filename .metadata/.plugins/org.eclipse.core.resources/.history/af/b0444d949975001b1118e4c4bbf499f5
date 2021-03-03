@@ -1,0 +1,20 @@
+package sist;
+
+public class Ex02 {
+
+	public static void main(String[] args) {
+		
+		System.out.println("프로그램 시작");
+		System.out.print("java\t");
+		System.out.print("programming");
+		System.out.print("\n프로그램 종료");
+		
+		/*
+		 * 제어문자
+		 * - \t : 일정 간격(tab)만큼 칸을 띄어 주는 제어문자
+		 * - \n : 줄바꿈을 제공해주는 제어문자
+		 */
+
+	}
+
+}

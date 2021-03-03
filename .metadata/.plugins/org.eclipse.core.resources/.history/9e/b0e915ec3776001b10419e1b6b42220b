@@ -1,0 +1,13 @@
+package sist;
+
+public class Ex02 {
+
+	public static void main(String[] args) {
+		
+		//변수 선언 및 변수 초기화
+		byte su1 = 127;
+		System.out.println("su1 >>>"+ su1);
+
+	}
+
+}
