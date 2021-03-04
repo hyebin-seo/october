@@ -9,7 +9,6 @@ import java.util.Scanner;
  *   형식) 배열명.length
  *   예) int size = arr.length;
  */
-
 public class Ex05 {
 
 	public static void main(String[] args) {
@@ -21,16 +20,16 @@ public class Ex05 {
 		System.out.println("arr 배열의 크기(길이) >>> " + arr.length);
 		
 		for(int i=0; i<arr.length; i++) {
-			System.out.print((i+1) + "번 정수를 입력 >>> ");
+			System.out.print((i+1)+"번째 정수 입력 >>> ");
 			arr[i] = sc.nextInt();
 		}
+		System.out.println();
 		
 		for(int i=0; i<arr.length; i++) {
-			System.out.println("arr[" + i +"] >>> " + arr[i]);
+			System.out.println("arr["+i+"] >>> " +arr[i]);
 		}
 		
 		sc.close();
-		
 
 	}
 
