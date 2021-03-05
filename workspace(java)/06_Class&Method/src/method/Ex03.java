@@ -66,6 +66,8 @@ public class Ex03 {
 		total(start, end);
 		
 		System.out.println("프로그램 종료");
+		
+		sc.close();
 
 	}
 
