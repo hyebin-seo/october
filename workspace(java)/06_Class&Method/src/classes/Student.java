@@ -47,6 +47,7 @@ public class Student {
 		name = n;
 		major = m;
 		addr = a;
+		System.out.println("인자 생성자를 호출하였습니다.");
 	} // 인자 생성자
 	
 	// 멤버 메서드
