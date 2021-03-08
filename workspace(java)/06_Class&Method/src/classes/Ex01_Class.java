@@ -56,10 +56,55 @@ package classes;
  */
 
 public class Ex01_Class {
+	
+	// 멤버변수는 초기값을 설정하지 않으면 JVM이 객체 생성 시점에 해당 데이터타입(자료형)에 맞게
+	// 알아서 해당 자료형의 default 값을 할당해 줌.
+	int num;    // 멤버변수 - 전역 변수
+	String str; // 멤버변수
+	
+	void display() { // 멤버 메서드
+		
+		int su = 10; // 지역변수
+		System.out.println("멤버변수(num) >>> " + num);
+		System.out.println("멤버변수(str) >>> " + str);
+		System.out.println("변수(지역변수) >>> " + su);
+	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		// 클래스를 객체로 만드는 과정이 필요함
+		// 1단계 : 클래스 선언
+		// 형식) 클래스 이름 참조변수;
+		//      참조변수 : heap 메모리 공간에 객체가 만들어지는데 만들어지는 객체의 주소값을 가지는 변수
+		Ex01_Class Ex;
+		
+		// 2단계 : 클래스를 메모리(heap)에 생성
+		// 형식) 참조변수 = new 클래스이름() ==> 클래스이름(X), 생성자(O)
+		// ex = new Ex01_Class();
+		
+		// 1단계 + 2단계 : 클래스 선언 및 클래스 객체 생성
+		// 클래스와 메소드는 무조건 heap영역에 배당되기 떄문에 주소값을 가지고 있다.
+		Ex01_Class ex = new Ex01_Class();
+		System.out.println(ex);
+		
+		// 3단계 : 참조 변수를 이용하여 객체에 접근
+		//        객체에 접근 시 .(도트) 연산자를 이용하여 접근.
+		ex.display();
+		System.out.println();
+		
+		ex.num = 150;
+		ex.str = "홍길동";
+		ex.display();
+		System.out.println();
+		
+		Ex01_Class ex1 = new Ex01_Class();
+		System.out.println(ex1);
+		System.out.println();
+		
+		ex1.num = 333;
+		ex1.str = "유관순";
+		ex1.display();
+				
 	}
 
 }
