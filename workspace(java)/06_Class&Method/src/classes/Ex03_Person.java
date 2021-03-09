@@ -10,7 +10,6 @@ public class Ex03_Person {
 		person.age = 27;
 		
 		person.showPersonInfo();
-
 	}
 
 }
