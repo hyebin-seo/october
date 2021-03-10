@@ -24,7 +24,7 @@ public class Ex01_Employee {
 			System.out.println("=======================");
 			System.out.println("고용형태 : 정규직");
 			System.out.println("이름 : " + permanent.getName());
-			System.out.printf("급여 : %,d원\n", permanent.getPay());
+			System.out.printf("급여 : %,d원\n", permanent.getPays());
 		
 		} else if(employee.equals("T")) {
 			
@@ -36,7 +36,7 @@ public class Ex01_Employee {
 			System.out.println("=======================");
 			System.out.println("고용형태 : 임시직");
 			System.out.println("이름 : " + temporary.getName());
-			System.out.printf("급여 : %,d원\n", temporary.getPay());
+			System.out.printf("급여 : %,d원\n", temporary.getPays());
 		
 		} else {
 			
