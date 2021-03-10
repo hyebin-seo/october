@@ -12,7 +12,7 @@ public class Employee {
 		this.name = n;
 	}
 	
-	int getPay() {
+	int getPays() {
 		return 0;
 	}
 

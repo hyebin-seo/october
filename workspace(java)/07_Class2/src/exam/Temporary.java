@@ -13,13 +13,30 @@ public class Temporary extends Employee {
 	}
 	
 	public Temporary(String n, int t, int p) {
-		setName(n);
+		this.name = n;
 		this.time = t;
 		this.pay = p;
 	}
+	
+
+	public int getTime() {
+		return time;
+	}
+
+	public void setTime(int time) {
+		this.time = time;
+	}
+
+	public int getPay() {
+		return pay;
+	}
+
+	public void setPay(int pay) {
+		this.pay = pay;
+	}
 
 	@Override
-	int getPay() {
+	int getPays() {
 		// 일한시간 * 시간당급여
 		return this.time * this.pay;
 	}
