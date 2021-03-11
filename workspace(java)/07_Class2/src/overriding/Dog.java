@@ -24,6 +24,7 @@ public class Dog extends Animal {
 	@Override // 이 표시가 있으면 오타 방지를 해준다. 부모클래스에 있는 메소드를 감지해줌.
 	void sound() {
 		// super.sound();
+		System.out.println("추상메서드 재정의");
 		System.out.println("멍멍멍~");
 	}
 	

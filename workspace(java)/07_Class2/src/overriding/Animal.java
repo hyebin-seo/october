@@ -1,10 +1,8 @@
 package overriding;
 
-public class Animal {
+public abstract class Animal {
 	
-	void sound() {
-		System.out.println("소리를 냅니다.~~~");
-	}
+	abstract void sound();; //추상메서드
 	
 	void color() {
 		System.out.println("검정색입니다.");
