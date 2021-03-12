@@ -10,19 +10,20 @@ package inheritance;
  *      형식) this.현재클래스멤버(멤버변수, 멤버메서드)
  */
 
-public class Avante extends Car2{
-	
+public class Avante extends Car2 {
+
+	// int cc;
+	// int door;
+	// String color = "검정색";
 	String color = "흰색";
 	
-	// 멤버 메소드
+	// 멤버 메서드
 	void output() {
 		System.out.println
-		("엔진 : " + cc + ", 문짝수 : " + door + ", 색상 :" + color);
-		
+			("엔진 : "+cc+", 문짝 수 : "+door+", 색상 : "+color);
 		System.out.println
-		("엔진 : " + cc + ", 문짝수 : " + door + ", 색상 :" + super.color);
-		
+		("엔진 : "+cc+", 문짝 수 : "+door+", 색상 : "+super.color);
 		System.out.println
-		("엔진 : " + cc + ", 문짝수 : " + door + ", 색상 :" + this.color);
+		("엔진 : "+cc+", 문짝 수 : "+door+", 색상 : "+this.color);
 	}
 }

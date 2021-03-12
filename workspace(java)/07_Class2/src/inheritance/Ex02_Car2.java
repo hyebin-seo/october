@@ -7,9 +7,11 @@ public class Ex02_Car2 {
 		Avante avante = new Avante();
 		
 		avante.cc = 1600;
+		
 		avante.door = 4;
+		
 		avante.output();
-
+	
 	}
 
 }

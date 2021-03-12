@@ -1,8 +1,8 @@
 package inheritance;
 
-public class Student extends Human{
-	
-	String major; //학과
+public class Student extends Human {
+
+	String major;      // 학과
 	
 	void studentInfo() {
 		System.out.println("이 름 : " + name);
@@ -10,5 +10,5 @@ public class Student extends Human{
 		System.out.println("직 업 : " + job);
 		System.out.println("학 과 : " + major);
 	}
-
+	
 }

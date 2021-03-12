@@ -1,8 +1,10 @@
 package inheritance;
 
-public class Car2 {
+public class Car2 {  // 부모클래스
+	
 	// 멤버변수
-	int cc;  // 차량 배기량
-	int door; // 차량 문짝 수
+	int cc;
+	int door;
 	String color = "검정색";
+
 }

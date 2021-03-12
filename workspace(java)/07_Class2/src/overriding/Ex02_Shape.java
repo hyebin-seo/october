@@ -8,9 +8,7 @@ public class Ex02_Shape {
 		Rectangle rectangle = new Rectangle();
 		Circle circle = new Circle();
 		
-		line.draw();
-		rectangle.draw();
-		circle.draw();
+		line.draw(); rectangle.draw(); circle.draw();
 
 	}
 

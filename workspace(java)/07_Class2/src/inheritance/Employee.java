@@ -1,7 +1,7 @@
 package inheritance;
 
 public class Employee extends Human {
-	
+
 	int salary;
 	
 	void employeeInfo() {
@@ -9,6 +9,6 @@ public class Employee extends Human {
 		System.out.println("나 이 : " + age);
 		System.out.println("직 업 : " + job);
 		System.out.println("급 여 : " + salary);
+		
 	}
-
 }

@@ -6,13 +6,13 @@ public class Ex01_Animal {
 		
 		Dog dog = new Dog();
 		dog.sound();
-		dog.color();
-
+		
 		Cat cat = new Cat();
 		cat.sound();
 		
 		Tiger tiger = new Tiger();
 		tiger.sound();
+
 	}
 
 }

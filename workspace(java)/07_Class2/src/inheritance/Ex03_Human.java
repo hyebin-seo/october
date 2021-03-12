@@ -13,11 +13,12 @@ public class Ex03_Human {
 		student.studentInfo();
 		System.out.println();
 		
+		
 		Employee employee = new Employee();
-		employee.name = "정우석";
-		employee.age = 31;
-		employee.job = "연예인";
-		employee.salary = 10000;
+		employee.name = "임정훈";
+		employee.age = 37;
+		employee.job = "IT학원강사";
+		employee.salary = 5000;
 		
 		employee.employeeInfo();
 		
