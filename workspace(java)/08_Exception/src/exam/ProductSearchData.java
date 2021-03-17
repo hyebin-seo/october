@@ -1,12 +1,15 @@
 package exam;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProductSearchData {
 
-	String[][] proTable;    // 배열 선언
+	Map<String, String> proMap = new HashMap<String, String>();
 	
 	public ProductSearchData() {  // 기본 생성자
 		
-		proTable = new String[3][2];
+		/*proTable = new String[3][2];
 		
 		// [0]열에는 상품명을 저장, [1]열에는 상품정보가 저장.
 		proTable[0][0] = "세탁기";
@@ -14,7 +17,11 @@ public class ProductSearchData {
 		proTable[1][0] = "냉장고";
 		proTable[1][1] = "지펠 냉장고 최신형";
 		proTable[2][0] = "TV";
-		proTable[2][1] = "HDTV 150인치 최신모델";
+		proTable[2][1] = "HDTV 150인치 최신모델";*/
+		
+		proMap.put("세탁기","드럼 세탁기 최신형");
+		proMap.put("냉장고","지펠 냉장고 최신형");
+		proMap.put("TV","HDTV 150인치 최신모델");
 		
 	}  // 기본 생성자 end
 	
@@ -23,10 +30,14 @@ public class ProductSearchData {
 		
 		String proInfo = null;  // 상품 정보가 저장될 변수
 		
-		for(int i=0; i<proTable.length; i++) {
+		/*for(int i=0; i<proTable.length; i++) {
 			if(pName.equals(proTable[i][0])) {
 				proInfo = proTable[i][1];
 			}
+		}*/
+		
+		if(proMap.containsKey(pName)) {
+			proInfo = proMap.get(pName);
 		}
 		
 		return proInfo;
