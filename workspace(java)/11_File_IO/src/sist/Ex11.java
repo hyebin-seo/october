@@ -18,10 +18,10 @@ public class Ex11 {
 			bw.write("===========================");
 			bw.newLine(); // 다음 줄로 이동
 			
-			bw.write("쌍용강북교육센터");
+			bw.write("안녕하세요.");
 			bw.newLine(); // 다음 줄로 이동
 			
-			bw.write("자바 기반 융합형 SW개발자 양성과정 B강의실");
+			bw.write("자바는 즐겁습니다.");
 			bw.newLine(); // 다음 줄로 이동
 			
 			// 입출력 객체 닫기
