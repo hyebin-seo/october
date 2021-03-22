@@ -1,13 +1,14 @@
-package sist;
+package exam;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-public class Ex21_Layout03 extends JFrame {
+public class Exam04_Layout03 extends JFrame{
 
-	public Ex21_Layout03() {
-	
+	public Exam04_Layout03() {
 		setTitle("계산기 예제 - 3");
 		
 		JPanel north_1 = new JPanel();
@@ -82,25 +83,65 @@ public class Ex21_Layout03 extends JFrame {
 		
 		setVisible(true);
 		
+		// 이벤트 처리
+		// 4. 이벤트 처리
+		// 계산(jb1) 버튼
+		jb1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int num1 = Integer.parseInt(su1.getText());
+				int num2 = Integer.parseInt(su2.getText());
+				
+				String result = "";
+				if(jrb1.isSelected()) {
+					result = "결과 >>> " + num1+"+"+num2+"="+(num1+num2);
+				} else if(jrb2.isSelected()) {
+					result = "결과 >>> " + num1+"-"+num2+"="+(num1-num2);
+				} else if(jrb3.isSelected()) {
+					result = "결과 >>> " + num1+"*"+num2+"="+(num1*num2);
+				} else if(jrb4.isSelected()) {
+					result = "결과 >>> " + num1+"/"+num2+"="+(num1/num2);
+				} else if(jrb5.isSelected()) {
+					result = "결과 >>> " + num1+"%"+num2+"="+(num1%num2);
+				}
+				
+				jta.append(result + "\n");
+				su1.setText(""); su2.setText("");
+				
+				// 마우스 커서를 해당 컴포넌트에 지정시키는 메서드
+				su1.requestFocus();
+			}
+		});
+		
+		// 종료(jb2) 버튼
+		jb2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				System.exit(0);
+				
+			}
+		});
+		
+		// 취소(jb3) 버튼
+		jb3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				su1.setText(""); su2.setText("");
+				jta.setText("");
+				// 마우스 커서를 해당 컴포넌트에 지정시키는 메서드
+				su1.requestFocus();
+				
+			}
+		});
 	}
 	
 	public static void main(String[] args) {
-		
-		new Ex21_Layout03();
-
+		new Exam04_Layout03();
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
