@@ -40,6 +40,7 @@ public class Ex01 {
 
 	public static void main(String[] args) {
 	
+		//프로세스 객체 생성
 		Process1 p1 = new Process1();
 		Process2 p2 = new Process2();
 		
