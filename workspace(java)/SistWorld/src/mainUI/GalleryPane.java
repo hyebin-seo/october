@@ -123,7 +123,7 @@ public class GalleryPane extends JPanel{
 		//사진 업로드 패널
 		
 		photoPanel = new JPanel(){
-			Image background=new ImageIcon(GalleryPane.class.getResource("../image/image.png")).getImage();
+			Image background=new ImageIcon(GalleryPane.class.getResource("../images/image.png")).getImage();
 			public void paint(Graphics g) {//그리는 함수
 					g.drawImage(background, 0, 0, null);//background를 그려줌
 			}

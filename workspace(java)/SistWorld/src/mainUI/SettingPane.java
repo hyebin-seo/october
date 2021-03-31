@@ -3,22 +3,25 @@ package mainUI;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
-import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
+
+import model.skinDTO;
 
 public class SettingPane extends JPanel implements ActionListener{
 
@@ -61,8 +64,8 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JCheckBox menuVisitor;
 	
 	// 스킨 설정 컴포넌트
+	private ButtonGroup skinBg;
 	private JLabel skinTItleLb;
-	private JRadioButton skinListRb;
 
 	// 음악 설정 컴포넌트
 	private JLabel musicTitleLb;
@@ -80,7 +83,7 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JButton friendDelBt;
 	private JButton friendOkBt;
 	
-	public SettingPane() { }
+//	public SettingPane() { }
 	
 	public SettingPane(JPanel backPane, MenuPane menuPane) {
 		
@@ -193,9 +196,36 @@ public class SettingPane extends JPanel implements ActionListener{
 		menuVisitor.setBounds(78, 194, 61, 23);
 		customPane.add(menuVisitor);
 		
-		skinListRb = new JRadioButton("임시스킨1");
-		skinListRb.setBounds(78, 333, 100, 15);
-		customPane.add(skinListRb);
+		// 관리 메뉴 - 개인 설정 - 스킨 설정
+		DefaultListModel skinModel = new DefaultListModel();
+		// 임시 데이터
+//		for(int i=0; i<10; i++) {
+		
+		
+		Image img = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
+		Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+
+		skinModel.addElement(new skinDTO(imgResize));
+
+//		}
+		JList skinJList = new JList();
+		
+		skinJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		skinJList.setModel(skinModel);
+//		friendCmtJList.setSelectionMode (listModel.SINGLE_INTERVAL_SELECTION);
+		skinJList.setVisibleRowCount (-1); // 가로줄 제한
+		skinJList.setLayoutOrientation (JList.HORIZONTAL_WRAP); // 리스트 가로 배열
+		skinJList.setCellRenderer(new CustomListRenderer("skin"));
+
+		JScrollPane skinSp = new JScrollPane
+				(skinJList,
+				//수직 스크롤바 설치 여부
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				//수평 스크롤바 설치 여부
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		skinSp.setSize(530, 170);
+		skinSp.setLocation(60, 400);
+		customPane.add(skinSp);
 		
 		musicRb = new JRadioButton("임시음악");
 		musicRb.setBounds(78, 466, 73, 23);

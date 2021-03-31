@@ -1,21 +1,25 @@
 package mainUI;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
+import java.util.Vector;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 
+import model.FriendCmtDTO;
 public class HomePane extends JPanel{
 
 	// 홈 메뉴 - 세부 메인 패널
@@ -30,11 +34,12 @@ public class HomePane extends JPanel{
 	private JLabel profileInfoLb;
 	
 	// 홈 메뉴 - 세부 메인 컴포넌트
-	private String FILE_PATH = "../image/home.jpg";
+	private String FILE_PATH_HOME = "../images/home.JPG";
+	private String FILE_PATH_PROF = "../images/profile.JPG";
 	private JLabel homeImgLb;
 	private JLabel friendLb;
 	private JTextField frienTf;
-	private JTable freinTb;
+//	private JTable freinTb;
 	private JButton freindBt;
 	
 
@@ -62,7 +67,7 @@ public class HomePane extends JPanel{
 
 		// 홈 메뉴 - 프로필 사진
 		profilePicLb = new JLabel("");
-		profilePicLb.setIcon(new ImageIcon(HomePane.class.getResource("/image/profile.JPG")));
+		profilePicLb.setIcon(new ImageIcon(HomePane.class.getResource(FILE_PATH_PROF)));
 		profilePicLb.setHorizontalAlignment(SwingConstants.CENTER);
 		profilePicLb.setBounds(20, 70, 220, 170);
 		mainProfilePane.add(profilePicLb);
@@ -90,7 +95,7 @@ public class HomePane extends JPanel{
 		
 		// 홈 메뉴 - 배경 사진(라벨에 맞게 사이즈 재설정)
 		homeImgLb = new JLabel();
-		Image homeImg = new ImageIcon(HomePane.class.getResource(FILE_PATH)).getImage();
+		Image homeImg = new ImageIcon(HomePane.class.getResource(FILE_PATH_HOME)).getImage();
 		Image homeImgResize = homeImg.getScaledInstance(530, 310, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon resizeIcon = new ImageIcon(homeImgResize);
 		homeImgLb.setIcon(resizeIcon);
@@ -116,19 +121,37 @@ public class HomePane extends JPanel{
 		freindBt.setBounds(533, 370, 55, 20);
 		mainDetailPane.add(freindBt);
 
+
+		// 일촌평 구현 - DB데이터 넣고 다시 할 것
+//		DefaultListModel<FriendCmtDTO> listModel = new DefaultListModel<FriendCmtDTO>();
+		DefaultListModel listModel = new DefaultListModel();
 		// 임시 데이터
-		String[] header = {"내용","일촌명","이름"};
-		String[][] contents = {
-				{"일촌평 테스트 일촌평 테스트 일촌평 테스트 일촌평 테스트","길동이친구","김나나"},
-				{"일촌평 테스트 일촌평 테스트 일촌평 테스트 일촌평 테스트","나나친구","박주놈"},
-				{"일촌평 테스트 일촌평 테스트 일촌평 테스트 일촌평 테스트","주놈이친구","서혭헵"},
-		};
-		
-		freinTb = new JTable(contents, header);
+		for(int i=0; i<10; i++) {
+			FriendCmtDTO fcd = new FriendCmtDTO();
+
+			fcd.setNickname((i+1)+"번째 친구");
+			fcd.setName((i+1)+"사람");
+			fcd.setFriendcomment("일촌평 테스트 중입니다. 이 일촌평은 "+(i+1)
+								+"번째 일촌평. 일촌평 테스트 중입니다. 일촌평 테스트 중입니다.");
+			
+			String fcmt = fcd.getFriendcomment()
+							+"  |  "+fcd.getNickname()
+							+"  |  "+fcd.getName();
+			
+//			listModel.addElement(fcd);
+			listModel.addElement(fcmt);
+
+		}
+//		JList<FriendCmtDTO> friendCmtJList = new JList<FriendCmtDTO>();
+		JList friendCmtJList = new JList();
+		friendCmtJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		friendCmtJList.setModel(listModel);
+		friendCmtJList.setCellRenderer(new CustomListRenderer("cmt"));
+
 		JScrollPane friendSp = new JScrollPane
-				(freinTb,      //스크롤바가 보여질 컴포넌트 
+				(friendCmtJList,
 				//수직 스크롤바 설치 여부
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,   
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				//수평 스크롤바 설치 여부
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		friendSp.setSize(530, 170);

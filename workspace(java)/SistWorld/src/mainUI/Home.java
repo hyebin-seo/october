@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import service.ImageUpload;
+
 public class Home implements ActionListener{
 
 	// 메인 프레임
@@ -126,8 +128,7 @@ public class Home implements ActionListener{
         
         // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
         JPanel backImgPane = new JPanel(){
-        	Image background = new ImageIcon
-        			(Home.class.getResource("../image/back.jpg")).getImage();
+        	Image background = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
         	public void paint(Graphics g) {//그리는 함수
         			g.drawImage(background, 0, 0, null);//background를 그려줌
         	}
@@ -146,6 +147,7 @@ public class Home implements ActionListener{
 		switch (btName) {
 			case "Home":
 				c1.show(backPane,"home");
+				new ImageUpload();
 				break;
 				
 			case "Diary":

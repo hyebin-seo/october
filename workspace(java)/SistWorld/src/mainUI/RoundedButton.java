@@ -12,7 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 
-//버튼 디자인
+//버튼 디자인 클래스
 public class RoundedButton extends JButton {
 	
 	public RoundedButton() {
