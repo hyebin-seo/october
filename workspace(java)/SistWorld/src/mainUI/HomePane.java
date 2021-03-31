@@ -14,6 +14,7 @@ import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JTable;
+import javax.swing.border.LineBorder;
 
 public class HomePane extends JPanel{
 
@@ -47,12 +48,14 @@ public class HomePane extends JPanel{
 
 		// 홈 메뉴 - 세부 메인 패널
 		mainDetailPane = new JPanel();
+		mainDetailPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		mainDetailPane.setBounds(260, 0, 650, 600);
 		mainDetailPane.setBackground(Color.WHITE);
 		mainDetailPane.setLayout(null);
 
 		// 홈 메뉴 - 세부 프로필 패널
 		mainProfilePane = new JPanel();
+		mainProfilePane.setBorder(new LineBorder(new Color(192, 192, 192)));
 		mainProfilePane.setBounds(0, 0, 260, 600);
 		mainProfilePane.setBackground(Color.WHITE);
 		mainProfilePane.setLayout(null);

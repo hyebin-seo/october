@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,27 +28,20 @@ public class Home implements ActionListener{
 	private JLabel titleLb;
 	
 	// 홈 메인 메뉴 버튼 패널
-	private	JPanel menuPane;
-	
-	// 홈 메인 메뉴 버튼
-	private RoundedButton homeBt;
-	private RoundedButton diaryBt;
-	private RoundedButton gallaryBt;
-	private RoundedButton visitorBt;
-	private RoundedButton settingBt;
+	private	MenuPane menuPane;
 	
 	// 홈 메인 카드 레이아웃 패널 홈/다이어리/사진첩/방명록/관리
 	private HomePane homePane;
-	private JPanel diaryPane;
+	private DiaryPane diaryPane;
 	private GalleryPane galleryPane;
-	private JPanel visitorPane;
+	private BookPane bookPane;
 	private SettingPane settingPane;
 	
 	// 홈 메인 타이틀
 	private JLabel todayLb;
 	
 	// 홈 로그아웃 버튼
-	private JButton logOutBt;
+	private RoundedButton logOutBt;
 
 	// 스킨 간단 변경 & 뮤직 패널
 	private	JPanel eastPane;
@@ -79,13 +71,17 @@ public class Home implements ActionListener{
 		// 메인 패널 선언
 		mainFrame = new JFrame();
 		backPane = new JPanel(); // 홈 카드 레이아웃
+		
+        // 홈 메인 메뉴 버튼 패널
+        menuPane = new MenuPane(backPane);
+        mainFrame.getContentPane().add(menuPane);
 
 		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록/관리
 		homePane = new HomePane();
-		diaryPane = new JPanel();
+		diaryPane = new DiaryPane();
 		galleryPane = new GalleryPane();
-		visitorPane = new JPanel();
-		settingPane = new SettingPane();
+		bookPane = new BookPane();
+		settingPane = new SettingPane(backPane, menuPane);
 		
 		// 메인 프레임 설정
 		mainFrame.setResizable(false);
@@ -101,13 +97,8 @@ public class Home implements ActionListener{
 		backPane.add(homePane, "home");
 		backPane.add(diaryPane, "diary");
 		backPane.add(galleryPane, "gallery");
-		backPane.add(visitorPane, "visitor");
+		backPane.add(bookPane, "book");
 		backPane.add(settingPane, "setting");
-		homePane.setBackground(Color.GRAY);
-		diaryPane.setBackground(Color.GRAY);
-		galleryPane.setBackground(Color.GRAY);
-		visitorPane.setBackground(Color.GRAY);
-		settingPane.setBackground(Color.GRAY);
 		
 		// 스킨 간단 변경 & 뮤직 패널
 		eastPane = new JPanel();
@@ -129,48 +120,9 @@ public class Home implements ActionListener{
 		mainFrame.getContentPane().add(todayLb);
 		
 		// 홈 로그아웃 버튼
-		logOutBt = new JButton("LogOut");
+		logOutBt = new RoundedButton("LogOut");
 		logOutBt.setBounds(1150, 250, 90, 30);
 		mainFrame.getContentPane().add(logOutBt);
-        
-        // 홈 메인 메뉴 버튼 패널
-        menuPane = new JPanel();
-        menuPane.setBounds(950, 50, 80, 252);
-        menuPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        menuPane.setBackground(new Color(255,0,0,0));
-        mainFrame.getContentPane().add(menuPane);
-        menuPane.setLayout(null);
-        
-        // 홈 메인 메뉴 버튼
-        homeBt = new RoundedButton("Home");
-        homeBt.setHorizontalAlignment(SwingConstants.LEFT);
-        homeBt.setBounds(0, 0, 80, 50);
-        homeBt.addActionListener(this);
-        menuPane.add(homeBt);
-        
-        diaryBt = new RoundedButton("Diary");
-        diaryBt.setHorizontalAlignment(SwingConstants.LEFT);
-        diaryBt.setBounds(0, 50, 80, 50);
-        diaryBt.addActionListener(this);
-        menuPane.add(diaryBt);
-        
-        gallaryBt = new RoundedButton("Gallery");
-        gallaryBt.setHorizontalAlignment(SwingConstants.LEFT);
-        gallaryBt.setBounds(0, 100, 80, 50);
-        gallaryBt.addActionListener(this);
-        menuPane.add(gallaryBt);
-        
-        visitorBt = new RoundedButton("Visitor");
-        visitorBt.setHorizontalAlignment(SwingConstants.LEFT);
-        visitorBt.setBounds(0, 150, 80, 50);
-        visitorBt.addActionListener(this);
-        menuPane.add(visitorBt);
-        
-        settingBt = new RoundedButton("Setting");
-        settingBt.setHorizontalAlignment(SwingConstants.LEFT);
-        settingBt.setBounds(0, 200, 80, 50);
-        settingBt.addActionListener(this);
-        menuPane.add(settingBt);
         
         // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
         JPanel backImgPane = new JPanel(){
@@ -205,7 +157,7 @@ public class Home implements ActionListener{
 				break;
 				
 			case "Visitor":
-				c1.show(backPane,"visitor");
+				c1.show(backPane,"book");
 				break;
 				
 			case "Setting":
