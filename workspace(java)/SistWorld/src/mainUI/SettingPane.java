@@ -14,14 +14,18 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
-import model.skinDTO;
+import model.SkinDTO;
 
 public class SettingPane extends JPanel implements ActionListener{
 
@@ -64,7 +68,8 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JCheckBox menuVisitor;
 	
 	// 스킨 설정 컴포넌트
-	private ButtonGroup skinBg;
+	private JList skinJList;
+	private DefaultListModel skinModel;
 	private JLabel skinTItleLb;
 
 	// 음악 설정 컴포넌트
@@ -76,12 +81,10 @@ public class SettingPane extends JPanel implements ActionListener{
 
 	// 일촌 설정 컴포넌트
 	private JLabel existFriendLb;
-	private JLabel deleteFriendLb;
+	private JLabel waitingFriendLb;
 	private JLabel friendLb;
 	private JList friendJl;
-	private JList friendDeleteJl;
-	private JButton friendDelBt;
-	private JButton friendOkBt;
+	private JList friendWaitingJl;
 	
 //	public SettingPane() { }
 	
@@ -185,19 +188,19 @@ public class SettingPane extends JPanel implements ActionListener{
 		customPane.setLayout(null);
 		menuPicture = new JCheckBox("사진첩");
 		menuPicture.setSelected(true);
-		menuPicture.setBounds(78, 114, 61, 23);
+		menuPicture.setBounds(40, 86, 61, 23);
 		customPane.add(menuPicture);
 		menuDiary = new JCheckBox("다이어리");
 		menuDiary.setSelected(true);
-		menuDiary.setBounds(78, 152, 73, 23);
+		menuDiary.setBounds(40, 121, 73, 23);
 		customPane.add(menuDiary);
 		menuVisitor = new JCheckBox("방명록");
 		menuVisitor.setSelected(true);
-		menuVisitor.setBounds(78, 194, 61, 23);
+		menuVisitor.setBounds(40, 155, 61, 23);
 		customPane.add(menuVisitor);
 		
 		// 관리 메뉴 - 개인 설정 - 스킨 설정
-		DefaultListModel skinModel = new DefaultListModel();
+		skinModel = new DefaultListModel();
 		// 임시 데이터
 //		for(int i=0; i<10; i++) {
 		
@@ -205,14 +208,22 @@ public class SettingPane extends JPanel implements ActionListener{
 		Image img = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
 		Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new skinDTO(imgResize));
+		skinModel.addElement(new SkinDTO(imgResize, "back.jpg"));
+		
+		img = new ImageIcon(getClass().getResource("../user/admin/adminimg/admin1.jpg")).getImage();
+		imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+
+		skinModel.addElement(new SkinDTO(imgResize, "admin1.jpg"));
 
 //		}
-		JList skinJList = new JList();
+		skinJList = new JList();
+		
+		JListHandler handler = new JListHandler();
+		skinJList.addListSelectionListener(handler);
 		
 		skinJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		skinJList.setModel(skinModel);
-//		friendCmtJList.setSelectionMode (listModel.SINGLE_INTERVAL_SELECTION);
+		skinJList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
 		skinJList.setVisibleRowCount (-1); // 가로줄 제한
 		skinJList.setLayoutOrientation (JList.HORIZONTAL_WRAP); // 리스트 가로 배열
 		skinJList.setCellRenderer(new CustomListRenderer("skin"));
@@ -224,11 +235,11 @@ public class SettingPane extends JPanel implements ActionListener{
 				//수평 스크롤바 설치 여부
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		skinSp.setSize(530, 170);
-		skinSp.setLocation(60, 400);
+		skinSp.setLocation(40, 230);
 		customPane.add(skinSp);
 		
 		musicRb = new JRadioButton("임시음악");
-		musicRb.setBounds(78, 466, 73, 23);
+		musicRb.setBounds(40, 456, 73, 23);
 		customPane.add(musicRb);
 		
 		customOkBt = new JButton("적용");
@@ -239,54 +250,43 @@ public class SettingPane extends JPanel implements ActionListener{
 		customPane.add(customOkBt);
 		
 		menuTitleLb = new JLabel("메뉴 설정");
-		menuTitleLb.setBounds(78, 69, 300, 15);
+		menuTitleLb.setBounds(40, 54, 300, 15);
 		customPane.add(menuTitleLb);
 		
 		skinTItleLb = new JLabel("스킨 설정");
-		skinTItleLb.setBounds(78, 283, 57, 15);
+		skinTItleLb.setBounds(40, 205, 57, 15);
 		customPane.add(skinTItleLb);
 		
 		musicTitleLb = new JLabel("음악 설정");
-		musicTitleLb.setBounds(78, 431, 57, 15);
+		musicTitleLb.setBounds(40, 429, 57, 15);
 		customPane.add(musicTitleLb);
 		
 		// 관리 메뉴 - 일촌 관리 패널
 		friendPane.setLayout(null);
-		friendLb = new JLabel("나의 일촌 목록");
-		friendLb.setBounds(290, 20, 100, 15);
+		friendLb = new JLabel("나의 일촌 현황");
+		friendLb.setHorizontalAlignment(SwingConstants.CENTER);
+		friendLb.setBounds(270, 20, 100, 15);
 		friendPane.add(friendLb);
 		friendLb.setBackground(Color.WHITE);
 		
 		friendJl = new JList(); // 현재 일촌 목록
 		friendJl.setBorder(new LineBorder(new Color(0, 0, 0)));
-		friendJl.setBounds(30, 70, 250, 300);
+		friendJl.setBounds(30, 359, 590, 200);
 		friendPane.add(friendJl);
 		
-		friendDeleteJl = new JList(); // 삭제할 일촌 목록
-		friendDeleteJl.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		friendDeleteJl.setBounds(380, 70, 250, 300);
-		friendPane.add(friendDeleteJl);
-		
-		friendDelBt = new JButton(">>");
-		friendDelBt.setContentAreaFilled(false);
-		friendDelBt.setFocusPainted(false);
-		friendDelBt.setBounds(300, 200, 60, 23);
-		friendPane.add(friendDelBt);
+		friendWaitingJl = new JList(); // 삭제할 일촌 목록
+		friendWaitingJl.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendWaitingJl.setBounds(30, 90, 590, 200);
+		friendPane.add(friendWaitingJl);
 		
 		existFriendLb = new JLabel("일촌 목록");
-		existFriendLb.setBounds(120, 45, 57, 15);
+		existFriendLb.setBounds(296, 334, 57, 15);
 		friendPane.add(existFriendLb);
 		
-		deleteFriendLb = new JLabel("삭제할 일촌");
-		deleteFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
-		deleteFriendLb.setBounds(460, 45, 80, 15);
-		friendPane.add(deleteFriendLb);
-		
-		friendOkBt = new JButton("일촌 끊기");
-		friendOkBt.setBounds(533, 507, 97, 23);
-		friendOkBt.setContentAreaFilled(false);
-		friendOkBt.setFocusPainted(false);
-		friendPane.add(friendOkBt);
+		waitingFriendLb = new JLabel("대기중인 일촌 신청");
+		waitingFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
+		waitingFriendLb.setBounds(260, 65, 130, 15);
+		friendPane.add(waitingFriendLb);
 		
 	
 	}
@@ -295,7 +295,7 @@ public class SettingPane extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		CardLayout c1 = (CardLayout)settingDetailPane.getLayout();
 		String btName = e.getActionCommand();
-		
+
 		switch (btName) {
 			case "기본 정보":
 				c1.show(settingDetailPane,"myInfo");
@@ -342,4 +342,20 @@ public class SettingPane extends JPanel implements ActionListener{
 		}
 
 	}
+	
+	//skniList Action Method
+	private class JListHandler implements ListSelectionListener
+	{
+		// 리스트의 항목이 선택이 되면
+		public void valueChanged(ListSelectionEvent event)
+		{
+			//skinJList에서 선택된 아이템의 인덱스를 가져온다.
+			//인덱스를 가지고 skinModel에 저장된 객체를 가져온다.
+			//해당 객체를 skinDTO객체로 캐스팅한다.(skinModel에 넣을 때 skinDTO로 삽입했음)
+			//skinDTO에 저장된 파일명을 가져온다.
+			SkinDTO skd = (SkinDTO) skinModel.getElementAt(skinJList.getSelectedIndex());
+			JOptionPane.showMessageDialog(null, skd.getSelectSkin());
+		}
+	}
+
 }

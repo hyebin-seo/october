@@ -7,20 +7,26 @@ import javax.swing.ImageIcon;
 
 import mainUI.HomePane;
 
-public class skinDTO extends ImageIcon{
+public class SkinDTO extends ImageIcon{
 
 	// 경로: data/user/userId/image
 	private String SKIN_PATH;  // skin이 저장되어 있는 경로
 	private String id;		   // userID
 	private String selectSkin; // 선택한 스킨 값
 	
-	public skinDTO(URL fileURL) {
+	public SkinDTO(URL fileURL) {
 		super(fileURL);
 	}
 	
-	public skinDTO(Image img) {
+	public SkinDTO(Image img) {
 		super(img);
 	}
+	
+	public SkinDTO(Image img, String str) {
+		super(img);
+		this.selectSkin = str;
+	}
+	
 	
 	public String getSKIN_PATH() {
 		return SKIN_PATH;
