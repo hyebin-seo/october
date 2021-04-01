@@ -3,6 +3,7 @@ package mainUI;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,9 +33,10 @@ public class SettingPane extends JPanel implements ActionListener{
 	// 이미지 경로
 //	private String FILE_PATH = "../image/invisibleBtImg.png";
 	
-	// 넘겨받은 백, 메뉴 패널
+	// 넘겨받은 백, 메뉴, 배경스킨 패널
 	private JPanel backPane;
 	private MenuPane menuPane;
+	private JPanel backImgPane;
 	
 	// 관리 메뉴 - 세부 패널을 담는 패널
 	private JPanel settingDetailPane;
@@ -71,6 +73,7 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JList skinJList;
 	private DefaultListModel skinModel;
 	private JLabel skinTItleLb;
+	private String SKIN_PATH = "../user/admin/adminimg/";
 
 	// 음악 설정 컴포넌트
 	private JLabel musicTitleLb;
@@ -88,10 +91,11 @@ public class SettingPane extends JPanel implements ActionListener{
 	
 //	public SettingPane() { }
 	
-	public SettingPane(JPanel backPane, MenuPane menuPane) {
+	public SettingPane(JPanel backPane, MenuPane menuPane, JPanel backImgPane) {
 		
 		this.backPane = backPane;
 		this.menuPane = menuPane;
+		this.backImgPane = backImgPane;
 		
 		this.setBounds(40, 40, 910, 600);
 		this.setLayout(null);
@@ -205,15 +209,15 @@ public class SettingPane extends JPanel implements ActionListener{
 //		for(int i=0; i<10; i++) {
 		
 		
-		Image img = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
+		Image img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin1.jpg")).getImage();
 		Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new SkinDTO(imgResize, "back.jpg"));
+		skinModel.addElement(new SkinDTO(imgResize, "admin1.jpg"));
 		
-		img = new ImageIcon(getClass().getResource("../user/admin/adminimg/admin1.jpg")).getImage();
+		img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin2.jpg")).getImage();
 		imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new SkinDTO(imgResize, "admin1.jpg"));
+		skinModel.addElement(new SkinDTO(imgResize, "admin2.jpg"));
 
 //		}
 		skinJList = new JList();
@@ -354,7 +358,30 @@ public class SettingPane extends JPanel implements ActionListener{
 			//해당 객체를 skinDTO객체로 캐스팅한다.(skinModel에 넣을 때 skinDTO로 삽입했음)
 			//skinDTO에 저장된 파일명을 가져온다.
 			SkinDTO skd = (SkinDTO) skinModel.getElementAt(skinJList.getSelectedIndex());
-			JOptionPane.showMessageDialog(null, skd.getSelectSkin());
+
+			String fileName = skd.getSelectSkin();
+			
+			int result = JOptionPane.showConfirmDialog(skinJList, "이 스킨을 설정하시겠습니까?",
+					"스킨 설정", JOptionPane.YES_NO_OPTION);
+			
+			if(result == JOptionPane.CLOSED_OPTION) {
+				// 창의 X를 눌렀을때
+			} else if(result == JOptionPane.YES_OPTION) {
+				// 확인 눌렀을때
+				  // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
+		        backImgPane = new JPanel(){
+		        	Image background = new ImageIcon(getClass().getResource(SKIN_PATH+fileName)).getImage();
+		        	public void paint(Graphics g) {//그리는 함수
+		        			g.drawImage(background, 0, 0, null);//background를 그려줌
+		        	}
+		        };
+		        
+		        
+		        backImgPane.setBounds(0, 0, 1280, 720);
+//		        getContentPane().add(backImgPane);
+			} else {
+				// 취소 눌렀을때
+			}
 		}
 	}
 

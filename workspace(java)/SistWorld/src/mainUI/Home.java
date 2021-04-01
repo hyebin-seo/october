@@ -20,11 +20,14 @@ import service.ImageUpload;
 
 public class Home implements ActionListener{
 
-	// 메인 프레임
+	// 홈 프레임
 	private JFrame mainFrame;
 	
 	// 홈 카드 레이아웃
 	private JPanel backPane;
+	
+	// 홈 배경화면(스킨)
+	private JPanel backImgPane;
 	
 	// 홈페이지 타이틀 라벨
 	private JLabel titleLb;
@@ -83,7 +86,7 @@ public class Home implements ActionListener{
 		diaryPane = new DiaryPane();
 		galleryPane = new GalleryPane();
 		bookPane = new BookPane();
-		settingPane = new SettingPane(backPane, menuPane);
+		settingPane = new SettingPane(backPane, menuPane, backImgPane);
 		
 		// 메인 프레임 설정
 		mainFrame.setResizable(false);
@@ -127,7 +130,7 @@ public class Home implements ActionListener{
 		mainFrame.getContentPane().add(logOutBt);
         
         // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
-        JPanel backImgPane = new JPanel(){
+        backImgPane = new JPanel(){
         	Image background = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
         	public void paint(Graphics g) {//그리는 함수
         			g.drawImage(background, 0, 0, null);//background를 그려줌
