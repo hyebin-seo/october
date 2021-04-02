@@ -13,6 +13,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -33,10 +34,10 @@ public class SettingPane extends JPanel implements ActionListener{
 	// 이미지 경로
 //	private String FILE_PATH = "../image/invisibleBtImg.png";
 	
-	// 넘겨받은 백, 메뉴, 배경스킨 패널
+	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨
 	private JPanel backPane;
 	private MenuPane menuPane;
-	private JPanel backImgPane;
+	private BackSkinLabel backSkinLb;
 	
 	// 관리 메뉴 - 세부 패널을 담는 패널
 	private JPanel settingDetailPane;
@@ -72,12 +73,13 @@ public class SettingPane extends JPanel implements ActionListener{
 	// 스킨 설정 컴포넌트
 	private JList skinJList;
 	private DefaultListModel skinModel;
-	private JLabel skinTItleLb;
+	private JLabel skinTitleLb;
 	private String SKIN_PATH = "../user/admin/adminimg/";
 
 	// 음악 설정 컴포넌트
 	private JLabel musicTitleLb;
-	private JRadioButton musicRb;
+	private JList musicJList;
+	private DefaultListModel musicModel;
 	
 	// 적용하기 컴포넌트
 	private JButton customOkBt;
@@ -88,14 +90,15 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JLabel friendLb;
 	private JList friendJl;
 	private JList friendWaitingJl;
+	private JLabel lblNewLabel_1;
 	
 //	public SettingPane() { }
 	
-	public SettingPane(JPanel backPane, MenuPane menuPane, JPanel backImgPane) {
+	public SettingPane(JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb) {
 		
 		this.backPane = backPane;
 		this.menuPane = menuPane;
-		this.backImgPane = backImgPane;
+		this.backSkinLb = backSkinLb;
 		
 		this.setBounds(40, 40, 910, 600);
 		this.setLayout(null);
@@ -189,23 +192,56 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		
 		// 관리 메뉴 - 개인 설정 패널
+		// 체크박스 DB값으로 셀렉트 설정할 것
+		menuTitleLb = new JLabel("메뉴 설정");
+		menuTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		menuTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
+		menuTitleLb.setBounds(40, 43, 530, 30);
+		customPane.add(menuTitleLb);
+		
 		customPane.setLayout(null);
 		menuPicture = new JCheckBox("사진첩");
 		menuPicture.setSelected(true);
-		menuPicture.setBounds(40, 86, 61, 23);
+		menuPicture.setOpaque(false);
+		menuPicture.setBounds(67, 89, 100, 23);
 		customPane.add(menuPicture);
+		
 		menuDiary = new JCheckBox("다이어리");
 		menuDiary.setSelected(true);
-		menuDiary.setBounds(40, 121, 73, 23);
+		menuDiary.setOpaque(false);
+		menuDiary.setBounds(171, 89, 100, 23);
 		customPane.add(menuDiary);
+		
 		menuVisitor = new JCheckBox("방명록");
 		menuVisitor.setSelected(true);
-		menuVisitor.setBounds(40, 155, 61, 23);
+		menuVisitor.setOpaque(false);
+		menuVisitor.setBounds(275, 89, 100, 23);
 		customPane.add(menuVisitor);
 		
+		customOkBt = new JButton("적용");
+		customOkBt.setBounds(487, 129, 81, 23);
+		customOkBt.setContentAreaFilled(false);
+		customOkBt.setFocusPainted(false);
+		customOkBt.addActionListener(this);
+		customPane.add(customOkBt);
+		
+		
 		// 관리 메뉴 - 개인 설정 - 스킨 설정
+		skinTitleLb = new JLabel("스킨 설정");
+		skinTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
+		skinTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		skinTitleLb.setBounds(40, 180, 530, 30);
+		customPane.add(skinTitleLb);
+		
+		JLabel lblNewLabel = new JLabel("원하는 스킨을 선택하세요.");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		lblNewLabel.setBounds(370, 345, 200, 15);
+		customPane.add(lblNewLabel);
+		
 		skinModel = new DefaultListModel();
 		// 임시 데이터
+		// DB에서 파일명 가져오면 for문으로 돌려서 객체 생성 후 삽입할 것
 //		for(int i=0; i<10; i++) {
 		
 		
@@ -222,8 +258,8 @@ public class SettingPane extends JPanel implements ActionListener{
 //		}
 		skinJList = new JList();
 		
-		JListHandler handler = new JListHandler();
-		skinJList.addListSelectionListener(handler);
+		JListHandler shandler = new JListHandler();
+		skinJList.addListSelectionListener(shandler);
 		
 		skinJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		skinJList.setModel(skinModel);
@@ -235,37 +271,54 @@ public class SettingPane extends JPanel implements ActionListener{
 		JScrollPane skinSp = new JScrollPane
 				(skinJList,
 				//수직 스크롤바 설치 여부
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
 				//수평 스크롤바 설치 여부
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		skinSp.setSize(530, 170);
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		skinSp.setSize(530, 110);
 		skinSp.setLocation(40, 230);
 		customPane.add(skinSp);
 		
-		musicRb = new JRadioButton("임시음악");
-		musicRb.setBounds(40, 456, 73, 23);
-		customPane.add(musicRb);
-		
-		customOkBt = new JButton("적용");
-		customOkBt.setBounds(518, 536, 81, 23);
-		customOkBt.setContentAreaFilled(false);
-		customOkBt.setFocusPainted(false);
-		customOkBt.addActionListener(this);
-		customPane.add(customOkBt);
-		
-		menuTitleLb = new JLabel("메뉴 설정");
-		menuTitleLb.setBounds(40, 54, 300, 15);
-		customPane.add(menuTitleLb);
-		
-		skinTItleLb = new JLabel("스킨 설정");
-		skinTItleLb.setBounds(40, 205, 57, 15);
-		customPane.add(skinTItleLb);
-		
+		// 관리메뉴 - 개인 설정 - 음악 설정
 		musicTitleLb = new JLabel("음악 설정");
-		musicTitleLb.setBounds(40, 429, 57, 15);
+		musicTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
+		musicTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		musicTitleLb.setBounds(40, 390, 530, 30);
 		customPane.add(musicTitleLb);
 		
-		// 관리 메뉴 - 일촌 관리 패널
+		musicModel = new DefaultListModel();
+		
+		// 음악 객체 삽입할 것
+		
+		musicJList = new JList();
+		
+		JListHandler mhandler = new JListHandler();
+		musicJList.addListSelectionListener(mhandler);
+		
+		musicJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		musicJList.setModel(musicModel);
+		musicJList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
+		musicJList.setVisibleRowCount (-1); // 가로줄 제한
+		musicJList.setLayoutOrientation (JList.HORIZONTAL_WRAP); // 리스트 가로 배열
+		musicJList.setCellRenderer(new CustomListRenderer("music"));
+
+		JScrollPane musicSp = new JScrollPane
+				(musicJList,
+				//수직 스크롤바 설치 여부
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+				//수평 스크롤바 설치 여부
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		musicSp.setSize(530, 110);
+		musicSp.setLocation(40, 440);
+		customPane.add(musicSp);
+		
+		lblNewLabel_1 = new JLabel("원하는 음악을 선택하세요.");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_1.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		lblNewLabel_1.setBounds(370, 555, 200, 15);
+		customPane.add(lblNewLabel_1);
+		
+		
+		// 관리 메뉴 - 개인 설정 - 일촌 관리
 		friendPane.setLayout(null);
 		friendLb = new JLabel("나의 일촌 현황");
 		friendLb.setHorizontalAlignment(SwingConstants.CENTER);
@@ -347,7 +400,7 @@ public class SettingPane extends JPanel implements ActionListener{
 
 	}
 	
-	//skniList Action Method
+	//스킨 선택 액션
 	private class JListHandler implements ListSelectionListener
 	{
 		// 리스트의 항목이 선택이 되면
@@ -358,31 +411,22 @@ public class SettingPane extends JPanel implements ActionListener{
 			//해당 객체를 skinDTO객체로 캐스팅한다.(skinModel에 넣을 때 skinDTO로 삽입했음)
 			//skinDTO에 저장된 파일명을 가져온다.
 			SkinDTO skd = (SkinDTO) skinModel.getElementAt(skinJList.getSelectedIndex());
-
 			String fileName = skd.getSelectSkin();
 			
-			int result = JOptionPane.showConfirmDialog(skinJList, "이 스킨을 설정하시겠습니까?",
+			int result = JOptionPane.showConfirmDialog(skinJList, fileName+"이 스킨으로 설정하시겠습니까?",
 					"스킨 설정", JOptionPane.YES_NO_OPTION);
 			
 			if(result == JOptionPane.CLOSED_OPTION) {
 				// 창의 X를 눌렀을때
 			} else if(result == JOptionPane.YES_OPTION) {
 				// 확인 눌렀을때
-				  // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
-		        backImgPane = new JPanel(){
-		        	Image background = new ImageIcon(getClass().getResource(SKIN_PATH+fileName)).getImage();
-		        	public void paint(Graphics g) {//그리는 함수
-		        			g.drawImage(background, 0, 0, null);//background를 그려줌
-		        	}
-		        };
-		        
-		        
-		        backImgPane.setBounds(0, 0, 1280, 720);
-//		        getContentPane().add(backImgPane);
+				System.out.println("[SettingPane-Select Skin]: " + SKIN_PATH+fileName);
+				// 메인 프레임 스킨 설정 메소드
+				backSkinLb.skinSetting(SKIN_PATH+fileName);
+
 			} else {
 				// 취소 눌렀을때
 			}
 		}
 	}
-
 }

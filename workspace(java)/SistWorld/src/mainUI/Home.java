@@ -18,11 +18,8 @@ import javax.swing.SwingConstants;
 
 import service.ImageUpload;
 
-public class Home implements ActionListener{
+public class Home extends JFrame implements ActionListener{
 
-	// 홈 프레임
-	private JFrame mainFrame;
-	
 	// 홈 카드 레이아웃
 	private JPanel backPane;
 	
@@ -48,99 +45,76 @@ public class Home implements ActionListener{
 	// 홈 로그아웃 버튼
 	private RoundedButton logOutBt;
 
-	// 스킨 간단 변경 & 뮤직 패널
+	// 스킨 변경 & 뮤직 패널
 	private	JPanel eastPane;
-
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Home window = new Home();
-					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+	private String basicSkinPath = "../images/back.jpg";
+	private BackSkinLabel backSkinLb;
 
 	public Home() {
-       
-		initialize();
-		
-	}
-
-	private void initialize() {
-		
 		// 메인 패널 선언
-		mainFrame = new JFrame();
 		backPane = new JPanel(); // 홈 카드 레이아웃
 		
         // 홈 메인 메뉴 버튼 패널
         menuPane = new MenuPane(backPane);
-        mainFrame.getContentPane().add(menuPane);
 
-		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록/관리
+		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록
+        // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
 		homePane = new HomePane();
 		diaryPane = new DiaryPane();
 		galleryPane = new GalleryPane();
 		bookPane = new BookPane();
-		settingPane = new SettingPane(backPane, menuPane, backImgPane);
 		
 		// 메인 프레임 설정
-		mainFrame.setResizable(false);
-		mainFrame.setBounds(100, 100, 1280, 720);
-		mainFrame.setLocationRelativeTo(null);//창이 가운데 나오게
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.getContentPane().setLayout(null);
+		this.setVisible(true);
+		this.setResizable(false);
+		this.setBounds(100, 100, 1280, 720);
+		this.setLocationRelativeTo(null);//창이 가운데 나오게
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLayout(null);
+		this.add(menuPane);
 
 		// 배경 패널 설정
 		backPane.setBounds(40, 40, 910, 600);
-		mainFrame.getContentPane().add(backPane);
+		this.add(backPane);
 		backPane.setLayout(new CardLayout(0, 0));
 		backPane.add(homePane, "home");
 		backPane.add(diaryPane, "diary");
 		backPane.add(galleryPane, "gallery");
 		backPane.add(bookPane, "book");
-		backPane.add(settingPane, "setting");
 		
 		// 스킨 간단 변경 & 뮤직 패널
 		eastPane = new JPanel();
 		eastPane.setBackground(Color.WHITE);
 		eastPane.setBounds(1080, 40, 160, 200);
-		mainFrame.getContentPane().add(eastPane);
+		this.add(eastPane);
 		
 		// 홈 타이틀 라벨
 		titleLb = new JLabel("SSangYongWorld");
 		titleLb.setFont(new Font("맑은 고딕", Font.BOLD | Font.ITALIC, 16));
 		titleLb.setBounds(300, 9, 342, 26);
-		mainFrame.getContentPane().add(titleLb);
+		this.add(titleLb);
 		
 		// 홈 투데이 라벨
 		todayLb = new JLabel("TODAY      | TOTAL      ");
 		todayLb.setHorizontalAlignment(SwingConstants.CENTER);
 		todayLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		todayLb.setBounds(40, 10, 260, 26);
-		mainFrame.getContentPane().add(todayLb);
+		this.add(todayLb);
 		
 		// 홈 로그아웃 버튼
 		logOutBt = new RoundedButton("LogOut");
 		logOutBt.setBounds(1150, 250, 90, 30);
-		mainFrame.getContentPane().add(logOutBt);
+		this.add(logOutBt);
         
-        // 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
-        backImgPane = new JPanel(){
-        	Image background = new ImageIcon(getClass().getResource("../images/back.jpg")).getImage();
-        	public void paint(Graphics g) {//그리는 함수
-        			g.drawImage(background, 0, 0, null);//background를 그려줌
-        	}
-        };
-        
-        backImgPane.setBounds(0, 0, 1280, 720);
-        mainFrame.getContentPane().add(backImgPane);
+		// 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
+		// 스킨 경로 DB에서 가져와서 설정값 있으면 변경해줄것
+		backSkinLb = new BackSkinLabel(this, basicSkinPath);
+		// 관리 패널 생성(객체 생성 순서때문에 제일 뒤로 옴)
+		settingPane = new SettingPane(backPane, menuPane, backSkinLb);
+		backPane.add(settingPane, "setting");
 
 	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

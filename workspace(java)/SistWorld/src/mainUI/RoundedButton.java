@@ -65,7 +65,7 @@ public class RoundedButton extends JButton {
 			graphics.setColor(c);
 		}
 		
-		graphics.fillRoundRect(0, 0, width, height, 15, 15); // 둥근 정도
+		graphics.fillRoundRect(0, 0, width, height, 10, 10); // 둥근 정도
 		
 		FontMetrics fontMetrics = graphics.getFontMetrics();
 		Rectangle stringBounds = fontMetrics.getStringBounds(this.getText(), graphics).getBounds();

@@ -47,47 +47,10 @@ public class BookPane extends JPanel{
 		guestBookScrollPane.setViewportView(guestBookPane);
 		guestBookPane.setLayout(null);
 		
-		// 첫번째 방명록 정보 및 메뉴 패널
-		JPanel guestBookInfoMenu_1 = new JPanel();
-		guestBookInfoMenu_1.setBounds(22, 22, 604, 37);
-		guestBookPane.add(guestBookInfoMenu_1);
-		guestBookInfoMenu_1.setLayout(null);
-		
-		// 첫번째 방명록 정보 라벨
-		JLabel guestBookNo_1 = new JLabel("no 12345");
-		guestBookNo_1.setBounds(12, 10, 57, 15);
-		guestBookInfoMenu_1.add(guestBookNo_1);
-		
-		JButton guestBookName_1 = new JButton("문형준");
-		guestBookName_1.setBounds(71, 6, 71, 27);
-		guestBookInfoMenu_1.add(guestBookName_1);
-		
-		JLabel guestBookWriteTime_1 = new JLabel("2021.03.26 00:29");
-		guestBookWriteTime_1.setBounds(173, 10, 117, 15);
-		guestBookInfoMenu_1.add(guestBookWriteTime_1);
-		
-		
-		// 첫번째 방명록 메뉴 버튼
-		JButton guestBookSecretBt_1 = new JButton("비밀로 하기");
-		guestBookSecretBt_1.setBounds(356, 7, 102, 23);
-		guestBookInfoMenu_1.add(guestBookSecretBt_1);
-		
-		JButton guestBookDeleteBt_1 = new JButton("삭제");
-		guestBookDeleteBt_1.setBounds(459, 7, 57, 23);
-		guestBookInfoMenu_1.add(guestBookDeleteBt_1);
-		
-		JButton guestBookReportBt_1 = new JButton("신고");
-		guestBookReportBt_1.setBounds(518, 6, 65, 23);
-		guestBookInfoMenu_1.add(guestBookReportBt_1);
-		
 		ImageIcon icon = new ImageIcon("images/home3.jpg");
 		Image img = icon.getImage();
 		Image changeImg = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
 		ImageIcon changeIcon = new ImageIcon(changeImg);
-		JButton guestBookMoveBt_1 = new JButton(changeIcon);
-		
-		guestBookMoveBt_1.setBounds(142, 6, 26, 27);
-		guestBookInfoMenu_1.add(guestBookMoveBt_1);
 		
 		
 		// 첫번째 방명록 사진 라벨
@@ -97,102 +60,96 @@ public class BookPane extends JPanel{
 		Image changeImg2 = img2.getScaledInstance(130, 130, Image.SCALE_SMOOTH);
 		ImageIcon changeIcon2 = new ImageIcon(changeImg2);
 		
-		JLabel guestBookPhoto_1 = new JLabel(changeIcon2);
-		guestBookPhoto_1.setBounds(32, 69, 161, 159);
-		guestBookPane.add(guestBookPhoto_1);
-		
-		// 첫번째 방명록 내용
-		JTextArea guestBookContent_1 = new JTextArea();
-		guestBookContent_1.setBounds(217, 69, 394, 159);
-		guestBookPane.add(guestBookContent_1);
-	
-		
-		// 첫번째 방명록 댓글 패널
-		JPanel guestBookCommentPane_1 = new JPanel();
-		guestBookCommentPane_1.setBounds(22, 241, 587, 61);
-		guestBookPane.add(guestBookCommentPane_1);
-		guestBookCommentPane_1.setLayout(null);
-		
-		// 첫번째 방명록 댓글
-		JTextPane guestBookCommentContent_1 = new JTextPane();
-		guestBookCommentContent_1.setBounds(12, 0, 492, 61);
-		guestBookCommentPane_1.add(guestBookCommentContent_1);
-		
-		// 첫번째 방명록 확인버튼
-		JButton guestBookCommentCheackBt_1 = new JButton("확인");
-		guestBookCommentCheackBt_1.setBounds(516, 10, 71, 41);
-		guestBookCommentPane_1.add(guestBookCommentCheackBt_1);
-		
 		
 		
 		JScrollBar scrollBar = new JScrollBar();
 		scrollBar.setBounds(631, 10, 17, 578);
 		guestBookPane.add(scrollBar);
 		
+		// 방명록 기본 패널
+		JPanel guestBookInfoPane = new JPanel();
+		guestBookInfoPane.setBounds(12, 0, 611, 305);
+		guestBookPane.add(guestBookInfoPane);
+		guestBookInfoPane.setLayout(null);
 		
-		// 두번째 방명록 정보 및 메뉴 패널
-		JPanel guestBookInfoMenu_2 = new JPanel();
-		guestBookInfoMenu_2.setLayout(null);
-		guestBookInfoMenu_2.setBounds(22, 312, 604, 37);
-		guestBookPane.add(guestBookInfoMenu_2);
+		// 첫번째 방명록 정보 및 메뉴 패널
+		JPanel guestBookInfoMenu_1 = new JPanel();
+		guestBookInfoMenu_1.setBounds(12, 20, 604, 37);
+		guestBookInfoPane.add(guestBookInfoMenu_1);
+		guestBookInfoMenu_1.setLayout(null);
 		
+		// 첫번째 방명록 정보 라벨
+		JLabel guestBookNo = new JLabel("no 12345");
+		guestBookNo.setBounds(12, 10, 57, 15);
+		guestBookInfoMenu_1.add(guestBookNo);
 		
-		// 두번째 방명록 정보 라벨
-		JLabel guestBookNo_2 = new JLabel("no 12345");
-		guestBookNo_2.setBounds(12, 10, 57, 15);
-		guestBookInfoMenu_2.add(guestBookNo_2);
+		JButton guestBookName = new JButton("문형준");
+		guestBookName.setBounds(71, 6, 71, 27);
+		guestBookInfoMenu_1.add(guestBookName);
 		
-		JButton guestBookName_2 = new JButton("문형준");
-		guestBookName_2.setBounds(71, 6, 71, 27);
-		guestBookInfoMenu_2.add(guestBookName_2);
-		
-		JLabel guestBookWriteTime_2 = new JLabel("2021.03.26 00:29");
-		guestBookWriteTime_2.setBounds(173, 10, 117, 15);
-		guestBookInfoMenu_2.add(guestBookWriteTime_2);
-		
-		JButton guestBookSecretBt_2 = new JButton("비밀로 하기");
-		guestBookSecretBt_2.setBounds(356, 7, 102, 23);
-		guestBookInfoMenu_2.add(guestBookSecretBt_2);
-		
-		JButton guestBookDeleteBt_2 = new JButton("삭제");
-		guestBookDeleteBt_2.setBounds(459, 7, 57, 23);
-		guestBookInfoMenu_2.add(guestBookDeleteBt_2);
-		
-		JButton guestBookReportBt_2 = new JButton("신고");
-		guestBookReportBt_2.setBounds(518, 6, 65, 23);
-		guestBookInfoMenu_2.add(guestBookReportBt_2);
-		
-		JButton guestBookMoveBt_2 = new JButton((Icon) null);
-		guestBookMoveBt_2.setBounds(142, 6, 26, 27);
-		guestBookInfoMenu_2.add(guestBookMoveBt_2);
-		
-	
-		// 두번째 방명록 사진 및 내용 라벨
-		
-		JLabel guestBookPhoto_2 = new JLabel((Icon) null);
-		guestBookPhoto_2.setBounds(32, 358, 161, 159);
-		guestBookPane.add(guestBookPhoto_2);
-		
-		JTextArea guestBookContent_2 = new JTextArea();
-		guestBookContent_2.setBounds(215, 358, 394, 159);
-		guestBookPane.add(guestBookContent_2);
-		
-		// 두번째 방명록 댓글 패널
-		JPanel guestBookCommentPane_2 = new JPanel();
-		guestBookCommentPane_2.setLayout(null);
-		guestBookCommentPane_2.setBounds(22, 527, 587, 61);
-		guestBookPane.add(guestBookCommentPane_2);
-		
-		// 두번째 방명록 댓글내용
-		JTextPane guestBookCommentContent_2 = new JTextPane();
-		guestBookCommentContent_2.setBounds(12, 0, 492, 61);
-		guestBookCommentPane_2.add(guestBookCommentContent_2);
+		JLabel guestBookWriteTime = new JLabel("2021.03.26 00:29");
+		guestBookWriteTime.setBounds(173, 10, 117, 15);
+		guestBookInfoMenu_1.add(guestBookWriteTime);
 		
 		
-		// 두번째 방명록 댓글내용 확인
-		JButton guestBookCommentCheckBt_2 = new JButton("확인");
-		guestBookCommentCheckBt_2.setBounds(516, 10, 71, 41);
-		guestBookCommentPane_2.add(guestBookCommentCheckBt_2);
+		// 첫번째 방명록 메뉴 버튼
+		JButton guestBookSecretBt = new JButton("비밀로 하기");
+		guestBookSecretBt.setBounds(356, 7, 102, 23);
+		guestBookInfoMenu_1.add(guestBookSecretBt);
+		
+		JButton guestBookDeleteBt = new JButton("삭제");
+		guestBookDeleteBt.setBounds(459, 7, 57, 23);
+		guestBookInfoMenu_1.add(guestBookDeleteBt);
+		
+		JButton guestBookMoveBt = new JButton(changeIcon);
+		
+		guestBookMoveBt.setBounds(142, 6, 26, 27);
+		guestBookInfoMenu_1.add(guestBookMoveBt);
+		
+		// 첫번째 방명록 내용
+		JTextArea guestBookContent = new JTextArea();
+		guestBookContent.setBounds(189, 66, 387, 134);
+		guestBookInfoPane.add(guestBookContent);
+		
+		JLabel guestBookPhoto = new JLabel(changeIcon2);
+		guestBookPhoto.setBounds(35, 66, 134, 134);
+		guestBookInfoPane.add(guestBookPhoto);
+			
+				
+				// 첫번째 방명록 댓글 패널
+				JPanel guestBookCommentWritePane = new JPanel();
+				guestBookCommentWritePane.setBounds(12, 259, 587, 46);
+				guestBookInfoPane.add(guestBookCommentWritePane);
+				guestBookCommentWritePane.setLayout(null);
+				
+				// 첫번째 방명록 댓글
+				JTextPane guestBookCommentWrite = new JTextPane();
+				guestBookCommentWrite.setBounds(12, 6, 492, 34);
+				guestBookCommentWritePane.add(guestBookCommentWrite);
+				
+				// 첫번째 방명록 확인버튼
+				JButton guestBookCommentWriteBt = new JButton("쓰기");
+				guestBookCommentWriteBt.setBounds(516, 6, 65, 34);
+				guestBookCommentWritePane.add(guestBookCommentWriteBt);
+				
+				JPanel guestBookCommentbackPane = new JPanel();
+				guestBookCommentbackPane.setBounds(0, 198, 607, 61);
+				guestBookInfoPane.add(guestBookCommentbackPane);
+				guestBookCommentbackPane.setLayout(null);
+				
+				
+				JPanel guestBookCommentInfoPane = new JPanel();
+				guestBookCommentInfoPane.setBounds(12, 10, 587, 47);
+				guestBookCommentbackPane.add(guestBookCommentInfoPane);
+				guestBookCommentInfoPane.setLayout(null);
+				
+				JButton guestBookCommentWriterBt = new JButton("작성자1");
+				guestBookCommentWriterBt.setBounds(12, 10, 89, 23);
+				guestBookCommentInfoPane.add(guestBookCommentWriterBt);
+				
+				JTextArea guestBookCommentContent = new JTextArea();
+				guestBookCommentContent.setBounds(107, 0, 480, 47);
+				guestBookCommentInfoPane.add(guestBookCommentContent);
 		
 		
 		

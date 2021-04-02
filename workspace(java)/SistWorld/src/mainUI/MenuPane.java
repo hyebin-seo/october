@@ -31,9 +31,9 @@ public class MenuPane extends JPanel implements ActionListener{
 		this.backPane = backPane;
 
 		this.setBounds(950, 50, 80, 252);
+		this.setVisible(true);
         this.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.setBackground(new Color(9,131,178));
-        this.setForeground(new Color(9,131,178));
+        this.setOpaque(false);
         this.setLayout(new GridLayout(0, 1, 0, 0));
 		
         homeBt = new RoundedButton("Home");

@@ -16,6 +16,10 @@ import javax.swing.JScrollBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.CardLayout;
+
 
 public class GalleryPane extends JPanel{
 
@@ -51,17 +55,21 @@ public class GalleryPane extends JPanel{
 	private JLabel commentLable;
 	private JTextField commentTextField;
 	private JTextArea commentTextArea;
+	private JPanel commentPanel;
+	private JScrollBar commentScroll;
+	private JPanel uploadPanel;
+	private JButton savePhoto;
 
 	public GalleryPane() {
 
 		this.setBounds(40, 40, 910, 600);
-		this.setLayout(null);
+		setLayout(null);
 
 		//사진첩  패널 및 목록 버튼 
 		photoSidelist = new JPanel();
+		photoSidelist.setBounds(0, 0, 260, 600);
 		photoSidelist.setBackground(Color.PINK);
 		photoSidelist.setForeground(Color.BLACK);
-		photoSidelist.setBounds(0, 0, 260, 600);
 		this.add(photoSidelist);
 		photoSidelist.setLayout(null);
 		
@@ -89,8 +97,8 @@ public class GalleryPane extends JPanel{
 		
 		//사진첩 메인 패널 및 라벨,checkbox
 		photoMain= new JPanel();
-		photoMain.setBackground(Color.PINK);
 		photoMain.setBounds(260, 0, 650, 600);
+		photoMain.setBackground(Color.PINK);
 		this.add(photoMain);
 		photoMain.setLayout(null);
 		
@@ -100,14 +108,38 @@ public class GalleryPane extends JPanel{
 		
 		Checkbox1 = new JCheckBox("펼쳐보기");
 		Checkbox1.setBounds(12, 23, 73, 23);
+        Checkbox1.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showDialog.setText(Checkbox1.getText());
+				
+			}
+		});
 		photoMain.add(Checkbox1);
 		
 		Checkbox2 = new JCheckBox("작게보기");
 		Checkbox2.setBounds(88, 23, 73, 23);
+        Checkbox2.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showDialog.setText(Checkbox2.getText());
+				
+			}
+		});
 		photoMain.add(Checkbox2);
 		
 		Checkbox3 = new JCheckBox("슬라이드");
 		Checkbox3.setBounds(160, 23, 73, 23);
+        Checkbox3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showDialog.setText(Checkbox3.getText());
+				
+			}
+		});
 		photoMain.add(Checkbox3);
 		
 		bg = new ButtonGroup();
@@ -115,44 +147,71 @@ public class GalleryPane extends JPanel{
 		bg.add(Checkbox2);
 		bg.add(Checkbox3);
 		
-        //사진 업로드 버튼
-		uploadBtn = new JButton("업로드");
-		uploadBtn.setBounds(488, 77, 91, 23);
-		photoMain.add(uploadBtn);
-		
 		//사진 업로드 패널
 		
-		photoPanel = new JPanel(){
-			Image background=new ImageIcon(GalleryPane.class.getResource("../images/image.png")).getImage();
-			public void paint(Graphics g) {//그리는 함수
-					g.drawImage(background, 0, 0, null);//background를 그려줌
-			}
-		};
-		
-		photoPanel.setBounds(51, 100, 530, 310);
+		photoPanel = new JPanel();
+		photoPanel.setBounds(53, 80, 530, 358);
 		photoMain.add(photoPanel);
 		photoPanel.setLayout(null);
-			
+		
+        //사진 업로드 버튼
+		
+		uploadPanel = new JPanel();
+		uploadPanel.setBackground(Color.YELLOW);
+		uploadPanel.setBounds(260, 73, 650, 368);
+		add(uploadPanel);
+		uploadPanel.setLayout(null);
+		uploadPanel.setVisible(false);
+		
+		uploadBtn = new JButton("업로드");
+		uploadBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				uploadPanel.setVisible(true);
+				photoMain.setVisible(false); 
+			}
+		});
+		uploadBtn.setBounds(218, 142, 91, 55);
+		photoPanel.add(uploadBtn);
+		
+		commentPanel = new JPanel();
+		commentPanel.setBounds(53, 443, 530, 157);
+		photoMain.add(commentPanel);
+		commentPanel.setBackground(Color.GRAY);
+		commentPanel.setLayout(null);
+		
 	    //사진 댓글 라벨 및 댓글 텍스트필드 및 텍스트Area
 		commentLable = new JLabel("댓    글 : ");
+		commentLable.setBounds(32, 37, 63, 17);
+		commentPanel.add(commentLable);
 		commentLable.setFont(new Font("굴림", Font.PLAIN, 14));
-		commentLable.setBounds(51, 432, 73, 30);
-		photoMain.add(commentLable);
 		
 		commentTextField = new JTextField();
-		commentTextField.setBounds(121, 433, 460, 30);
-		photoMain.add(commentTextField);
+		commentTextField.setBounds(107, 36, 337, 21);
+		commentPanel.add(commentTextField);
 		commentTextField.setColumns(10);
 		
 		commentTextArea = new JTextArea();
-		commentTextArea.setBounds(51, 474, 530, 73);
-		photoMain.add(commentTextArea);
+		commentTextArea.setBounds(107, 62, 337, 85);
+		commentPanel.add(commentTextArea);
 		
-		JScrollBar scrollBar_1 = new JScrollBar();
-		scrollBar_1.setBounds(564, 478, 17, 69);
-		photoMain.add(scrollBar_1);
-		uploadBtn.addActionListener(new OpenActionListner());
+		commentScroll = new JScrollBar();
+		commentScroll.setBounds(427, 67, 17, 80);
+		commentPanel.add(commentScroll);
+		
+		
+		
+		savePhoto = new JButton("불러오기");
+		savePhoto.setBounds(0, 0, 91, 23);
+		savePhoto.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				uploadPanel.setVisible(false);
+				photoMain.setVisible(true); 
+			}
+		});
+		uploadPanel.add(savePhoto);
+		savePhoto.addActionListener(new OpenActionListner());
 	
 	}
-
 }
