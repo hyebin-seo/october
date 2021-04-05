@@ -19,7 +19,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
-import model.FriendCmtDTO;
+import model.FriendCmt;
 public class HomePane extends JPanel{
 
 	// 홈 메뉴 - 세부 메인 패널
@@ -127,7 +127,7 @@ public class HomePane extends JPanel{
 		DefaultListModel listModel = new DefaultListModel();
 		// 임시 데이터
 		for(int i=0; i<10; i++) {
-			FriendCmtDTO fcd = new FriendCmtDTO();
+			FriendCmt fcd = new FriendCmt();
 
 			fcd.setNickname((i+1)+"번째 친구");
 			fcd.setName((i+1)+"사람");

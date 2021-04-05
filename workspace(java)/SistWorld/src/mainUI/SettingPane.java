@@ -27,13 +27,10 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import model.SkinDTO;
+import model.Skin;
 
 public class SettingPane extends JPanel implements ActionListener{
 
-	// 이미지 경로
-//	private String FILE_PATH = "../image/invisibleBtImg.png";
-	
 	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨
 	private JPanel backPane;
 	private MenuPane menuPane;
@@ -248,12 +245,12 @@ public class SettingPane extends JPanel implements ActionListener{
 		Image img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin1.jpg")).getImage();
 		Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new SkinDTO(imgResize, "admin1.jpg"));
+		skinModel.addElement(new Skin(imgResize, "admin1.jpg"));
 		
 		img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin2.jpg")).getImage();
 		imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new SkinDTO(imgResize, "admin2.jpg"));
+		skinModel.addElement(new Skin(imgResize, "admin2.jpg"));
 
 //		}
 		skinJList = new JList();
@@ -410,7 +407,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			//인덱스를 가지고 skinModel에 저장된 객체를 가져온다.
 			//해당 객체를 skinDTO객체로 캐스팅한다.(skinModel에 넣을 때 skinDTO로 삽입했음)
 			//skinDTO에 저장된 파일명을 가져온다.
-			SkinDTO skd = (SkinDTO) skinModel.getElementAt(skinJList.getSelectedIndex());
+			Skin skd = (Skin) skinModel.getElementAt(skinJList.getSelectedIndex());
 			String fileName = skd.getSelectSkin();
 			
 			int result = JOptionPane.showConfirmDialog(skinJList, fileName+"이 스킨으로 설정하시겠습니까?",
@@ -421,7 +418,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			} else if(result == JOptionPane.YES_OPTION) {
 				// 확인 눌렀을때
 				System.out.println("[SettingPane-Select Skin]: " + SKIN_PATH+fileName);
-				// 메인 프레임 스킨 설정 메소드
+				// 메인 프레임에 얹어진 스킨 라벨 설정 메소드
 				backSkinLb.skinSetting(SKIN_PATH+fileName);
 
 			} else {

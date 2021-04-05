@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 
-import model.SkinDTO;
+import model.Skin;
 
 // JList 내의 셀 크기 조절 클래스
 public class CustomListRenderer implements ListCellRenderer {
@@ -29,7 +29,7 @@ public class CustomListRenderer implements ListCellRenderer {
         boolean isSelected, boolean cellHasFocus) {
 
 	   if(flag.equals("skin")) {
-		   	SkinDTO skd = (SkinDTO) value;
+		   	Skin skd = (Skin) value;
 			JLabel skinLabel = new JLabel();
 			skinLabel.setIcon(skd);
 			skinLabel.setText(skd.getSelectSkin());
