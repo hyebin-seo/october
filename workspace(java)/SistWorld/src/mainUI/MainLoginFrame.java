@@ -94,13 +94,13 @@ public class MainLoginFrame {
 		idLb.setBounds(500, 245, 100, 30);
 		idTf = new JTextField(10);
 		idTf.setBounds(610, 246, 130, 30);
-		idTf.setText("admin"); //임시
+		idTf.setText("admin"); //TODO 임시
 			
 		pwdLb = new JLabel("비밀번호 : ", SwingConstants.RIGHT);
 		pwdLb.setBounds(500, 285, 100, 30);
 		pwdPf = new JPasswordField(10);
 		pwdPf.setBounds(610, 286, 130, 30);
-		pwdPf.setText("admin"); //임시
+		pwdPf.setText("admin"); //TODO 임시
 		
 		loginBt = new JButton("로그인");
 		loginBt.setBounds(540, 341, 200, 30);
@@ -131,7 +131,8 @@ public class MainLoginFrame {
 				boolean loginCheck = dbc.loginCheck(userId,userPwd);
 				
 				if(loginCheck) {
-					// 아이디 비밀번호 체킹 후 일치하면 User객체 생성해서 넘겨야 함
+					// 아이디 비밀번호 체킹 후 일치하면 UserID 넘김.
+					// 객체 넘기지 않는 이유:일촌 파도타기 시 유저 식별 필요함.
 //					JOptionPane.showMessageDialog(null, userId+"님! 환영합니다.");
 					Member member = dbc.dataOpen(userId);
 					memberMap.put(member.getMember_id(),member);

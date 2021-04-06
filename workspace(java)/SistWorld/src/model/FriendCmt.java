@@ -1,24 +1,27 @@
 package model;
 
-import java.awt.Component;
+import javax.swing.table.DefaultTableModel;
 
-import javax.swing.JTextArea;
+public class FriendCmt extends DefaultTableModel{
 
-public class FriendCmt extends JTextArea{
-
-	private String nickname;
+	private String nick;
 	private String name;
-	private String friendcomment;
+	private String comment;
 	
-	public FriendCmt() {
-		this.setText(friendcomment+" "+nickname+" "+name);
+	public FriendCmt(String cmt) {
+	}
+	
+	public FriendCmt(String nick, String name, String comment) {
+		this.nick = nick;
+		this.name = name;
+		this.comment = comment;
 	}
 
-	public String getNickname() {
-		return nickname;
+	public String getNick() {
+		return nick;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setNick(String nickname) {
+		this.nick = nickname;
 	}
 	public String getName() {
 		return name;
@@ -26,11 +29,11 @@ public class FriendCmt extends JTextArea{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getFriendcomment() {
-		return friendcomment;
+	public String getcomment() {
+		return comment;
 	}
-	public void setFriendcomment(String friendcomment) {
-		this.friendcomment = friendcomment;
+	public void setcomment(String comment) {
+		this.comment = comment;
 	}
 	
 	

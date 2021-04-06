@@ -8,6 +8,7 @@ public class Member {
 	String member_birth; 		//회원 생년월일
 	String member_gender; 		//회원 성별
 	String member_email; 		//회원 이메일
+	String member_regdate;		//회원 가입일
 	String home_title; 			//홈페이지 제목
     boolean home_diary; 		//홈 메뉴:다이어리 체크
     boolean home_gallery; 		//홈 메뉴:사진첩 체크
@@ -76,6 +77,15 @@ public class Member {
 	public void setMember_email(String member_email) {
 		this.member_email = member_email;
 	}
+	
+	public String getMember_regdate() {
+		return member_regdate;
+	}
+
+	public void setMember_regdate(String member_regdate) {
+		this.member_regdate = member_regdate;
+	}
+
 
 	public String getHome_title() {
 		return home_title;

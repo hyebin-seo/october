@@ -1,17 +1,15 @@
 package mainUI;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.SpringLayout;
-import java.awt.GridLayout;
+
+import model.Member;
 
 public class MenuPane extends JPanel implements ActionListener{
 
@@ -26,7 +24,7 @@ public class MenuPane extends JPanel implements ActionListener{
 	
 //	public MenuPane() {	}
 	
-	public MenuPane(JPanel backPane) {
+	public MenuPane(String member_id, JPanel backPane) {
 		
 		this.backPane = backPane;
 

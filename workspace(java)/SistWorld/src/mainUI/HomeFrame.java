@@ -19,7 +19,8 @@ public class HomeFrame extends JFrame implements ActionListener{
 
 	// 회원 목록
 	MemberDAO memberMap;
-	Member currentMember;
+	Member member;
+	String member_id;
 	
 	// 홈 카드 레이아웃
 	private JPanel backPane;
@@ -40,9 +41,6 @@ public class HomeFrame extends JFrame implements ActionListener{
 	private BookPane bookPane;
 	private SettingPane settingPane;
 	
-	// 홈 메인 타이틀
-	private JLabel todayLb;
-	
 	// 홈 로그아웃 버튼
 	private RoundedButton logOutBt;
 
@@ -52,18 +50,19 @@ public class HomeFrame extends JFrame implements ActionListener{
 	private BackSkinLabel backSkinLb;
 
 	public HomeFrame(String member_id) {
+		this.member_id = member_id;
 		memberMap = MemberDAO.getInstance();
-		currentMember = memberMap.get(member_id);
+		member = memberMap.get(member_id);
 		
 		// 메인 패널 선언
 		backPane = new JPanel(); // 홈 카드 레이아웃
 		
         // 홈 메인 메뉴 버튼 패널
-        menuPane = new MenuPane(backPane);
+        menuPane = new MenuPane(member_id, backPane);
 
 		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록
         // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
-		homePane = new HomePane();
+		homePane = new HomePane(member_id);
 		diaryPane = new DiaryPane();
 		galleryPane = new GalleryPane();
 		bookPane = new BookPane();
@@ -74,12 +73,12 @@ public class HomeFrame extends JFrame implements ActionListener{
 		this.setBounds(0, 0, 1280, 720);
 		this.setLocationRelativeTo(null);//창이 가운데 나오게
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setLayout(null);
-		this.add(menuPane);
+		getContentPane().setLayout(null);
+		getContentPane().add(menuPane);
 
 		// 배경 패널 설정
 		backPane.setBounds(40, 40, 910, 600);
-		this.add(backPane);
+		getContentPane().add(backPane);
 		backPane.setLayout(new CardLayout(0, 0));
 		backPane.add(homePane, "home");
 		backPane.add(diaryPane, "diary");
@@ -90,33 +89,26 @@ public class HomeFrame extends JFrame implements ActionListener{
 		eastPane = new JPanel();
 		eastPane.setBackground(Color.WHITE);
 		eastPane.setBounds(1080, 40, 160, 200);
-		this.add(eastPane);
+		getContentPane().add(eastPane);
 		
 		// 홈 타이틀 라벨
-		titleLb = new JLabel(currentMember.getHome_title());
+		titleLb = new JLabel(member.getHome_title());
 		titleLb.setFont(new Font("맑은 고딕", Font.BOLD | Font.ITALIC, 16));
 		titleLb.setBounds(300, 9, 342, 26);
-		this.add(titleLb);
-		
-		// 홈 투데이 라벨
-		todayLb = new JLabel("TODAY      | TOTAL      ");
-		todayLb.setHorizontalAlignment(SwingConstants.CENTER);
-		todayLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		todayLb.setBounds(40, 10, 260, 26);
-		this.add(todayLb);
+		getContentPane().add(titleLb);
 		
 		// 홈 로그아웃 버튼
 		logOutBt = new RoundedButton("LogOut");
 		logOutBt.setBounds(1150, 250, 90, 30);
-		this.add(logOutBt);
+		getContentPane().add(logOutBt);
         
 		// 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
 		// 스킨 경로 DB에서 가져와서 설정값 있으면 변경해줄것
-		System.out.println("[Home]: "+currentMember);
-		System.out.println("[Home-skin path]: " + currentMember.getHome_skin());
-		backSkinLb = new BackSkinLabel(this, currentMember.getHome_skin());
+		System.out.println("[HomeFrame]: "+member);
+		System.out.println("[HomeFrame-skin path]: " + member.getHome_skin());
+		backSkinLb = new BackSkinLabel(this, member.getHome_skin());
 		// 관리 패널 생성(객체 생성 순서때문에 제일 뒤로 옴)
-		settingPane = new SettingPane(backPane, menuPane, backSkinLb);
+		settingPane = new SettingPane(member, backPane, menuPane, backSkinLb);
 		backPane.add(settingPane, "setting");
 
 	}

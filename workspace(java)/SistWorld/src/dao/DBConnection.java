@@ -5,9 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
+import model.FriendCmt;
 import model.Member;
 
 public class DBConnection {
@@ -97,6 +100,7 @@ public class DBConnection {
 				member.setMember_birth(rs.getString("member_birth").substring(0, 10));
 				member.setMember_gender(rs.getString("member_gender"));
 				member.setMember_email(rs.getString("member_email"));
+				member.setMember_regdate(rs.getString("member_regdate"));;
 				member.setHome_title(rs.getString("home_title"));
 				member.setHome_skin(rs.getString("home_skin"));
 				member.setHome_miniroom(rs.getString("home_miniroom"));
@@ -130,6 +134,7 @@ public class DBConnection {
 				System.out.println("[dbc-birth]:"+member.getMember_birth());
 				System.out.println("[dbc-gender]:"+member.getMember_gender());
 				System.out.println("[dbc-email]:"+member.getMember_email());
+				System.out.println("[dbc-regdate]:"+member.getMember_regdate());
 				System.out.println("[dbc-title]:"+member.getHome_title());
 				System.out.println("[dbc-skin]:"+member.getHome_skin());
 				System.out.println("[dbc-room]:"+member.getHome_miniroom());
@@ -148,7 +153,8 @@ public class DBConnection {
 		// 회원가입이므로 Default값 설정
 		int result = 0;
 		String sql = 
-				"INSERT INTO MEMBER VALUES(?,?,?,?,?,?,?,1,1,1,?,?,?,?,?)";
+				"INSERT INTO MEMBER(MEMBER_ID,MEMBER_PW,MEMBER_NAME,MEMBER_BIRTH,MEMBER_GENDER,MEMBER_EMAIL)" + 
+				"VALUES(?,?,?,?,?,?);";
 		
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -159,12 +165,6 @@ public class DBConnection {
 			pstmt.setString(4, member.getMember_birth()); //생년월일
 			pstmt.setString(5, member.getMember_gender()); //성별
 			pstmt.setString(6, member.getMember_email()); //이메일
-			pstmt.setString(7, "쌍용월드에 오신 것을 환영합니다."); //홈페이지 제목
-			pstmt.setString(8, "../images/back.jpg"); //스킨
-			pstmt.setString(9, "../images/home.JPG"); //미니룸
-			pstmt.setString(10, "../images/profile.JPG"); //프로필 사진
-			pstmt.setString(11, "쌍용월드에 오신 것을 환영합니다."); //프로필 상태 메시지
-			pstmt.setString(12, "../user/admin/adminmusic/buskerbusker_blossom_ending.mp3"); //음악
 			
 			result = pstmt.executeUpdate();
 			
@@ -179,5 +179,42 @@ public class DBConnection {
 		}
 
 		return result;
+	}
+	
+	public DefaultTableModel friendCmt(String member_id) {
+		String[] header = {"index","cmt","nick","name"};
+		DefaultTableModel cmtModel= new DefaultTableModel(header, 0);
+
+		String sql = "select * from friendcmt "
+				+ "where member_id = ? order by friendcmt_index desc";
+		
+		// 5. 데이터를 가져와서 출력
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, member_id);
+			rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				int index = rs.getInt("FRIENDCMT_INDEX");
+				String cmt = rs.getString("FREIND_CMT");
+				String nick = rs.getString("FRIEND_NICK");
+				String name = rs.getString("FRIEND_NAME");
+				Object[] data = {index, cmt, nick, name};
+				
+				cmtModel.addRow(data);
+				
+				System.out.println("[dbc-cmtModel]:"
+						+rs.getInt("FRIENDCMT_INDEX")+"/"
+						+rs.getString("FRIEND_NICK")+"/"
+						+rs.getString("FRIEND_NAME")+"/"
+						+rs.getString("FREIND_CMT"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return cmtModel;
 	}
 }

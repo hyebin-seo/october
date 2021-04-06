@@ -3,22 +3,22 @@ package mainUI;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -27,6 +27,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import model.Member;
 import model.Skin;
 
 public class SettingPane extends JPanel implements ActionListener{
@@ -88,10 +89,11 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JList friendJl;
 	private JList friendWaitingJl;
 	private JLabel lblNewLabel_1;
+	private JLabel pwdLb_1;
 	
 //	public SettingPane() { }
 	
-	public SettingPane(JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb) {
+	public SettingPane(Member member, JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb) {
 		
 		this.backPane = backPane;
 		this.menuPane = menuPane;
@@ -159,33 +161,59 @@ public class SettingPane extends JPanel implements ActionListener{
 		settingDetailPane.add(friendPane, "friend");
 
 		// 관리 메뉴 - 내정보 패널
-		myInfoLb = new JLabel("아이디");
 		myInfoPane.setLayout(null);
-		JLabel label = new JLabel("내정보");
-		label.setBounds(146, 11, 100, 15);
-		myInfoPane.add(label);
-		myInfoLb.setFont(new Font("굴림", Font.PLAIN, 22));
+		myInfoLb = new JLabel("내정보");
+		myInfoLb.setHorizontalAlignment(SwingConstants.CENTER);
+		myInfoLb.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		myInfoLb.setBounds(275, 40, 100, 15);
+		myInfoPane.add(myInfoLb);
 		
-		idLb = new JLabel("아이디");
-		idLb.setBounds(60, 41, 66, 26);
+		idLb = new JLabel("아이디 : " + member.getMember_id());
+		idLb.setBounds(60, 97, 346, 26);
 		myInfoPane.add(idLb);
-		idLb.setFont(new Font("굴림", Font.PLAIN, 22));
+		idLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		
-		pwdLb = new JLabel("비밀번호");
-		pwdLb.setBounds(60, 82, 88, 26);
+		pwdLb = new JLabel("생년월일 : "+ member.getMember_birth());
+		pwdLb.setBounds(60, 169, 333, 26);
 		myInfoPane.add(pwdLb);
-		pwdLb.setFont(new Font("굴림", Font.PLAIN, 22));
+		pwdLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+
+		//가입일 구하기
+		Calendar getToday = Calendar.getInstance();
+		getToday.setTime(new Date()); //오늘 날짜
+		String s_date = member.getMember_regdate().substring(0,10);
+		Date date = null;
+		try {
+			date = new SimpleDateFormat("yyyy-MM-dd").parse(s_date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		Calendar cmpDate = Calendar.getInstance();
+		cmpDate.setTime(date); //특정 일자
+		long diffSec = (getToday.getTimeInMillis() - cmpDate.getTimeInMillis()) / 1000;
+		long diffDays = diffSec / (24*60*60); //일자수 차이
+
 		
-		birthLb = new JLabel("가입한지 : 00일");
-		birthLb.setBounds(60, 130, 152, 26);
+		birthLb = new JLabel("가입한지 : "+diffDays+"일");
+		birthLb.setBounds(60, 241, 152, 26);
 		myInfoPane.add(birthLb);
-		birthLb.setFont(new Font("굴림", Font.PLAIN, 22));
+		birthLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		
 		modifyBt = new JButton("내정보 수정하기");
-		modifyBt.setBounds(60, 160, 152, 26);
+		modifyBt.setBounds(486, 293, 152, 26);
 		modifyBt.setContentAreaFilled(false); //배경 표시
 		modifyBt.setFocusPainted(false);
 		myInfoPane.add(modifyBt);
+		
+		JLabel nameLb = new JLabel("이름 : "+member.getMember_name());
+		nameLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		nameLb.setBounds(60, 133, 346, 26);
+		myInfoPane.add(nameLb);
+		
+		pwdLb_1 = new JLabel("이메일 : "+member.getMember_email());
+		pwdLb_1.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		pwdLb_1.setBounds(60, 205, 333, 26);
+		myInfoPane.add(pwdLb_1);
 		
 		
 		// 관리 메뉴 - 개인 설정 패널
