@@ -46,7 +46,6 @@ public class HomeFrame extends JFrame implements ActionListener{
 
 	// 스킨 변경 & 뮤직 패널
 	private	JPanel eastPane;
-	private String basicSkinPath = "../images/back.jpg";
 	private BackSkinLabel backSkinLb;
 
 	public HomeFrame(String member_id) {
@@ -58,7 +57,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		backPane = new JPanel(); // 홈 카드 레이아웃
 		
         // 홈 메인 메뉴 버튼 패널
-        menuPane = new MenuPane(member_id, backPane);
+        menuPane = new MenuPane(member, backPane);
 
 		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록
         // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
@@ -101,6 +100,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		logOutBt = new RoundedButton("LogOut");
 		logOutBt.setBounds(1150, 250, 90, 30);
 		getContentPane().add(logOutBt);
+		logOutBt.addActionListener(this);
         
 		// 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
 		// 스킨 경로 DB에서 가져와서 설정값 있으면 변경해줄것
@@ -108,7 +108,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		System.out.println("[HomeFrame-skin path]: " + member.getHome_skin());
 		backSkinLb = new BackSkinLabel(this, member.getHome_skin());
 		// 관리 패널 생성(객체 생성 순서때문에 제일 뒤로 옴)
-		settingPane = new SettingPane(member, backPane, menuPane, backSkinLb);
+		settingPane = new SettingPane(member, backPane, menuPane, backSkinLb, this);
 		backPane.add(settingPane, "setting");
 
 	}
@@ -140,7 +140,11 @@ public class HomeFrame extends JFrame implements ActionListener{
 			case "Setting":
 				c1.show(backPane,"setting");
 				break;
-	
+				
+			case "LogOut" :
+				new LoginFrame();
+				dispose();
+				break;
 			default:
 				break;
 		}

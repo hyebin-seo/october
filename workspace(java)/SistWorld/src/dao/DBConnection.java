@@ -5,12 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-import model.FriendCmt;
 import model.Member;
 
 public class DBConnection {
@@ -154,7 +152,7 @@ public class DBConnection {
 		int result = 0;
 		String sql = 
 				"INSERT INTO MEMBER(MEMBER_ID,MEMBER_PW,MEMBER_NAME,MEMBER_BIRTH,MEMBER_GENDER,MEMBER_EMAIL)" + 
-				"VALUES(?,?,?,?,?,?);";
+				"VALUES(?,?,?,?,?,?)";
 		
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -169,12 +167,11 @@ public class DBConnection {
 			result = pstmt.executeUpdate();
 			
 			if(result > 0) {
-				JOptionPane.showMessageDialog(null, member.getMember_id()+"님! 회원가입이 완료 되었습니다.");
+				JOptionPane.showMessageDialog(null, member.getMember_name()+"님! 회원가입이 완료 되었습니다.");
 			} else {
 				JOptionPane.showMessageDialog(null, "회원가입에 실패하였습니다.","회원가입", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -216,5 +213,100 @@ public class DBConnection {
 		}
 		
 		return cmtModel;
+	}
+	
+	public int modifyMyInfo(Member member) {
+		MemberDAO md = MemberDAO.getInstance();
+		
+		int result = 0;
+		String sql = 
+				"update member set member_email = ? where member_id = ?";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, member.getMember_email());
+			pstmt.setString(2, member.getMember_id());
+			
+			result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				JOptionPane.showMessageDialog(null, "내정보 수정이 완료되었습니다.\n홈페이지를 재시작합니다!");
+				md.remove(member.getMember_id());
+				Member modifyMember = dataOpen(member.getMember_id());
+				md.put(member.getMember_id(), modifyMember);
+				return result;
+			} else {
+				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","내정보 수정 실패", JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	public int modifyMyMenu(Member member) {
+		MemberDAO md = MemberDAO.getInstance();
+		
+		int result = 0;
+		String sql = 
+				"update member set HOME_DIARY =?, HOME_GALLERY =?, HOME_BOOK =? where member_id = ?";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setInt(1, member.isHome_diary() ? 1 : 0); 
+			pstmt.setInt(2, member.isHome_gallery() ? 1 : 0); 
+			pstmt.setInt(3, member.isHome_book() ? 1 : 0); 
+			pstmt.setString(4, member.getMember_id()); 
+			
+			result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				JOptionPane.showMessageDialog(null, "메뉴 수정이 완료되었습니다.\n홈페이지를 재시작합니다!");
+				md.remove(member.getMember_id());
+				Member modifyMember = dataOpen(member.getMember_id());
+				md.put(member.getMember_id(), modifyMember);
+				return result;
+			} else {
+				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","메뉴 수정 실패", JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	public Member modifyMyProfileMsg(Member member) {
+		MemberDAO md = MemberDAO.getInstance();
+		
+		int result = 0;
+		String sql = 
+				"update member set HOME_PROFILE_MSG =? where member_id = ?";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, member.getHome_profile_msg()); 
+			pstmt.setString(2, member.getMember_id());
+			
+			result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				JOptionPane.showMessageDialog(null, "프로필 상태메시지 수정 완료!");
+				md.remove(member.getMember_id());
+				Member modifyMember = dataOpen(member.getMember_id());
+				md.put(member.getMember_id(), modifyMember);
+				return modifyMember;
+			} else {
+				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","상태메시지 수정 실패", JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return member;
 	}
 }

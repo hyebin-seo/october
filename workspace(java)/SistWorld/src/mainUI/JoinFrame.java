@@ -20,6 +20,9 @@ import com.toedter.calendar.JDateChooser;
 
 import dao.DBConnection;
 import model.Member;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.border.LineBorder;
 
 public class JoinFrame extends JFrame{
 	private JTextField idTf;
@@ -31,70 +34,95 @@ public class JoinFrame extends JFrame{
 	private JRadioButton male;
 
 	public JoinFrame() {
+		getContentPane().setBackground(Color.WHITE);
 		this.setVisible(true);
 		this.setResizable(false);
 		this.setBounds(0, 0, 300, 500);
 		this.setLocationRelativeTo(null);// 창이 가운데 나오게
 		getContentPane().setLayout(null);
 
-		JLabel joinTitle = new JLabel("쌍용월드 회원가입");
+		JLabel joinTitle = new JLabel("Join SistWorld");
+		joinTitle.setBorder(new LineBorder(new Color(9,131,178), 5, true));
+		joinTitle.setForeground(new Color(9,131,178));
+		joinTitle.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 		joinTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		joinTitle.setBounds(73, 1, 147, 52);
+		joinTitle.setBounds(-8, 22, 310, 52);
 		getContentPane().add(joinTitle);
 		
 		// 아이디
 		JLabel idLb = new JLabel("ID :");
-		idLb.setBounds(0, 73, 110, 20);
+		idLb.setForeground(new Color(9,131,178));
+		idLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		idLb.setBounds(0, 99, 110, 20);
 		idLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(idLb);
 		
 		idTf = new JTextField();
-		idTf.setBounds(134, 73, 130, 20);
+		idTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		idTf.setBounds(122, 101, 130, 20);
 		getContentPane().add(idTf);
 		idTf.setColumns(10);
 		
 		// 비밀번호
 		JLabel pwdLb = new JLabel("PASSWORD :");
-		pwdLb.setBounds(0, 125, 110, 20);
+		pwdLb.setForeground(new Color(9,131,178));
+		pwdLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		pwdLb.setBounds(0, 151, 110, 20);
 		pwdLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(pwdLb);
 		
 		pwdTf = new JPasswordField(30);
-		pwdTf.setBounds(134, 125, 130, 20);
+		pwdTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		pwdTf.setBounds(122, 153, 130, 20);
 		pwdTf.setColumns(10);
 		getContentPane().add(pwdTf);
 		
 		// 이름
 		JLabel nameLb = new JLabel("NAME :");
-		nameLb.setBounds(0, 177, 110, 20);
+		nameLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		nameLb.setForeground(new Color(9,131,178));
+		nameLb.setBounds(0, 203, 110, 20);
 		nameLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(nameLb);
 		
 		nameTf = new JTextField();
-		nameTf.setBounds(134, 177, 130, 20);
+		nameTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		nameTf.setBounds(122, 205, 130, 20);
 		nameTf.setColumns(10);
 		getContentPane().add(nameTf);
 		
 		// 생년월일
 		JLabel birthLb = new JLabel("BIRTH :");
-		birthLb.setBounds(0, 229, 110, 20);
+		birthLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		birthLb.setForeground(new Color(9,131,178));
+		birthLb.setBounds(0, 255, 110, 20);
 		birthLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(birthLb);
 
 		// jcalendar-1.4.jar 필요
 		dateChooser = new JDateChooser();
-		dateChooser.setBounds(134, 229, 130, 21);
+		dateChooser.setBounds(122, 256, 130, 21);
 		dateChooser.setDate(new Date());
 		getContentPane().add(dateChooser);
 	
 		// 성별
 		JLabel genderLb = new JLabel("GENDER :");
+		genderLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		genderLb.setForeground(new Color(9,131,178));
 		genderLb.setHorizontalAlignment(SwingConstants.RIGHT);
-		genderLb.setBounds(0, 281, 110, 20);
+		genderLb.setBounds(0, 307, 110, 20);
 		getContentPane().add(genderLb);
+		
 		female = new JRadioButton("남자");
+		female.setBackground(Color.WHITE);
+		female.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		female.setForeground(new Color(9,131,178));
 		female.setBounds(73, -1, 60, 23);
+		
 		male = new JRadioButton("여자");
+		male.setBackground(Color.WHITE);
+		male.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		male.setForeground(new Color(9,131,178));
 		male.setBounds(8, -1, 60, 23);
 		
 		ButtonGroup bg = new ButtonGroup();
@@ -102,7 +130,8 @@ public class JoinFrame extends JFrame{
 		bg.add(female);
 		
 		JPanel genderPl = new JPanel();
-		genderPl.setBounds(134, 281, 130, 20);
+		genderPl.setBackground(Color.WHITE);
+		genderPl.setBounds(122, 309, 130, 20);
 		genderPl.setLayout(null);
 		genderPl.add(male);
 		genderPl.add(female);
@@ -110,19 +139,23 @@ public class JoinFrame extends JFrame{
 		
 		// 이메일
 		JLabel emailLb = new JLabel("EMAIL :");
+		emailLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		emailLb.setForeground(new Color(9,131,178));
 		emailLb.setHorizontalAlignment(SwingConstants.RIGHT);
-		emailLb.setBounds(0, 333, 110, 20);
+		emailLb.setBounds(0, 359, 110, 20);
 		getContentPane().add(emailLb);
 		
 		emailTf = new JTextField();
-		emailTf.setBounds(134, 333, 130, 20);
+		emailTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		emailTf.setBounds(122, 361, 130, 20);
 		emailTf.setColumns(10);
 		getContentPane().add(emailTf);
 		
 		// 가입버튼
 		RoundedButton joinBt = new RoundedButton("가입하기");
+		joinBt.setFont(new Font("맑은 고딕", Font.BOLD, 13));
 		joinBt.setOpaque(false);
-		joinBt.setBounds(98, 391, 97, 23);
+		joinBt.setBounds(97, 407, 100, 30);
 		getContentPane().add(joinBt);
 		
 		//회원 가입
@@ -171,7 +204,7 @@ public class JoinFrame extends JFrame{
 					if (!imgFolder.exists()) {
 						try{
 							imgFolder.mkdirs();
-						    System.out.println("폴더가 생성되었습니다.");
+						    System.out.println(member_id+"img 폴더가 생성되었습니다.");
 					    } catch(Exception ec){
 					    	ec.getStackTrace();
 						}        
@@ -183,7 +216,7 @@ public class JoinFrame extends JFrame{
 					if (!msFolder.exists()) {
 						try{
 							msFolder.mkdirs();
-						    System.out.println("폴더가 생성되었습니다.");
+						    System.out.println(member_id+"music 폴더가 생성되었습니다.");
 					    } catch(Exception ec){
 					    	ec.getStackTrace();
 						}        

@@ -15,11 +15,14 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
@@ -27,12 +30,16 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import dao.DBConnection;
 import model.Member;
 import model.Skin;
 
 public class SettingPane extends JPanel implements ActionListener{
 
-	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨
+	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨, 멤버객체
+	private Member member;
+	private String member_id;
+	private JFrame homeFrame;
 	private JPanel backPane;
 	private MenuPane menuPane;
 	private BackSkinLabel backSkinLb;
@@ -45,9 +52,9 @@ public class SettingPane extends JPanel implements ActionListener{
 	
 	// 관리 메뉴 - 세부 카테고리 버튼
 	private JLabel settingTitle;
-	private JButton myInfoBt;
-	private JButton customBt;
-	private JButton friendBt;
+	private RoundedButton myInfoBt;
+	private RoundedButton customBt;
+	private RoundedButton friendBt;
 
 	// 관리 메뉴 - 세부 패널
 	private JPanel myInfoPane;
@@ -58,9 +65,13 @@ public class SettingPane extends JPanel implements ActionListener{
 	// 내정보 컴포넌트
 	private JLabel myInfoLb;
 	private JLabel idLb;
-	private JLabel pwdLb;
+	private JLabel idLb2;
 	private JLabel birthLb;
-	private JButton modifyBt;
+	private JLabel birthLb2;
+	private JLabel regdateLb;
+	private JTextField emailTf;
+	private RoundedButton modifyBt;
+	private RoundedButton modifyConfirmBt;
 
 	// 메뉴 설정 컴포넌트
 	private JLabel menuTitleLb;
@@ -89,15 +100,17 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JList friendJl;
 	private JList friendWaitingJl;
 	private JLabel lblNewLabel_1;
-	private JLabel pwdLb_1;
+	private JLabel emailLb;
 	
 //	public SettingPane() { }
 	
-	public SettingPane(Member member, JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb) {
-		
+	public SettingPane(Member member, JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb, JFrame homeFrame) {
+		this.member = member;
+		member_id = member.getMember_id();
 		this.backPane = backPane;
 		this.menuPane = menuPane;
 		this.backSkinLb = backSkinLb;
+		this.homeFrame = homeFrame;
 		
 		this.setBounds(40, 40, 910, 600);
 		this.setLayout(null);
@@ -123,24 +136,29 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		// 관리 메뉴 - 세부 카테고리 버튼
 		settingTitle = new JLabel("미니홈피 관리");
+		settingTitle.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		settingTitle.setForeground(new Color(9,131,178));
 		settingTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		settingTitle.setBounds(30, 43, 150, 15);
+		settingTitle.setBounds(-19, 54, 299, 59);
 		settingCategoryPane.add(settingTitle);
 		
-		myInfoBt = new JButton("기본 정보");
-		myInfoBt.setBounds(40, 80, 130, 30);
+		myInfoBt = new RoundedButton("기본 정보");
+		myInfoBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		myInfoBt.setBounds(65, 123, 130, 50);
 		myInfoBt.setContentAreaFilled(false); //배경 표시
 		myInfoBt.setFocusPainted(false);
 		settingCategoryPane.add(myInfoBt);
 		
-		customBt = new JButton("개인 설정"); // 메뉴 셋팅, 스킨, 음악
-		customBt.setBounds(40, 120, 130, 30);
+		customBt = new RoundedButton("개인 설정"); // 메뉴 셋팅, 스킨, 음악
+		customBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		customBt.setBounds(65, 183, 130, 50);
 		customBt.setContentAreaFilled(false); //배경 표시
 		customBt.setFocusPainted(false);
 		settingCategoryPane.add(customBt);
 		
-		friendBt = new JButton("일촌 관리");
-		friendBt.setBounds(40, 160, 130, 30);
+		friendBt = new RoundedButton("일촌 관리");
+		friendBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		friendBt.setBounds(65, 243, 130, 50);
 		friendBt.setContentAreaFilled(false); //배경 표시
 		friendBt.setFocusPainted(false);
 		settingCategoryPane.add(friendBt);
@@ -163,20 +181,40 @@ public class SettingPane extends JPanel implements ActionListener{
 		// 관리 메뉴 - 내정보 패널
 		myInfoPane.setLayout(null);
 		myInfoLb = new JLabel("내정보");
+		myInfoLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		myInfoLb.setHorizontalAlignment(SwingConstants.CENTER);
-		myInfoLb.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-		myInfoLb.setBounds(275, 40, 100, 15);
+		myInfoLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		myInfoLb.setForeground(new Color(9,131,178));
+		myInfoLb.setBounds(60, 38, 530, 30);
 		myInfoPane.add(myInfoLb);
 		
-		idLb = new JLabel("아이디 : " + member.getMember_id());
-		idLb.setBounds(60, 97, 346, 26);
+		idLb = new JLabel("아이디 :");
+		idLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		idLb.setBounds(43, 114, 100, 26);
+		idLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		idLb.setForeground(new Color(9,131,178));
 		myInfoPane.add(idLb);
-		idLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		
-		pwdLb = new JLabel("생년월일 : "+ member.getMember_birth());
-		pwdLb.setBounds(60, 169, 333, 26);
-		myInfoPane.add(pwdLb);
-		pwdLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		idLb2 = new JLabel(member.getMember_id());
+		idLb2.setHorizontalAlignment(SwingConstants.LEFT);
+		idLb2.setBounds(155, 114, 333, 26);
+		idLb2.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		idLb2.setForeground(new Color(9,131,178));
+		myInfoPane.add(idLb2);
+		
+		birthLb = new JLabel("생년월일 :");
+		birthLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		birthLb.setBounds(43, 186, 100, 26);
+		myInfoPane.add(birthLb);
+		birthLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		birthLb.setForeground(new Color(9,131,178));
+		
+		birthLb2 = new JLabel(member.getMember_birth());
+		birthLb2.setBounds(155, 186, 346, 26);
+		birthLb2.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		birthLb2.setBackground(Color.WHITE);
+		birthLb2.setForeground(new Color(9,131,178));
+		myInfoPane.add(birthLb2);
 
 		//가입일 구하기
 		Calendar getToday = Calendar.getInstance();
@@ -193,74 +231,130 @@ public class SettingPane extends JPanel implements ActionListener{
 		long diffSec = (getToday.getTimeInMillis() - cmpDate.getTimeInMillis()) / 1000;
 		long diffDays = diffSec / (24*60*60); //일자수 차이
 
+		regdateLb = new JLabel("가입한 지 "+diffDays+"일 되었습니다!");
+		regdateLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		regdateLb.setBounds(287, 78, 300, 26);
+		regdateLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		regdateLb.setForeground(new Color(9,131,178));
+		myInfoPane.add(regdateLb);
 		
-		birthLb = new JLabel("가입한지 : "+diffDays+"일");
-		birthLb.setBounds(60, 241, 152, 26);
-		myInfoPane.add(birthLb);
-		birthLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		JLabel nameLb = new JLabel("이름 :");
+		nameLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		nameLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		nameLb.setForeground(new Color(9,131,178));
+		nameLb.setBounds(43, 150, 100, 26);
+		myInfoPane.add(nameLb);
 		
-		modifyBt = new JButton("내정보 수정하기");
-		modifyBt.setBounds(486, 293, 152, 26);
+		JLabel nameLb2 = new JLabel(member.getMember_name());
+		nameLb2.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		nameLb2.setForeground(new Color(9,131,178));
+		nameLb2.setBounds(155, 150, 346, 26);
+		myInfoPane.add(nameLb2);
+		
+		emailLb = new JLabel("이메일 :");
+		emailLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		emailLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		emailLb.setBounds(43, 222, 100, 26);
+		emailLb.setForeground(new Color(9,131,178));
+		myInfoPane.add(emailLb);
+		
+		emailTf = new JTextField(member.getMember_email());
+		emailTf.setBounds(155, 222, 333, 26);
+		emailTf.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		emailTf.setBackground(Color.WHITE);
+		emailTf.setForeground(new Color(9,131,178));
+		emailTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		emailTf.setEditable(false);
+		myInfoPane.add(emailTf);
+		
+		modifyBt = new RoundedButton("내정보 수정하기");
+		modifyBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		modifyBt.setBounds(249, 328, 152, 30);
 		modifyBt.setContentAreaFilled(false); //배경 표시
 		modifyBt.setFocusPainted(false);
 		myInfoPane.add(modifyBt);
+		modifyBt.addActionListener(this);
 		
-		JLabel nameLb = new JLabel("이름 : "+member.getMember_name());
-		nameLb.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		nameLb.setBounds(60, 133, 346, 26);
-		myInfoPane.add(nameLb);
+		modifyConfirmBt = new RoundedButton("정보 수정 완료");
+		modifyConfirmBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		modifyConfirmBt.setBounds(249, 328, 152, 30);
+		modifyConfirmBt.setContentAreaFilled(false); //배경 표시
+		modifyConfirmBt.setFocusPainted(false);
+		modifyConfirmBt.setVisible(false);
+		myInfoPane.add(modifyConfirmBt);
 		
-		pwdLb_1 = new JLabel("이메일 : "+member.getMember_email());
-		pwdLb_1.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
-		pwdLb_1.setBounds(60, 205, 333, 26);
-		myInfoPane.add(pwdLb_1);
-		
+		JmodifyHandler ihandler = new JmodifyHandler();
+		modifyConfirmBt.addActionListener(ihandler);
 		
 		// 관리 메뉴 - 개인 설정 패널
 		// 체크박스 DB값으로 셀렉트 설정할 것
 		menuTitleLb = new JLabel("메뉴 설정");
-		menuTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		menuTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		menuTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
+		menuTitleLb.setForeground(new Color(9, 131, 178));
 		menuTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
 		menuTitleLb.setBounds(40, 43, 530, 30);
 		customPane.add(menuTitleLb);
 		
 		customPane.setLayout(null);
 		menuPicture = new JCheckBox("사진첩");
-		menuPicture.setSelected(true);
+		menuPicture.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		menuPicture.setForeground(new Color(9, 131, 178));
+		if (member.isHome_gallery()) {
+			menuPicture.setSelected(true);
+		} else {
+			menuPicture.setSelected(false);
+		}
 		menuPicture.setOpaque(false);
 		menuPicture.setBounds(67, 89, 100, 23);
 		customPane.add(menuPicture);
 		
 		menuDiary = new JCheckBox("다이어리");
-		menuDiary.setSelected(true);
+		menuDiary.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		menuDiary.setForeground(new Color(9, 131, 178));
+		if (member.isHome_diary()) {
+			menuDiary.setSelected(true);
+		} else {
+			menuDiary.setSelected(false);
+		}
 		menuDiary.setOpaque(false);
 		menuDiary.setBounds(171, 89, 100, 23);
 		customPane.add(menuDiary);
 		
 		menuVisitor = new JCheckBox("방명록");
-		menuVisitor.setSelected(true);
+		menuVisitor.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		menuVisitor.setForeground(new Color(9, 131, 178));
+		if (member.isHome_book()) {
+			menuVisitor.setSelected(true);
+		} else {
+			menuVisitor.setSelected(false);
+		}
 		menuVisitor.setOpaque(false);
 		menuVisitor.setBounds(275, 89, 100, 23);
 		customPane.add(menuVisitor);
 		
-		customOkBt = new JButton("적용");
+		customOkBt = new RoundedButton("적용");
+		customOkBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		customOkBt.setBounds(487, 129, 81, 23);
 		customOkBt.setContentAreaFilled(false);
 		customOkBt.setFocusPainted(false);
-		customOkBt.addActionListener(this);
+		menuHandler menu = new menuHandler();
+		customOkBt.addActionListener(menu);
 		customPane.add(customOkBt);
-		
 		
 		// 관리 메뉴 - 개인 설정 - 스킨 설정
 		skinTitleLb = new JLabel("스킨 설정");
+		skinTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		skinTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
-		skinTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		skinTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
+		skinTitleLb.setForeground(new Color(9, 131, 178));
 		skinTitleLb.setBounds(40, 180, 530, 30);
 		customPane.add(skinTitleLb);
 		
 		JLabel lblNewLabel = new JLabel("원하는 스킨을 선택하세요.");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		lblNewLabel.setForeground(new Color(9, 131, 178));
 		lblNewLabel.setBounds(370, 345, 200, 15);
 		customPane.add(lblNewLabel);
 		
@@ -305,8 +399,10 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		// 관리메뉴 - 개인 설정 - 음악 설정
 		musicTitleLb = new JLabel("음악 설정");
+		musicTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		musicTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
-		musicTitleLb.setBorder(new LineBorder(Color.DARK_GRAY, 2, true));
+		musicTitleLb.setForeground(new Color(9, 131, 178));
+		musicTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		musicTitleLb.setBounds(40, 390, 530, 30);
 		customPane.add(musicTitleLb);
 		
@@ -339,6 +435,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		lblNewLabel_1 = new JLabel("원하는 음악을 선택하세요.");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_1.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		lblNewLabel_1.setForeground(new Color(9, 131, 178));
 		lblNewLabel_1.setBounds(370, 555, 200, 15);
 		customPane.add(lblNewLabel_1);
 		
@@ -346,28 +443,35 @@ public class SettingPane extends JPanel implements ActionListener{
 		// 관리 메뉴 - 개인 설정 - 일촌 관리
 		friendPane.setLayout(null);
 		friendLb = new JLabel("나의 일촌 현황");
+		friendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		friendLb.setForeground(new Color(9, 131, 178));
+		friendLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		friendLb.setHorizontalAlignment(SwingConstants.CENTER);
-		friendLb.setBounds(270, 20, 100, 15);
+		friendLb.setBounds(60, 20, 530, 30);
 		friendPane.add(friendLb);
 		friendLb.setBackground(Color.WHITE);
 		
 		friendJl = new JList(); // 현재 일촌 목록
 		friendJl.setBorder(new LineBorder(new Color(0, 0, 0)));
-		friendJl.setBounds(30, 359, 590, 200);
+		friendJl.setBounds(60, 359, 530, 200);
 		friendPane.add(friendJl);
 		
 		friendWaitingJl = new JList(); // 삭제할 일촌 목록
 		friendWaitingJl.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		friendWaitingJl.setBounds(30, 90, 590, 200);
+		friendWaitingJl.setBounds(60, 108, 530, 200);
 		friendPane.add(friendWaitingJl);
 		
 		existFriendLb = new JLabel("일촌 목록");
+		existFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		existFriendLb.setForeground(new Color(9, 131, 178));
 		existFriendLb.setBounds(296, 334, 57, 15);
 		friendPane.add(existFriendLb);
 		
 		waitingFriendLb = new JLabel("대기중인 일촌 신청");
+		waitingFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		waitingFriendLb.setForeground(new Color(9, 131, 178));
 		waitingFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
-		waitingFriendLb.setBounds(260, 65, 130, 15);
+		waitingFriendLb.setBounds(260, 83, 130, 15);
 		friendPane.add(waitingFriendLb);
 		
 	
@@ -390,39 +494,74 @@ public class SettingPane extends JPanel implements ActionListener{
 			case "일촌 관리":
 				c1.show(settingDetailPane,"friend");
 				break;
-				
-			case "적용": // 커스텀 설정
-				if(menuPicture.isSelected()) {
-					menuPane.gallaryBt.setVisible(true);
-				} else {
-					menuPane.gallaryBt.setVisible(false);
-				}
-				
-				if(menuDiary.isSelected()) {
-					menuPane.diaryBt.setVisible(true);
-				} else {
-					menuPane.diaryBt.setVisible(false);
-				}
-				
-				if(menuVisitor.isSelected()) {
-					menuPane.bookBt.setVisible(true);
-				} else {
-					menuPane.bookBt.setVisible(false);
-				}
-				
-				menuPane.revalidate();
-				menuPane.repaint();
-				
-				backPane.revalidate();
-				backPane.repaint();
-
-				break;	
-				
-	
+			case "내정보 수정하기":
+				emailTf.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK));
+				emailTf.setEditable(true);
+				modifyConfirmBt.setVisible(true);
+				modifyBt.setVisible(false);
 			default:
 				break;
 		}
 
+	}
+	
+	//메뉴 설정
+	private class menuHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(menuPicture.isSelected()) {
+				member.setHome_gallery(true);
+			} else {
+				member.setHome_gallery(false);
+			}
+			
+			if(menuDiary.isSelected()) {
+				member.setHome_diary(true);
+			} else {
+				member.setHome_diary(false);
+			}
+			
+			if(menuVisitor.isSelected()) {
+				member.setHome_book(true);
+			} else {
+				member.setHome_book(false);
+			}
+			
+			DBConnection dbc = DBConnection.getInstance();
+			int result = dbc.modifyMyMenu(member);
+			
+			if(result > 0) {
+				new HomeFrame(member_id);
+				homeFrame.dispose();
+			} else {
+				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","메뉴 수정 실패", JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+	
+	}
+	
+	//내정보 수정
+	private class JmodifyHandler implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			member.setMember_email(emailTf.getText());
+			
+			DBConnection dbc = DBConnection.getInstance();
+			int result = dbc.modifyMyInfo(member);
+			
+			if(result > 0) {
+				new HomeFrame(member_id);
+				homeFrame.dispose();
+			} else {
+				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","내정보 수정 실패", JOptionPane.ERROR_MESSAGE);
+			}
+
+			
+		}
+		
 	}
 	
 	//스킨 선택 액션
