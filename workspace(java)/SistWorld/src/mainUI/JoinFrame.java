@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 
 import com.toedter.calendar.JDateChooser;
 
-import dao.DBConnection;
+import db.DBConnection;
 import model.Member;
 import java.awt.Font;
 import java.awt.Color;
@@ -193,11 +193,11 @@ public class JoinFrame extends JFrame{
 				if(rs > 0) {
 					// db에서 성공적으로 유저를 가입 시키면 데이터폴더 생성
 					String pathImg = "../SistWorld/data/user/"+member_id+"/"+member_id+"img"; //이미지폴더 경로
-					String pathMs = "../SistWorld/data/user/"+member_id+"/"+member_id+"music"; //음악폴더 경로
+					String pathSkin = "../SistWorld/data/user/"+member_id+"/"+member_id+"skin"; //스킨폴더 경로
 					File imgFolder = new File(pathImg);
-					File msFolder = new File(pathMs);
+					File skinFolder = new File(pathSkin);
 					System.out.println("[JoinFrame-imgFloderPath]:"+pathImg);
-					System.out.println("[JoinFrame-MusicFloderPath]:"+pathMs);
+					System.out.println("[JoinFrame-skinFloderPath]:"+pathSkin);
 
 					// 해당 디렉토리가 없을경우 경로까지 자동으로 폴더 생성
 					// 이미지 폴더
@@ -212,11 +212,11 @@ public class JoinFrame extends JFrame{
 						System.out.println("이미 폴더가 생성되어 있습니다.");
 					}
 					
-					// 음악 폴더
-					if (!msFolder.exists()) {
+					// 스킨 폴더
+					if (!skinFolder.exists()) {
 						try{
-							msFolder.mkdirs();
-						    System.out.println(member_id+"music 폴더가 생성되었습니다.");
+							skinFolder.mkdirs();
+						    System.out.println(member_id+"skin 폴더가 생성되었습니다.");
 					    } catch(Exception ec){
 					    	ec.getStackTrace();
 						}        

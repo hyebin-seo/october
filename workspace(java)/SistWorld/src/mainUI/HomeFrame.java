@@ -1,17 +1,24 @@
 package mainUI;
 
+import java.awt.BasicStroke;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.GlyphVector;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
-import dao.MemberDAO;
+import db.MemberDAO;
 import model.Member;
 import service.ImageUpload;
 
@@ -24,10 +31,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 	
 	// 홈 카드 레이아웃
 	private JPanel backPane;
-	
-	// 홈 배경화면(스킨)
-	private JPanel backImgPane;
-	
+
 	// 홈페이지 타이틀 라벨
 	private JLabel titleLb;
 	
@@ -43,9 +47,6 @@ public class HomeFrame extends JFrame implements ActionListener{
 	
 	// 홈 로그아웃 버튼
 	private RoundedButton logOutBt;
-
-	// 스킨 변경 & 뮤직 패널
-	private	JPanel eastPane;
 	private BackSkinLabel backSkinLb;
 
 	public HomeFrame(String member_id) {
@@ -76,7 +77,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		getContentPane().add(menuPane);
 
 		// 배경 패널 설정
-		backPane.setBounds(40, 40, 910, 600);
+		backPane.setBounds(60, 40, 910, 600);
 		getContentPane().add(backPane);
 		backPane.setLayout(new CardLayout(0, 0));
 		backPane.add(homePane, "home");
@@ -84,21 +85,17 @@ public class HomeFrame extends JFrame implements ActionListener{
 		backPane.add(galleryPane, "gallery");
 		backPane.add(bookPane, "book");
 		
-		// 스킨 간단 변경 & 뮤직 패널
-		eastPane = new JPanel();
-		eastPane.setBackground(Color.WHITE);
-		eastPane.setBounds(1080, 40, 160, 200);
-		getContentPane().add(eastPane);
-		
 		// 홈 타이틀 라벨
-		titleLb = new JLabel(member.getHome_title());
-		titleLb.setFont(new Font("맑은 고딕", Font.BOLD | Font.ITALIC, 16));
-		titleLb.setBounds(300, 9, 342, 26);
+		titleLb = new JLabel(" "+member.getMember_name()+"의 SistWorld!");
+		titleLb.setForeground(Color.WHITE);
+		titleLb.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		titleLb.setBounds(320, 14, 650, 26);
 		getContentPane().add(titleLb);
 		
 		// 홈 로그아웃 버튼
 		logOutBt = new RoundedButton("LogOut");
-		logOutBt.setBounds(1150, 250, 90, 30);
+		logOutBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		logOutBt.setBounds(1127, 610, 90, 30);
 		getContentPane().add(logOutBt);
 		logOutBt.addActionListener(this);
         
@@ -113,7 +110,6 @@ public class HomeFrame extends JFrame implements ActionListener{
 
 	}
 
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		CardLayout c1 = (CardLayout)backPane.getLayout();
@@ -150,5 +146,4 @@ public class HomeFrame extends JFrame implements ActionListener{
 		}
 
 	}
-
 }

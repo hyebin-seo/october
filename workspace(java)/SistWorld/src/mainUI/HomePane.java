@@ -3,11 +3,18 @@ package mainUI;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,11 +23,13 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import dao.DBConnection;
-import dao.MemberDAO;
+import db.DBConnection;
+import db.MemberDAO;
 import model.Member;
+import service.ImageResizeUpload;
 public class HomePane extends JPanel{
 	
 	// 멤버정보
@@ -34,9 +43,9 @@ public class HomePane extends JPanel{
 
 	// 홈 메뉴 - 세부 메인 컴포넌트
 	private JLabel homeImgLb;
+	private JButton homeImgModifyBt;
 	private JLabel friendLb;
 	private JTextField frienTf;
-//	private JTable freinTb;
 	private RoundedButton freindBt;
 
 	public HomePane(String memeber_id) {
@@ -61,11 +70,27 @@ public class HomePane extends JPanel{
 		// 홈 메뉴 - 미니룸 사진(라벨에 맞게 사이즈 재설정)
 		homeImgLb = new JLabel();
 		Image homeImg = new ImageIcon
-				(HomePane.class.getResource(member.getHome_miniroom())).getImage();
+				(member.getHome_miniroom()).getImage();
 		Image homeImgResize = homeImg.getScaledInstance(530, 310, java.awt.Image.SCALE_SMOOTH);
 		ImageIcon resizeIcon = new ImageIcon(homeImgResize);
+		
+		// 홈 메뉴 - 미니룸 사진 수정 버튼
+		homeImgModifyBt = new JButton();
+		homeImgModifyBt.setForeground(Color.WHITE);
+		homeImgModifyBt.setText("+");
+		homeImgModifyBt.setOpaque(false);
+		homeImgModifyBt.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		homeImgModifyBt.setContentAreaFilled(false);
+		homeImgModifyBt.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		homeImgModifyBt.setBackground(Color.WHITE);
+		homeImgModifyBt.setBounds(570, 324, 20, 20);
+		mainDetailPane.add(homeImgModifyBt);
+		
+		imgHandler ihandler = new imgHandler();
+		homeImgModifyBt.addActionListener(ihandler);
+
 		homeImgLb.setIcon(resizeIcon);
-		homeImgLb.setBounds(60, 40, 530, 310);
+		homeImgLb.setBounds(60, 34, 530, 310);
 		mainDetailPane.add(homeImgLb);
 
 		this.add(mainDetailPane, "mainDetail");
@@ -74,11 +99,11 @@ public class HomePane extends JPanel{
 		friendLb.setHorizontalAlignment(SwingConstants.LEFT);
 		friendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		friendLb.setForeground(new Color(9, 131, 178));
-		friendLb.setBounds(58, 368, 40, 20);
+		friendLb.setBounds(58, 365, 40, 20);
 		mainDetailPane.add(friendLb);
 		
 		frienTf = new JTextField();
-		frienTf.setBounds(99, 370, 430, 20);
+		frienTf.setBounds(99, 367, 430, 20);
 		mainDetailPane.add(frienTf);
 		frienTf.setColumns(10);
 		
@@ -86,7 +111,7 @@ public class HomePane extends JPanel{
 		freindBt.setOpaque(false);
 		freindBt.setHorizontalAlignment(SwingConstants.LEFT);
 		freindBt.setFont(new Font("맑은 고딕", Font.BOLD, 10));
-		freindBt.setBounds(533, 370, 55, 20);
+		freindBt.setBounds(533, 367, 55, 20);
 		mainDetailPane.add(freindBt);
 
 		// 일촌평
@@ -108,11 +133,29 @@ public class HomePane extends JPanel{
 		jsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 
 		jsp.setSize(530, 170);
-		jsp.setLocation(60, 400);
+		jsp.setLocation(60, 397);
 		mainDetailPane.add(jsp);
 
 		this.add(mainProfilePane, "mainProfile");
 		this.setBackground(Color.BLACK);
 
+	}
+	
+	public class imgHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			ImageResizeUpload iru = 
+				new ImageResizeUpload("img", member.getMember_id(), 530, 310);
+		
+			homeImgLb.setIcon(iru.getResizeIcon());
+			
+			member.setHome_miniroom(iru.getUserImgPath());
+			DBConnection dbc = DBConnection.getInstance();
+			member = dbc.modifyMySetting("miniroom", member);
+	
+		}
+		
 	}
 }

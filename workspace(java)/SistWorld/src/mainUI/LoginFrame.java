@@ -12,13 +12,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-import dao.DBConnection;
-import dao.MemberDAO;
 import model.Member;
 
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.border.LineBorder;
+
+import db.DBConnection;
+import db.MemberDAO;
 
 public class LoginFrame extends JFrame{
 

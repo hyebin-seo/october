@@ -1,6 +1,7 @@
 package mainUI;
 
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
@@ -28,13 +29,14 @@ public class BackSkinLabel extends JLabel{
 		
 		try {
 			System.out.println("[BackSkinLabel-Current Skin]: "+skinFilePath);
-			img = ImageIO.read(getClass().getResource(skinFilePath));
+			Image Img = new ImageIcon(skinFilePath).getImage();
+			Image ImgResize = Img.getScaledInstance(1280, 720, java.awt.Image.SCALE_SMOOTH);
+			ImageIcon resizeIcon = new ImageIcon(ImgResize);
+			setIcon(resizeIcon);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "이미지 불러오기 실패");
 			System.exit(0);
 		}
-
-		this.setIcon(new ImageIcon(img));
         mainFrame.getContentPane().add(this);
 	}
 

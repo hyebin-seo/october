@@ -20,6 +20,8 @@ public class GalleryPane extends JPanel {
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
 	String filepath;
+	
+	OpenActionListner oA = new OpenActionListner();
 
 	int flag = 0; //버튼을 만들기 위한 변수 
 	
@@ -98,11 +100,11 @@ public class GalleryPane extends JPanel {
 		finalUpload.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		finalUpload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				
 				lblNoexist.setVisible(false);
 				uploadPanel.setVisible(false);
 				photoMain.setVisible(true);
-				
+				preLabel.setIcon(null);
 			}
 		});
 		finalUpload.setBounds(431, 0, 91, 23);
@@ -132,7 +134,7 @@ public class GalleryPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) { // 사진 이미지 불러오는 메서드
-				JFileChooser chooser = new JFileChooser();
+				JFileChooser chooser = new JFileChooser("c:");
 				JLabel imageLabel = new JLabel();
 
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images File", "jpg", "jpeg", "gif",
@@ -146,15 +148,17 @@ public class GalleryPane extends JPanel {
 				} else {
 					System.out.println(chooser.getSelectedFile().getPath());
 					File f = chooser.getSelectedFile();
-//					fileSave(f, "C:\\NCS\\workspace(java)\\Project\\img2", f.getName());
-
+                    oA.fileSave(f, "C:\\NCS\\workspace(java)\\SistWorld1\\src\\image\\jun1", f.getName());
+                    System.out.println(f.getName());
 				}
 
 				String filePath = chooser.getSelectedFile().getPath();
 				preLabel.setIcon(new ImageIcon(filePath));
+				
 
 			}
 		});
+		
 
 		// 사진첩 패널 및 목록 버튼
 		photoSidelist = new JPanel();
@@ -183,7 +187,7 @@ public class GalleryPane extends JPanel {
 				// sidepanel 버튼 생성 이벤트 작업
 				if (flag <= 0) {
 
-					firstBtn = new RoundedButton(JOptionPane.showInputDialog("원하신는 이름을 적어주세요"));
+					firstBtn = new RoundedButton(JOptionPane.showInputDialog("폴더명을 입력해주세요"));
 					if (firstBtn != null) {
 						firstBtn.setBounds(18, 102, 99, 61);
 						firstBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
@@ -380,7 +384,6 @@ public class GalleryPane extends JPanel {
 			con = DriverManager.getConnection(url, user, password);
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -397,7 +400,6 @@ public class GalleryPane extends JPanel {
 			pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

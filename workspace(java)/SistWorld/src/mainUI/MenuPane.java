@@ -33,7 +33,7 @@ public class MenuPane extends JPanel implements ActionListener{
 		
 		this.backPane = backPane;
 
-		this.setBounds(950, 50, 80, 250);
+		this.setBounds(970, 50, 80, 250);
 		this.setVisible(true);
         this.setAlignmentX(Component.LEFT_ALIGNMENT);
         this.setOpaque(false);

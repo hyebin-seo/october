@@ -1,4 +1,4 @@
-package mainUI;
+ package mainUI;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -14,12 +15,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class OpenActionListner implements ActionListener {
 
-	JFileChooser chooser;
-	JLabel imageLabel = new JLabel();
-	
+	JFileChooser chooser = new JFileChooser("c:");
+	JLabel finalUpoad = new JLabel();
 	OpenActionListner(){
-		chooser = new JFileChooser();
 	}
+	
+	
 	
 	public void actionPerformed(ActionEvent e) {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Images File", "jpg", "jpeg", "gif", "png");
@@ -31,20 +32,23 @@ public class OpenActionListner implements ActionListener {
 			return;
 		}else {
 			System.out.println(chooser.getSelectedFile().getPath());
+			
 			File f = chooser.getSelectedFile();
-			fileSave(f, "C:\\NCS\\workspace(java)\\Project\\img2", f.getName());
+			fileSave(f, chooser.getSelectedFile().getPath(), f.getName());
+			
+			
 		}
 		
 		String filePath = chooser.getSelectedFile().getPath();
-		imageLabel.setIcon(new ImageIcon(filePath));
-		//pack();
+		finalUpoad.setIcon(new ImageIcon(filePath));
+		
 	}
 	
 	public void fileSave(File file, String path, String name) {
 		try {
 			File f = new File(path);
 			if(!f.isFile()) {
-				f.mkdir();
+				f.mkdirs();
 			}
 			
 			String filePath = path+"\\"+name;

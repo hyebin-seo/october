@@ -10,10 +10,9 @@ import mainUI.HomePane;
 public class Skin extends ImageIcon{
 
 	// 경로: data/user/userId/image
-	private String SKIN_PATH;  // skin이 저장되어 있는 경로
+	private String skinPath;  // skin이 저장되어 있는 경로
 	private String id;		   // userID
-	private String selectSkin; // 선택한 스킨 값
-	
+
 	public Skin(URL fileURL) {
 		super(fileURL);
 	}
@@ -24,27 +23,20 @@ public class Skin extends ImageIcon{
 	
 	public Skin(Image img, String str) {
 		super(img);
-		this.selectSkin = str;
+		this.skinPath = str;
 	}
-	
-	
-	public String getSKIN_PATH() {
-		return SKIN_PATH;
+
+	public String getskinPath() {
+		return skinPath;
 	}
-	public void setSKIN_PATH(String sKIN_PATH) {
-		SKIN_PATH = sKIN_PATH;
+	public void setskinPath(String sKIN_PATH) {
+		skinPath = sKIN_PATH;
 	}
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getSelectSkin() {
-		return selectSkin;
-	}
-	public void setSelectSkin(String selectSkin) {
-		this.selectSkin = selectSkin;
 	}
 	
 	

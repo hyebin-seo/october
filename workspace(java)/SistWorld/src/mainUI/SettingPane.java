@@ -6,6 +6,10 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -15,13 +19,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -29,10 +33,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import dao.DBConnection;
+import db.DBConnection;
 import model.Member;
 import model.Skin;
+import service.ImageResizeUpload;
+
 
 public class SettingPane extends JPanel implements ActionListener{
 
@@ -70,6 +77,8 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JLabel birthLb2;
 	private JLabel regdateLb;
 	private JTextField emailTf;
+	private JLabel pwdLb;
+	private JTextField pwdTf;
 	private RoundedButton modifyBt;
 	private RoundedButton modifyConfirmBt;
 
@@ -83,11 +92,7 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JList skinJList;
 	private DefaultListModel skinModel;
 	private JLabel skinTitleLb;
-	private String SKIN_PATH = "../user/admin/adminimg/";
-
-	// 음악 설정 컴포넌트
-	private JLabel musicTitleLb;
-	private JList musicJList;
+	private JButton skinBt;
 	private DefaultListModel musicModel;
 	
 	// 적용하기 컴포넌트
@@ -99,7 +104,6 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JLabel friendLb;
 	private JList friendJl;
 	private JList friendWaitingJl;
-	private JLabel lblNewLabel_1;
 	private JLabel emailLb;
 	
 //	public SettingPane() { }
@@ -144,21 +148,21 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		myInfoBt = new RoundedButton("기본 정보");
 		myInfoBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		myInfoBt.setBounds(65, 123, 130, 50);
+		myInfoBt.setBounds(65, 123, 130, 30);
 		myInfoBt.setContentAreaFilled(false); //배경 표시
 		myInfoBt.setFocusPainted(false);
 		settingCategoryPane.add(myInfoBt);
 		
 		customBt = new RoundedButton("개인 설정"); // 메뉴 셋팅, 스킨, 음악
 		customBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		customBt.setBounds(65, 183, 130, 50);
+		customBt.setBounds(65, 163, 130, 30);
 		customBt.setContentAreaFilled(false); //배경 표시
 		customBt.setFocusPainted(false);
 		settingCategoryPane.add(customBt);
 		
 		friendBt = new RoundedButton("일촌 관리");
 		friendBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		friendBt.setBounds(65, 243, 130, 50);
+		friendBt.setBounds(65, 203, 130, 30);
 		friendBt.setContentAreaFilled(false); //배경 표시
 		friendBt.setFocusPainted(false);
 		settingCategoryPane.add(friendBt);
@@ -267,17 +271,33 @@ public class SettingPane extends JPanel implements ActionListener{
 		emailTf.setEditable(false);
 		myInfoPane.add(emailTf);
 		
+		pwdLb = new JLabel("비밀번호 :");
+		pwdLb.setHorizontalAlignment(SwingConstants.RIGHT);
+		pwdLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		pwdLb.setBounds(43, 258, 100, 26);
+		pwdLb.setForeground(new Color(9,131,178));
+		myInfoPane.add(pwdLb);
+		
+		pwdTf = new JTextField("*****************");
+		pwdTf.setBounds(155, 258, 333, 26);
+		pwdTf.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		pwdTf.setBackground(Color.WHITE);
+		pwdTf.setForeground(new Color(9,131,178));
+		pwdTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		pwdTf.setEditable(false);
+		myInfoPane.add(pwdTf);
+		
 		modifyBt = new RoundedButton("내정보 수정하기");
 		modifyBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		modifyBt.setBounds(249, 328, 152, 30);
+		modifyBt.setBounds(438, 294, 152, 30);
 		modifyBt.setContentAreaFilled(false); //배경 표시
 		modifyBt.setFocusPainted(false);
 		myInfoPane.add(modifyBt);
 		modifyBt.addActionListener(this);
 		
-		modifyConfirmBt = new RoundedButton("정보 수정 완료");
+		modifyConfirmBt = new RoundedButton("수정 완료");
 		modifyConfirmBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		modifyConfirmBt.setBounds(249, 328, 152, 30);
+		modifyConfirmBt.setBounds(438, 294, 152, 30);
 		modifyConfirmBt.setContentAreaFilled(false); //배경 표시
 		modifyConfirmBt.setFocusPainted(false);
 		modifyConfirmBt.setVisible(false);
@@ -285,15 +305,14 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		JmodifyHandler ihandler = new JmodifyHandler();
 		modifyConfirmBt.addActionListener(ihandler);
-		
+
 		// 관리 메뉴 - 개인 설정 패널
-		// 체크박스 DB값으로 셀렉트 설정할 것
 		menuTitleLb = new JLabel("메뉴 설정");
 		menuTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		menuTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		menuTitleLb.setForeground(new Color(9, 131, 178));
 		menuTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
-		menuTitleLb.setBounds(40, 43, 530, 30);
+		menuTitleLb.setBounds(39, 67, 530, 30);
 		customPane.add(menuTitleLb);
 		
 		customPane.setLayout(null);
@@ -306,7 +325,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			menuPicture.setSelected(false);
 		}
 		menuPicture.setOpaque(false);
-		menuPicture.setBounds(67, 89, 100, 23);
+		menuPicture.setBounds(66, 113, 100, 23);
 		customPane.add(menuPicture);
 		
 		menuDiary = new JCheckBox("다이어리");
@@ -318,7 +337,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			menuDiary.setSelected(false);
 		}
 		menuDiary.setOpaque(false);
-		menuDiary.setBounds(171, 89, 100, 23);
+		menuDiary.setBounds(170, 113, 100, 23);
 		customPane.add(menuDiary);
 		
 		menuVisitor = new JCheckBox("방명록");
@@ -330,12 +349,12 @@ public class SettingPane extends JPanel implements ActionListener{
 			menuVisitor.setSelected(false);
 		}
 		menuVisitor.setOpaque(false);
-		menuVisitor.setBounds(275, 89, 100, 23);
+		menuVisitor.setBounds(274, 113, 100, 23);
 		customPane.add(menuVisitor);
 		
 		customOkBt = new RoundedButton("적용");
 		customOkBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		customOkBt.setBounds(487, 129, 81, 23);
+		customOkBt.setBounds(486, 153, 81, 23);
 		customOkBt.setContentAreaFilled(false);
 		customOkBt.setFocusPainted(false);
 		menuHandler menu = new menuHandler();
@@ -343,38 +362,55 @@ public class SettingPane extends JPanel implements ActionListener{
 		customPane.add(customOkBt);
 		
 		// 관리 메뉴 - 개인 설정 - 스킨 설정
+		skinBt = new JButton();
+		skinBt.setForeground(Color.WHITE);
+		skinBt.setText("+");
+		skinBt.setOpaque(false);
+		skinBt.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		skinBt.setContentAreaFilled(false);
+		skinBt.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		skinBt.setBackground(Color.WHITE);
+		skinBt.setBounds(549, 485, 20, 20);
+		customPane.add(skinBt);
+		skinHandler skinhandler = new skinHandler();
+		skinBt.addActionListener(skinhandler);
+		
 		skinTitleLb = new JLabel("스킨 설정");
 		skinTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		skinTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
 		skinTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		skinTitleLb.setForeground(new Color(9, 131, 178));
-		skinTitleLb.setBounds(40, 180, 530, 30);
+		skinTitleLb.setBounds(40, 306, 530, 30);
 		customPane.add(skinTitleLb);
 		
 		JLabel lblNewLabel = new JLabel("원하는 스킨을 선택하세요.");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
 		lblNewLabel.setForeground(new Color(9, 131, 178));
-		lblNewLabel.setBounds(370, 345, 200, 15);
+		lblNewLabel.setBounds(369, 514, 200, 15);
 		customPane.add(lblNewLabel);
 		
 		skinModel = new DefaultListModel();
-		// 임시 데이터
-		// DB에서 파일명 가져오면 for문으로 돌려서 객체 생성 후 삽입할 것
-//		for(int i=0; i<10; i++) {
-		
-		
-		Image img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin1.jpg")).getImage();
-		Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 
-		skinModel.addElement(new Skin(imgResize, "admin1.jpg"));
-		
-		img = new ImageIcon(getClass().getResource(SKIN_PATH+"admin2.jpg")).getImage();
-		imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+		//유저 개인 스킨 폴더
+		try {
+			File dir = new File("../SistWorld/data/user/"+member.getMember_id()+"/"+member.getMember_id()+"skin");
+			File files[] = dir.listFiles();
+	
+	
+			for (int i = 0; i < files.length; i++) {
+				System.out.println("[StettingPane-skinPath]:"+files[i]);
+			    Image img = new ImageIcon(files[i].toString()).getImage();
+				Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
+	
+				skinModel.addElement(new Skin(imgResize, files[i].toString()));
+			}
+		} catch (Exception e) {
+			System.out.println("보유한 개인 스킨 없음");
+			e.printStackTrace();
+		}
 
-		skinModel.addElement(new Skin(imgResize, "admin2.jpg"));
 
-//		}
 		skinJList = new JList();
 		
 		JListHandler shandler = new JListHandler();
@@ -390,54 +426,16 @@ public class SettingPane extends JPanel implements ActionListener{
 		JScrollPane skinSp = new JScrollPane
 				(skinJList,
 				//수직 스크롤바 설치 여부
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				//수평 스크롤바 설치 여부
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		skinSp.setSize(530, 110);
-		skinSp.setLocation(40, 230);
+		skinSp.setSize(530, 150);
+		skinSp.setLocation(40, 356);
 		customPane.add(skinSp);
-		
-		// 관리메뉴 - 개인 설정 - 음악 설정
-		musicTitleLb = new JLabel("음악 설정");
-		musicTitleLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		musicTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
-		musicTitleLb.setForeground(new Color(9, 131, 178));
-		musicTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
-		musicTitleLb.setBounds(40, 390, 530, 30);
-		customPane.add(musicTitleLb);
 		
 		musicModel = new DefaultListModel();
 		
-		// 음악 객체 삽입할 것
-		
-		musicJList = new JList();
-		
 		JListHandler mhandler = new JListHandler();
-		musicJList.addListSelectionListener(mhandler);
-		
-		musicJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		musicJList.setModel(musicModel);
-		musicJList.setSelectionMode (ListSelectionModel.SINGLE_SELECTION);
-		musicJList.setVisibleRowCount (-1); // 가로줄 제한
-		musicJList.setLayoutOrientation (JList.HORIZONTAL_WRAP); // 리스트 가로 배열
-		musicJList.setCellRenderer(new CustomListRenderer("music"));
-
-		JScrollPane musicSp = new JScrollPane
-				(musicJList,
-				//수직 스크롤바 설치 여부
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER,
-				//수평 스크롤바 설치 여부
-				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		musicSp.setSize(530, 110);
-		musicSp.setLocation(40, 440);
-		customPane.add(musicSp);
-		
-		lblNewLabel_1 = new JLabel("원하는 음악을 선택하세요.");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel_1.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
-		lblNewLabel_1.setForeground(new Color(9, 131, 178));
-		lblNewLabel_1.setBounds(370, 555, 200, 15);
-		customPane.add(lblNewLabel_1);
 		
 		
 		// 관리 메뉴 - 개인 설정 - 일촌 관리
@@ -495,10 +493,21 @@ public class SettingPane extends JPanel implements ActionListener{
 				c1.show(settingDetailPane,"friend");
 				break;
 			case "내정보 수정하기":
-				emailTf.setBorder(javax.swing.BorderFactory.createLineBorder(Color.BLACK));
-				emailTf.setEditable(true);
-				modifyConfirmBt.setVisible(true);
-				modifyBt.setVisible(false);
+				String pw = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
+				
+				if(pw.equals(member.getMember_pw())) {
+					JOptionPane.showMessageDialog(null, "정보 변경 후 완료 버튼을 눌러주세요.");
+					emailTf.setBorder(javax.swing.BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+					emailTf.setEditable(true);
+					modifyConfirmBt.setVisible(true);
+					modifyBt.setVisible(false);
+					pwdTf.setText(member.getMember_pw());
+					pwdTf.setBorder(javax.swing.BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+					pwdTf.setEditable(true);
+				} else {
+					JOptionPane.showMessageDialog(null, "비밀번호가 일치하지 않습니다.","로그인 인증 실패", JOptionPane.ERROR_MESSAGE);
+				}
+				
 			default:
 				break;
 		}
@@ -548,6 +557,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			member.setMember_email(emailTf.getText());
+			member.setMember_pw(pwdTf.getText());
 			
 			DBConnection dbc = DBConnection.getInstance();
 			int result = dbc.modifyMyInfo(member);
@@ -572,25 +582,62 @@ public class SettingPane extends JPanel implements ActionListener{
 		{
 			//skinJList에서 선택된 아이템의 인덱스를 가져온다.
 			//인덱스를 가지고 skinModel에 저장된 객체를 가져온다.
-			//해당 객체를 skinDTO객체로 캐스팅한다.(skinModel에 넣을 때 skinDTO로 삽입했음)
-			//skinDTO에 저장된 파일명을 가져온다.
-			Skin skd = (Skin) skinModel.getElementAt(skinJList.getSelectedIndex());
-			String fileName = skd.getSelectSkin();
+			//해당 객체를 skin객체로 캐스팅한다.(skinModel에 넣을 때 skin객체로 삽입했음)
+			//skin에 저장된 파일명을 가져온다.
+			Skin skd = (Skin) skinJList.getSelectedValue();
 			
-			int result = JOptionPane.showConfirmDialog(skinJList, fileName+"이 스킨으로 설정하시겠습니까?",
-					"스킨 설정", JOptionPane.YES_NO_OPTION);
-			
+			String[] buttons = {"스킨 적용", "스킨 삭제", "취소"};
+	        int result = JOptionPane.showOptionDialog(null, "해당 스킨으로 어떤 작업을 하시겠습니까?", "스킨 설정",
+	                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, "두 번째값");
+	
 			if(result == JOptionPane.CLOSED_OPTION) {
 				// 창의 X를 눌렀을때
-			} else if(result == JOptionPane.YES_OPTION) {
-				// 확인 눌렀을때
-				System.out.println("[SettingPane-Select Skin]: " + SKIN_PATH+fileName);
+			} else if(result == 0) {
+				// 스킨 적용을 눌렀을 때
+				System.out.println("[SettingPane-Select Skin]: " + skd.getskinPath());
 				// 메인 프레임에 얹어진 스킨 라벨 설정 메소드
-				backSkinLb.skinSetting(SKIN_PATH+fileName);
-
-			} else {
-				// 취소 눌렀을때
+				backSkinLb.skinSetting(skd.getskinPath());
+			} else if(result == 1) {
+				// 스킨 삭제를 눌렀을 때
+				if(skd.getskinPath().equals(member.getHome_skin())) {
+					JOptionPane.showMessageDialog
+					(null, "현재 설정 중인 스킨은 삭제할 수 없습니다!","스킨 적용 실패", JOptionPane.ERROR_MESSAGE);
+				} else {
+					File file = new File(skd.getskinPath());
+					file.delete();
+					skinModel.removeElement(skd);
+					skinJList.setModel(skinModel);
+//					skinJList.repaint();
+				}
+			} else if(result == 2) {
+				// 취소 눌렀을 때
 			}
+			
+			member.setHome_skin(skd.getskinPath());
+			DBConnection dbc = DBConnection.getInstance();
+			member = dbc.modifyMySetting("skin", member);
 		}
+	}
+	
+	private class skinHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			ImageResizeUpload iru = 
+					new ImageResizeUpload("skin", member.getMember_id(), 100, 100);
+			
+			if(!iru.getUserImgPath().equals("NotExistFile")) {
+				skinModel.addElement
+					(new Skin(iru.getImgResize(), iru.getUserImgPath()));
+				skinJList.setModel(skinModel);
+			}
+			
+			member.setHome_profile_pic(iru.getUserImgPath());
+			DBConnection dbc = DBConnection.getInstance();
+			member = dbc.modifyMySetting("pic",member);
+
+		}
+		
 	}
 }

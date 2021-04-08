@@ -17,18 +17,8 @@ public class Member {
     String home_miniroom; 		//홈 미니룸 이미지 경로
     String home_profile_pic; 	//홈 프로필 이미지 경로
     String home_profile_msg; 	//홈 프로필 상태메시지
-    String home_music; 			//홈 음악 파일 경로
 	
     public Member() { }
-    
-//    public static synchronized Member getInstance() {
-//
-//		if(member == null) {
-//			member = new Member();
-//		}
-//
-//		return member;
-//	}
 
 	public String getMember_id() {
 		return member_id;
@@ -150,15 +140,6 @@ public class Member {
 	public void setHome_profile_msg(String home_profile_msg) {
 		this.home_profile_msg = home_profile_msg;
 	}
-
-	public String getHome_music() {
-		return home_music;
-	}
-
-	public void setHome_music(String home_music) {
-		this.home_music = home_music;
-	}
-    
     
 
 }
