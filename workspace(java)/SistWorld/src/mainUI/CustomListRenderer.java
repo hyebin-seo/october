@@ -34,7 +34,7 @@ public class CustomListRenderer implements ListCellRenderer {
 		   JLabel skinLabel = new JLabel();
 		   skinLabel.setIcon(skd);
 //		   skinLabel.setText(skd.getskinPath());
-		   skinLabel.setBorder(new EmptyBorder(23, 23, 0, 0));
+		   skinLabel.setBorder(new EmptyBorder(20, 3, 0, 0));
 		   skinLabel.setForeground(new Color(255,0,1));
 		   skinLabel.setHorizontalTextPosition(JLabel.CENTER);
 		   skinLabel.setVerticalTextPosition(JLabel.BOTTOM);

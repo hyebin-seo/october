@@ -6,10 +6,10 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -19,7 +19,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,7 +32,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import db.DBConnection;
 import model.Member;
@@ -47,8 +45,6 @@ public class SettingPane extends JPanel implements ActionListener{
 	private Member member;
 	private String member_id;
 	private JFrame homeFrame;
-	private JPanel backPane;
-	private MenuPane menuPane;
 	private BackSkinLabel backSkinLb;
 	
 	// 관리 메뉴 - 세부 패널을 담는 패널
@@ -93,7 +89,7 @@ public class SettingPane extends JPanel implements ActionListener{
 	private DefaultListModel skinModel;
 	private JLabel skinTitleLb;
 	private JButton skinBt;
-	private DefaultListModel musicModel;
+	private int skinCount = 0;
 	
 	// 적용하기 컴포넌트
 	private JButton customOkBt;
@@ -108,11 +104,9 @@ public class SettingPane extends JPanel implements ActionListener{
 	
 //	public SettingPane() { }
 	
-	public SettingPane(Member member, JPanel backPane, MenuPane menuPane, BackSkinLabel backSkinLb, JFrame homeFrame) {
+	public SettingPane(Member member, BackSkinLabel backSkinLb, JFrame homeFrame) {
 		this.member = member;
 		member_id = member.getMember_id();
-		this.backPane = backPane;
-		this.menuPane = menuPane;
 		this.backSkinLb = backSkinLb;
 		this.homeFrame = homeFrame;
 		
@@ -303,6 +297,18 @@ public class SettingPane extends JPanel implements ActionListener{
 		modifyConfirmBt.setVisible(false);
 		myInfoPane.add(modifyConfirmBt);
 		
+		JButton withDrawBt = new JButton("탈퇴하기!");
+		withDrawBt.setForeground(Color.GRAY);
+		withDrawBt.setBorder(new LineBorder(new Color(192, 192, 192), 1, true));
+		withDrawBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		withDrawBt.setFocusPainted(false);
+		withDrawBt.setContentAreaFilled(false);
+		withDrawBt.setOpaque(false);
+		withDrawBt.setBounds(70, 527, 80, 30);
+		myInfoPane.add(withDrawBt);
+		
+		withDrawBt.addActionListener(new OutHandler());
+		
 		JmodifyHandler ihandler = new JmodifyHandler();
 		modifyConfirmBt.addActionListener(ihandler);
 
@@ -363,14 +369,14 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		// 관리 메뉴 - 개인 설정 - 스킨 설정
 		skinBt = new JButton();
-		skinBt.setForeground(Color.WHITE);
-		skinBt.setText("+");
+		skinBt.setForeground(Color.GRAY);
+		skinBt.setText("Add");
 		skinBt.setOpaque(false);
 		skinBt.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
 		skinBt.setContentAreaFilled(false);
-		skinBt.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		skinBt.setBorder(null);
 		skinBt.setBackground(Color.WHITE);
-		skinBt.setBounds(549, 485, 20, 20);
+		skinBt.setBounds(40, 507, 42, 20);
 		customPane.add(skinBt);
 		skinHandler skinhandler = new skinHandler();
 		skinBt.addActionListener(skinhandler);
@@ -383,11 +389,11 @@ public class SettingPane extends JPanel implements ActionListener{
 		skinTitleLb.setBounds(40, 306, 530, 30);
 		customPane.add(skinTitleLb);
 		
-		JLabel lblNewLabel = new JLabel("원하는 스킨을 선택하세요.");
+		JLabel lblNewLabel = new JLabel("원하는 스킨을 클릭하세요.");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
 		lblNewLabel.setForeground(new Color(9, 131, 178));
-		lblNewLabel.setBounds(369, 514, 200, 15);
+		lblNewLabel.setBounds(369, 511, 200, 15);
 		customPane.add(lblNewLabel);
 		
 		skinModel = new DefaultListModel();
@@ -396,10 +402,10 @@ public class SettingPane extends JPanel implements ActionListener{
 		try {
 			File dir = new File("../SistWorld/data/user/"+member.getMember_id()+"/"+member.getMember_id()+"skin");
 			File files[] = dir.listFiles();
-	
+			skinCount = files.length;
 	
 			for (int i = 0; i < files.length; i++) {
-				System.out.println("[StettingPane-skinPath]:"+files[i]);
+				System.out.println("[SettingPane-skinPath]:"+files[i]);
 			    Image img = new ImageIcon(files[i].toString()).getImage();
 				Image imgResize = img.getScaledInstance(100, 100, java.awt.Image.SCALE_SMOOTH);
 	
@@ -407,14 +413,22 @@ public class SettingPane extends JPanel implements ActionListener{
 			}
 		} catch (Exception e) {
 			System.out.println("보유한 개인 스킨 없음");
-			e.printStackTrace();
 		}
 
 
 		skinJList = new JList();
 		
-		JListHandler shandler = new JListHandler();
-		skinJList.addListSelectionListener(shandler);
+//		JListHandler shandler = new JListHandler();
+//		skinJList.addListSelectionListener(shandler);
+		
+		MouseListener mouseListener = new MouseAdapter() {
+		    public void mouseClicked(MouseEvent e) {
+		        if (e.getClickCount() == 1) {
+		        	skinAction();
+		         }
+		    }
+		};
+		skinJList.addMouseListener(mouseListener);
 		
 		skinJList.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		skinJList.setModel(skinModel);
@@ -432,11 +446,6 @@ public class SettingPane extends JPanel implements ActionListener{
 		skinSp.setSize(530, 150);
 		skinSp.setLocation(40, 356);
 		customPane.add(skinSp);
-		
-		musicModel = new DefaultListModel();
-		
-		JListHandler mhandler = new JListHandler();
-		
 		
 		// 관리 메뉴 - 개인 설정 - 일촌 관리
 		friendPane.setLayout(null);
@@ -563,6 +572,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			int result = dbc.modifyMyInfo(member);
 			
 			if(result > 0) {
+				JOptionPane.showMessageDialog(null, "내정보 수정이 완료되었습니다.\n홈페이지를 재시작합니다!");
 				new HomeFrame(member_id);
 				homeFrame.dispose();
 			} else {
@@ -575,69 +585,139 @@ public class SettingPane extends JPanel implements ActionListener{
 	}
 	
 	//스킨 선택 액션
-	private class JListHandler implements ListSelectionListener
-	{
-		// 리스트의 항목이 선택이 되면
-		public void valueChanged(ListSelectionEvent event)
-		{
-			//skinJList에서 선택된 아이템의 인덱스를 가져온다.
-			//인덱스를 가지고 skinModel에 저장된 객체를 가져온다.
-			//해당 객체를 skin객체로 캐스팅한다.(skinModel에 넣을 때 skin객체로 삽입했음)
-			//skin에 저장된 파일명을 가져온다.
-			Skin skd = (Skin) skinJList.getSelectedValue();
+	private void skinAction() {
+		//skinJList에서 선택된 아이템의 인덱스를 가져온다.
+		//인덱스를 가지고 skinModel에 저장된 객체를 가져온다.
+		//해당 객체를 skin객체로 캐스팅한다.(skinModel에 넣을 때 skin객체로 삽입했음)
+		//skin에 저장된 파일명을 가져온다.
+		
+		try {
+			Skin skd = (Skin) skinModel.get(skinJList.getSelectedIndex());
 			
 			String[] buttons = {"스킨 적용", "스킨 삭제", "취소"};
 	        int result = JOptionPane.showOptionDialog(null, "해당 스킨으로 어떤 작업을 하시겠습니까?", "스킨 설정",
 	                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, "두 번째값");
-	
-			if(result == JOptionPane.CLOSED_OPTION) {
-				// 창의 X를 눌렀을때
-			} else if(result == 0) {
+	        
+			 if(result == 0) {
 				// 스킨 적용을 눌렀을 때
 				System.out.println("[SettingPane-Select Skin]: " + skd.getskinPath());
 				// 메인 프레임에 얹어진 스킨 라벨 설정 메소드
 				backSkinLb.skinSetting(skd.getskinPath());
+				
+				member.setHome_skin(skd.getskinPath());
+				DBConnection dbc = DBConnection.getInstance();
+				member = dbc.modifyMySetting("skin", member);
 			} else if(result == 1) {
 				// 스킨 삭제를 눌렀을 때
-				if(skd.getskinPath().equals(member.getHome_skin())) {
+				String selSkin = new File(skd.getskinPath()).getName();
+				String curSkin = new File(member.getHome_skin()).getName();
+
+				if(selSkin.equals(curSkin)) {
 					JOptionPane.showMessageDialog
-					(null, "현재 설정 중인 스킨은 삭제할 수 없습니다!","스킨 적용 실패", JOptionPane.ERROR_MESSAGE);
+					(null, "현재 설정 중인 스킨은 삭제할 수 없습니다!","스킨 삭제 실패", JOptionPane.ERROR_MESSAGE);
 				} else {
+					System.out.println("[SettingPane-deleteSkin]:"+skd.getskinPath());
 					File file = new File(skd.getskinPath());
 					file.delete();
+					skinCount--;
 					skinModel.removeElement(skd);
-					skinJList.setModel(skinModel);
-//					skinJList.repaint();
+					skinJList.revalidate();
 				}
-			} else if(result == 2) {
-				// 취소 눌렀을 때
 			}
-			
-			member.setHome_skin(skd.getskinPath());
-			DBConnection dbc = DBConnection.getInstance();
-			member = dbc.modifyMySetting("skin", member);
+		} catch (Exception e) {
+			System.out.println("skinJList 객체 선택 인덱스 NULL");
 		}
+	
 	}
 	
+	// 스킨 추가 액션
 	private class skinHandler implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			ImageResizeUpload iru = 
-					new ImageResizeUpload("skin", member.getMember_id(), 100, 100);
-			
-			if(!iru.getUserImgPath().equals("NotExistFile")) {
-				skinModel.addElement
-					(new Skin(iru.getImgResize(), iru.getUserImgPath()));
-				skinJList.setModel(skinModel);
+			if(skinCount >= 5) {
+				JOptionPane.showMessageDialog
+				(null, "스킨은 5개까지만 추가할 수 있습니다.","스킨 추가 실패", JOptionPane.ERROR_MESSAGE);
+			} else {
+				ImageResizeUpload iru = 
+						new ImageResizeUpload("skin", member.getMember_id(), 100, 100);
+				
+				if(!iru.getUserImgPath().equals("NotExistFile")) {
+					skinModel.addElement(new Skin(iru.getImgResize(), iru.getUserImgPath()));
+					skinJList.revalidate();
+					skinCount++;
+				}
+
 			}
-			
-			member.setHome_profile_pic(iru.getUserImgPath());
-			DBConnection dbc = DBConnection.getInstance();
-			member = dbc.modifyMySetting("pic",member);
 
 		}
 		
 	}
+	
+	//회원 탈퇴
+	private class OutHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String pw = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
+			
+			try {
+				if(pw.equals(member.getMember_pw())) {
+					int num = JOptionPane.showConfirmDialog
+							(null, "정말 탈퇴하시겠습니까?","탈퇴 확인",JOptionPane.YES_NO_OPTION);
+			        if(num == JOptionPane.YES_OPTION) {
+			        	
+			        	DBConnection dbc = DBConnection.getInstance();
+						int result = dbc.out(member);
+						if(result > 0) {
+							JOptionPane.showMessageDialog
+							(null, "탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.");
+							FileDelete("../SistWorld/data/user/"+member.getMember_id());
+							new LoginFrame();
+							homeFrame.dispose();
+						} else {
+							JOptionPane.showMessageDialog
+							(null, "탈퇴에 실패하였습니다.\n다시 시도해 주십시오.","탈퇴 실패", JOptionPane.ERROR_MESSAGE);
+						}
+			        }
+				} else {
+					JOptionPane.showMessageDialog
+					(null, "비밀번호가 일치하지 않습니다.","로그인 인증 실패", JOptionPane.ERROR_MESSAGE);
+				}
+			} catch (Exception ee) {
+				System.out.println("탈퇴 취소");
+			}
+			
+		}
+		
+	}
+	
+	//탈퇴 - 해당 유저의 파일및 폴더 삭제
+	public void FileDelete(String path) {
+		 File folder = new File(path);
+		 try {
+			 if(folder.exists()){
+				 File[] folder_list = folder.listFiles(); //파일리스트 얻어오기
+				 
+				 for (int i = 0; i < folder_list.length; i++) {
+					 
+					 if(folder_list[i].isFile()) {
+						 
+						 folder_list[i].delete();
+						 System.out.println(member.getMember_id()+"의 파일이 삭제되었습니다.");
+					 
+					 } else {
+				     	FileDelete(folder_list[i].getPath()); //재귀함수호출
+						System.out.println("폴더가 삭제되었습니다.");
+				     }
+					 folder_list[i].delete();
+				 }
+				 folder.delete(); //폴더 삭제
+		     }
+		   } catch (Exception e) {
+			   e.getStackTrace();
+		   }
+	}
+	
 }

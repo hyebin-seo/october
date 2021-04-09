@@ -64,8 +64,8 @@ public class HomeFrame extends JFrame implements ActionListener{
         // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
 		homePane = new HomePane(member_id);
 		diaryPane = new DiaryPane();
-		galleryPane = new GalleryPane();
-		bookPane = new BookPane();
+		galleryPane = new GalleryPane(member);
+		bookPane = new BookPane(member);
 		
 		// 메인 프레임 설정
 		this.setVisible(true);
@@ -77,7 +77,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		getContentPane().add(menuPane);
 
 		// 배경 패널 설정
-		backPane.setBounds(60, 40, 910, 600);
+		backPane.setBounds(60, 45, 910, 600);
 		getContentPane().add(backPane);
 		backPane.setLayout(new CardLayout(0, 0));
 		backPane.add(homePane, "home");
@@ -88,14 +88,14 @@ public class HomeFrame extends JFrame implements ActionListener{
 		// 홈 타이틀 라벨
 		titleLb = new JLabel(" "+member.getMember_name()+"의 SistWorld!");
 		titleLb.setForeground(Color.WHITE);
-		titleLb.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-		titleLb.setBounds(320, 14, 650, 26);
+		titleLb.setFont(new Font("맑은 고딕", Font.BOLD, 20));
+		titleLb.setBounds(320, 19, 650, 26);
 		getContentPane().add(titleLb);
 		
 		// 홈 로그아웃 버튼
 		logOutBt = new RoundedButton("LogOut");
 		logOutBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		logOutBt.setBounds(1127, 610, 90, 30);
+		logOutBt.setBounds(1130, 615, 90, 30);
 		getContentPane().add(logOutBt);
 		logOutBt.addActionListener(this);
         
@@ -105,7 +105,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		System.out.println("[HomeFrame-skin path]: " + member.getHome_skin());
 		backSkinLb = new BackSkinLabel(this, member.getHome_skin());
 		// 관리 패널 생성(객체 생성 순서때문에 제일 뒤로 옴)
-		settingPane = new SettingPane(member, backPane, menuPane, backSkinLb, this);
+		settingPane = new SettingPane(member, backSkinLb, this);
 		backPane.add(settingPane, "setting");
 
 	}

@@ -2,17 +2,31 @@ package mainUI;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Image;
-
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import model.Member;
 
 public class GalleryPane extends JPanel {
 
@@ -68,7 +82,7 @@ public class GalleryPane extends JPanel {
 	private RoundedButton savePhoto;
 	private JPanel prepanel;
 
-	public GalleryPane() {
+	public GalleryPane(Member member) {
 
 		this.setBounds(40, 40, 910, 600);
 		setLayout(null);
@@ -135,7 +149,7 @@ public class GalleryPane extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) { // 사진 이미지 불러오는 메서드
 				JFileChooser chooser = new JFileChooser("c:");
-				JLabel imageLabel = new JLabel();
+				
 
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images File", "jpg", "jpeg", "gif",
 						"png");
@@ -146,14 +160,16 @@ public class GalleryPane extends JPanel {
 					JOptionPane.showMessageDialog(null, "파일을 선택하지않았습니다.", "경고", JOptionPane.WARNING_MESSAGE);
 					return;
 				} else {
-					System.out.println(chooser.getSelectedFile().getPath());
+					System.out.println("[GalleyPane-chooseImage]"+chooser.getSelectedFile().getPath());
 					File f = chooser.getSelectedFile();
-                    oA.fileSave(f, "C:\\NCS\\workspace(java)\\SistWorld1\\src\\image\\jun1", f.getName());
-                    System.out.println(f.getName());
+	                oA.fileSave(f, "C:\\NCS\\workspace(java)\\SistWorld\\src\\data\\jun1", f.getName());
+	                System.out.println(f.getName());
 				}
-
 				String filePath = chooser.getSelectedFile().getPath();
-				preLabel.setIcon(new ImageIcon(filePath));
+				Image img = new ImageIcon(filepath).getImage();
+				Image ImgResize = img.getScaledInstance(preLabel.WIDTH, preLabel.HEIGHT, Image.SCALE_SMOOTH);
+				ImageIcon resizeIcon = new ImageIcon(ImgResize);
+                preLabel.setIcon(resizeIcon);
 				
 
 			}
@@ -404,4 +420,5 @@ public class GalleryPane extends JPanel {
 		}
 
 	}
+	
 }

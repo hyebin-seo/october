@@ -7,14 +7,25 @@ public class FriendCmt extends DefaultTableModel{
 	private String nick;
 	private String name;
 	private String comment;
+	private String freind_id;
 	
 	public FriendCmt(String cmt) {
 	}
 	
-	public FriendCmt(String nick, String name, String comment) {
+	public FriendCmt(String freind_id, String nick, String name, String comment) {
 		this.nick = nick;
 		this.name = name;
 		this.comment = comment;
+		this.freind_id = freind_id;
+	}
+	
+
+	public String getFreind_id() {
+		return freind_id;
+	}
+
+	public void setFreind_id(String freind_id) {
+		this.freind_id = freind_id;
 	}
 
 	public String getNick() {

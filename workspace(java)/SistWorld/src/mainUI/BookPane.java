@@ -1,32 +1,28 @@
 package mainUI;
 
-import javax.swing.JFrame;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.ImageIcon;
-
-import java.awt.FlowLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.sql.*;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextArea;
-import javax.swing.Icon;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollBar;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextPane;
+import javax.swing.table.DefaultTableModel;
+
+import model.Member;
 
 public class BookPane extends JPanel{
 
@@ -39,7 +35,7 @@ public class BookPane extends JPanel{
 	JTextPane guestBookCommentWrite;
 	JTextArea guestBookCommentContent;
 	
-	public BookPane() {
+	public BookPane(Member member) {
 //		frame = new JFrame();
 //		frame.setBounds(100, 100, 1280, 720);
 //		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,7 +43,7 @@ public class BookPane extends JPanel{
 		
 		this.setBounds(40, 40, 910, 600);
 		this.setLayout(null);
-		
+
 		// 방명록 스크롤 뒷 패널
 		JScrollPane guestBookScrollPane = new JScrollPane();
 		guestBookScrollPane.setBounds(260, 0, 650, 600);
@@ -262,12 +258,15 @@ public class BookPane extends JPanel{
 //		frame.getContentPane().add(logoutBt);
 		
 		// 프로필 기본 패널
+		this.add(new ProfilePane(member));
+		
+		/*
 		JPanel profilePane = new JPanel();
 		profilePane.setBackground(Color.WHITE);
 		profilePane.setBounds(0, 0, 260, 600);
-//		frame.getContentPane().add(profilePane);
+		frame.getContentPane().add(profilePane);
 		profilePane.setLayout(null);
-		this.add(profilePane);
+		
 		
 		// today 조회수 라벨
 		JLabel todayLabel = new JLabel("Today");
@@ -332,6 +331,7 @@ public class BookPane extends JPanel{
 		JLabel UserCyworldAddr = new JLabel("싸이월드 주소");
 		UserCyworldAddr.setBounds(12, 35, 196, 15);
 		UserInfoPane.add(UserCyworldAddr);
+		*/
 		
 		// 이벤트 처리
 		// 눌렀을때 작성한 사람의 방명록 내용이 보이게

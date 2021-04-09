@@ -176,6 +176,26 @@ public class DBConnection {
 		return result;
 	}
 	
+	public int out(Member member) {
+		// 회원가입이므로 Default값 설정
+		int result = 0;
+		String sql = 
+				"DELETE FROM MEMBER WHERE MEMBER_ID =?";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, member.getMember_id()); //아이디
+			
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
 	public DefaultTableModel friendCmt(String member_id) {
 		String[] header = {"index","cmt","nick","name"};
 		DefaultTableModel cmtModel= new DefaultTableModel(header, 0);
@@ -230,13 +250,10 @@ public class DBConnection {
 			result = pstmt.executeUpdate();
 			
 			if(result > 0) {
-				JOptionPane.showMessageDialog(null, "내정보 수정이 완료되었습니다.\n홈페이지를 재시작합니다!");
 				md.remove(member.getMember_id());
 				Member modifyMember = dataOpen(member.getMember_id());
 				md.put(member.getMember_id(), modifyMember);
 				return result;
-			} else {
-				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","내정보 수정 실패", JOptionPane.ERROR_MESSAGE);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

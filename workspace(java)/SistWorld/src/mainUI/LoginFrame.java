@@ -65,7 +65,7 @@ public class LoginFrame extends JFrame{
 		//회원가입버튼
 		joinBt = new RoundedButton("회원가입");
 		joinBt.setFont(new Font("맑은 고딕", Font.BOLD, 14));
-		joinBt.setText("JOIN");
+		joinBt.setText("SIGN UP");
 		joinBt.setBounds(527, 409, 220, 40);
 		getContentPane().add(joinBt);
 		
