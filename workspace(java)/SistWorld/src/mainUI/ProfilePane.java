@@ -24,11 +24,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import db.DBConnection;
+import model.FriendAsk;
 import model.Member;
+import service.FriendCheck;
 import service.ImageResizeUpload;
+import service.MasterSession;
+
 import javax.swing.border.EmptyBorder;
 
 public class ProfilePane extends JPanel{
+	DBConnection dbc = DBConnection.getInstance();
+	MasterSession ms = MasterSession.getInstance();
 
 	// 매개변수
 	private Member member;
@@ -41,8 +47,22 @@ public class ProfilePane extends JPanel{
 	private JButton profileModifyBt;
 	private JButton profileModifyCBt;
 	private JButton profilePicModifyBt;
+	private RoundedButton friendAskBt;
+	private RoundedButton surferBt;
 	
-	public ProfilePane(Member memberc) {
+	public void subSetting() {
+		profileModifyBt.setVisible(false);
+		profilePicModifyBt.setVisible(false);
+		//일촌 여부
+		int friend = new FriendCheck(member.getMember_id(), ms.getMaster_id()).FriendCheckR();
+		if(friend > 0) {
+			
+		} else {
+			friendAskBt.setVisible(true);
+		}
+	}
+	
+	public ProfilePane(String master_id, Member memberc) {
 		
 		// 홈 메뉴 - 세부 프로필 패널
 		this.setBorder(new LineBorder(new Color(192, 192, 192)));
@@ -151,7 +171,7 @@ public class ProfilePane extends JPanel{
 		profileInfoLb.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 		profileInfoLb.setForeground(new Color(9, 131, 178));
 		profileInfoLb.setHorizontalAlignment(SwingConstants.CENTER);
-		profileInfoLb.setBounds(20, 470, 220, 50);
+		profileInfoLb.setBounds(20, 470, 220, 30);
 		this.add(profileInfoLb);
 
 		profilePicModifyBt.addActionListener(new ActionListener() {
@@ -170,11 +190,66 @@ public class ProfilePane extends JPanel{
 							file.delete();
 						}
 						member.setHome_profile_pic(iru.getUserImgPath());
-						DBConnection dbc = DBConnection.getInstance();
 						member = dbc.modifyMySetting("pic",member);
 					}
 
 			}
 		});
+		
+		//일촌신청 버튼 - sub일때만 출력
+		FriendAsk ask = new FriendAsk();
+		ask.setMember_id(member.getMember_id());
+		ask.setFriend_id(ms.getMaster_member().getMember_id());
+		
+		friendAskBt = new RoundedButton("일촌 신청");
+		friendAskBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		friendAskBt.setBounds(40, 541, 180, 30);
+		friendAskBt.setVisible(false);
+		this.add(friendAskBt);
+		
+		friendAskBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int rs = dbc.friendAsk("조회",ask);
+				
+				if(rs > 0) {
+					JOptionPane.showMessageDialog(null,
+							"이미 신청하셨어요!\n상대방의 수락을 기다리세요!X_X","꽥!", JOptionPane.ERROR_MESSAGE);
+				} else {
+					new FriendAskFrame(member);
+				}
+			}
+		});
+		
+		//파도타기 버튼
+		surferBt = new RoundedButton("~낯선 사람 파도타기~");
+		surferBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		surferBt.setBounds(40, 505, 180, 30);
+		this.add(surferBt);
+
+		//파도타기 액션
+		surferBt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String member_id = dbc.surfer();
+				
+				//현재 파도탄 홈페이지와 다른 이름만 가져오기
+				while(member_id.equals(member.getMember_id())) {
+					member_id = dbc.surfer();
+				}
+				
+				while(member_id.equals(ms.getMaster_id())) {
+					member_id = dbc.surfer();
+				}
+				
+				new HomeFrame(member_id);
+			}
+		});
+		
+		if(!master_id.equals(member.getMember_id())) {
+			subSetting();
+		}
 	}
 }

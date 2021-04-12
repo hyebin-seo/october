@@ -1,31 +1,27 @@
 package mainUI;
 
-import java.awt.BasicStroke;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.GlyphVector;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
-import db.MemberDAO;
 import model.Member;
+import service.FriendCheck;
 import service.ImageUpload;
+import service.MasterSession;
+import service.OwnerCheck;
 
 public class HomeFrame extends JFrame implements ActionListener{
 
+	MasterSession ms = MasterSession.getInstance();
+	
 	// 회원 목록
-	MemberDAO memberMap;
 	Member member;
 	String member_id;
 	
@@ -47,12 +43,16 @@ public class HomeFrame extends JFrame implements ActionListener{
 	
 	// 홈 로그아웃 버튼
 	private RoundedButton logOutBt;
-	private BackSkinLabel backSkinLb;
+	private SkinLabel backSkinLb;
+	
+	public void subSetting() {
+		logOutBt.setVisible(false);
+	}
 
 	public HomeFrame(String member_id) {
+		MasterSession ms = MasterSession.getInstance();
+		this.member = new OwnerCheck(ms.getMaster_id(),member_id).getMember();
 		this.member_id = member_id;
-		memberMap = MemberDAO.getInstance();
-		member = memberMap.get(member_id);
 		
 		// 메인 패널 선언
 		backPane = new JPanel(); // 홈 카드 레이아웃
@@ -62,7 +62,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 
 		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록
         // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
-		homePane = new HomePane(member_id);
+		homePane = new HomePane(member);
 		diaryPane = new DiaryPane();
 		galleryPane = new GalleryPane(member);
 		bookPane = new BookPane(member);
@@ -72,7 +72,9 @@ public class HomeFrame extends JFrame implements ActionListener{
 		this.setResizable(false);
 		this.setBounds(0, 0, 1280, 720);
 		this.setLocationRelativeTo(null);//창이 가운데 나오게
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if(ms.getMaster_id().equals(member_id)) {
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		}
 		getContentPane().setLayout(null);
 		getContentPane().add(menuPane);
 
@@ -87,7 +89,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		
 		// 홈 타이틀 라벨
 		titleLb = new JLabel(" "+member.getMember_name()+"의 SistWorld!");
-		titleLb.setForeground(Color.WHITE);
+		titleLb.setForeground(new Color(9,131,178));
 		titleLb.setFont(new Font("맑은 고딕", Font.BOLD, 20));
 		titleLb.setBounds(320, 19, 650, 26);
 		getContentPane().add(titleLb);
@@ -98,14 +100,18 @@ public class HomeFrame extends JFrame implements ActionListener{
 		logOutBt.setBounds(1130, 615, 90, 30);
 		getContentPane().add(logOutBt);
 		logOutBt.addActionListener(this);
-        
+		
+		if(!ms.getMaster_id().equals(member_id)) {
+			subSetting();
+		}
+ 
 		// 메인 프레임 배경화면 설정(패널 우선순위 때문에 제일 뒤로 옴)
 		// 스킨 경로 DB에서 가져와서 설정값 있으면 변경해줄것
 		System.out.println("[HomeFrame]: "+member);
 		System.out.println("[HomeFrame-skin path]: " + member.getHome_skin());
-		backSkinLb = new BackSkinLabel(this, member.getHome_skin());
+		backSkinLb = new SkinLabel(this, member.getHome_skin());
 		// 관리 패널 생성(객체 생성 순서때문에 제일 뒤로 옴)
-		settingPane = new SettingPane(member, backSkinLb, this);
+		settingPane = new SettingPane(member, backSkinLb, this, menuPane);
 		backPane.add(settingPane, "setting");
 
 	}
@@ -138,8 +144,13 @@ public class HomeFrame extends JFrame implements ActionListener{
 				break;
 				
 			case "LogOut" :
-				new LoginFrame();
-				dispose();
+				int num = JOptionPane.showConfirmDialog
+						(null, "로그아웃 하시겠습니까?","로그아웃",JOptionPane.YES_NO_OPTION);
+		        if(num == JOptionPane.YES_OPTION) {
+		        	new LoginFrame();
+					dispose();
+					break;
+				}
 				break;
 			default:
 				break;

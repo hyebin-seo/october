@@ -13,6 +13,8 @@ import javax.swing.SwingConstants;
 import model.Member;
 import java.awt.FlowLayout;
 import net.miginfocom.swing.MigLayout;
+import service.MasterSession;
+
 import javax.swing.BoxLayout;
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -30,7 +32,7 @@ public class MenuPane extends JPanel implements ActionListener{
 //	public MenuPane() {	}
 	
 	public MenuPane(Member member, JPanel backPane) {
-		
+		MasterSession ms = MasterSession.getInstance();
 		this.backPane = backPane;
 
 		this.setBounds(970, 50, 80, 250);
@@ -74,12 +76,35 @@ public class MenuPane extends JPanel implements ActionListener{
         	this.add(bookBt);
         }
         
-        settingBt = new RoundedButton("Setting");
-        settingBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-        settingBt.setHorizontalAlignment(SwingConstants.LEFT);
-        settingBt.setPreferredSize(new Dimension(80, 50));
-        settingBt.addActionListener(this);
-        this.add(settingBt);
+        if(ms.getMaster_id().equals(member.getMember_id())) {
+	        settingBt = new RoundedButton("Setting");
+	        settingBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+	        settingBt.setHorizontalAlignment(SwingConstants.LEFT);
+	        settingBt.setPreferredSize(new Dimension(80, 50));
+	        settingBt.addActionListener(this);
+	        this.add(settingBt);
+        }
+	}
+	
+	public void menuSetting(Member member) {
+		if(member.isHome_diary()) { //설정값에 따라 메뉴 버튼 표시
+        	diaryBt.setVisible(true);
+        } else {
+        	diaryBt.setVisible(false);
+        }
+		if(member.isHome_gallery()) { //설정값에 따라 메뉴 버튼 표시
+        	gallaryBt.setVisible(true);
+        } else {
+        	gallaryBt.setVisible(false);
+        }
+		if(member.isHome_book()) { //설정값에 따라 메뉴 버튼 표시
+        	bookBt.setVisible(true);
+        } else {
+        	bookBt.setVisible(false);
+        }
+		
+		this.revalidate();
+		this.repaint();
 	}
 	
 	@Override

@@ -258,7 +258,7 @@ public class BookPane extends JPanel{
 //		frame.getContentPane().add(logoutBt);
 		
 		// 프로필 기본 패널
-		this.add(new ProfilePane(member));
+//		this.add(new ProfilePane(member));
 		
 		/*
 		JPanel profilePane = new JPanel();

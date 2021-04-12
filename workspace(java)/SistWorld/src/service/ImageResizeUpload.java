@@ -32,7 +32,7 @@ public class ImageResizeUpload {
 			this.userImgPath = "NotExistFile";
 			return;
 		} else {
-			System.out.println("[ProfilePane-chooseFile]:"+chooser.getSelectedFile().getPath());
+			System.out.println("[iru-chooseFile]:"+chooser.getSelectedFile().getPath());
 		}
 
 		String filePath = chooser.getSelectedFile().getPath();
@@ -56,7 +56,7 @@ public class ImageResizeUpload {
 			//원본 이미지 파일이 복사되어 저장될 경로(파일명 난수 발생시켜 임의저장)
 			String userImgPath
 				= "../SistWorld/data/user/"+member_id+"/"+member_id+flag+"/"
-						+member_id+"_"+(int)(dValue * 10)
+						+member_id+"_"+(int)(dValue * 100000)
 						+"."+ext;
 			System.out.println("[ImageResizeUpload]:"+userImgPath);
 			

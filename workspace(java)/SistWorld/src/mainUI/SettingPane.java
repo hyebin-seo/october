@@ -2,6 +2,7 @@ package mainUI;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -25,27 +26,32 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import db.DBConnection;
+import model.FriendAsk;
 import model.Member;
 import model.Skin;
+import service.FileAllDelete;
 import service.ImageResizeUpload;
+import service.MasterSession;
 
 
 public class SettingPane extends JPanel implements ActionListener{
 
+	DBConnection dbc = DBConnection.getInstance();
+	
 	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨, 멤버객체
 	private Member member;
-	private String member_id;
 	private JFrame homeFrame;
-	private BackSkinLabel backSkinLb;
+	private SkinLabel SkinLb;
 	
 	// 관리 메뉴 - 세부 패널을 담는 패널
 	private JPanel settingDetailPane;
@@ -98,16 +104,20 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JLabel existFriendLb;
 	private JLabel waitingFriendLb;
 	private JLabel friendLb;
-	private JList friendJl;
-	private JList friendWaitingJl;
+	private JTable friendTb;
+	private JTable friendWaitingTb;
 	private JLabel emailLb;
+	private DefaultTableModel wModel;
+	private DefaultTableModel fModel;
+	
+	MenuPane menuPane;
 	
 //	public SettingPane() { }
 	
-	public SettingPane(Member member, BackSkinLabel backSkinLb, JFrame homeFrame) {
+	public SettingPane(Member member, SkinLabel SkinLb, JFrame homeFrame, MenuPane menuPane) {
+		this.menuPane = menuPane;
 		this.member = member;
-		member_id = member.getMember_id();
-		this.backSkinLb = backSkinLb;
+		this.SkinLb = SkinLb;
 		this.homeFrame = homeFrame;
 		
 		this.setBounds(40, 40, 910, 600);
@@ -417,10 +427,7 @@ public class SettingPane extends JPanel implements ActionListener{
 
 
 		skinJList = new JList();
-		
-//		JListHandler shandler = new JListHandler();
-//		skinJList.addListSelectionListener(shandler);
-		
+
 		MouseListener mouseListener = new MouseAdapter() {
 		    public void mouseClicked(MouseEvent e) {
 		        if (e.getClickCount() == 1) {
@@ -447,6 +454,18 @@ public class SettingPane extends JPanel implements ActionListener{
 		skinSp.setLocation(40, 356);
 		customPane.add(skinSp);
 		
+		JButton resetBt = new JButton();
+		resetBt.setText("Reset");
+		resetBt.setOpaque(false);
+		resetBt.setForeground(Color.GRAY);
+		resetBt.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		resetBt.setContentAreaFilled(false);
+		resetBt.setBorder(null);
+		resetBt.setBackground(Color.WHITE);
+		resetBt.setBounds(83, 507, 42, 20);
+		customPane.add(resetBt);
+		resetBt.addActionListener(new reSkinHandler());
+		
 		// 관리 메뉴 - 개인 설정 - 일촌 관리
 		friendPane.setLayout(null);
 		friendLb = new JLabel("나의 일촌 현황");
@@ -457,17 +476,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		friendLb.setBounds(60, 20, 530, 30);
 		friendPane.add(friendLb);
 		friendLb.setBackground(Color.WHITE);
-		
-		friendJl = new JList(); // 현재 일촌 목록
-		friendJl.setBorder(new LineBorder(new Color(0, 0, 0)));
-		friendJl.setBounds(60, 359, 530, 200);
-		friendPane.add(friendJl);
-		
-		friendWaitingJl = new JList(); // 삭제할 일촌 목록
-		friendWaitingJl.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		friendWaitingJl.setBounds(60, 108, 530, 200);
-		friendPane.add(friendWaitingJl);
-		
+
 		existFriendLb = new JLabel("일촌 목록");
 		existFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		existFriendLb.setForeground(new Color(9, 131, 178));
@@ -481,6 +490,87 @@ public class SettingPane extends JPanel implements ActionListener{
 		waitingFriendLb.setBounds(260, 83, 130, 15);
 		friendPane.add(waitingFriendLb);
 		
+		friendTb = new JTable(); // 현재 일촌 목록
+		friendTb.setBorder(new LineBorder(new Color(0, 0, 0)));
+		friendTb.setBounds(60, 359, 530, 200);
+		fModel = dbc.friend("일촌",member.getMember_id());
+		
+		friendTb = new JTable(fModel);
+		friendTb.setRowHeight(25);
+		friendTb.setRowMargin(0);
+		friendTb.setIntercellSpacing(new Dimension(0, 0));
+		friendTb.setGridColor(Color.WHITE);
+		friendTb.setForeground(Color.DARK_GRAY);
+		friendTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		friendTb.setShowVerticalLines(false);
+		friendTb.setShowHorizontalLines(false);
+		friendTb.setShowGrid(false);
+		friendTb.setOpaque(false);
+		friendTb.setBorder(new EmptyBorder(0, 0, 0, 0));
+		friendTb.setBackground(Color.WHITE);
+		friendTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friendTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
+		friendTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
+//		friendTb.setTableHeader(null);
+		friendTb.addMouseListener(new friendListener());
+		
+		JScrollPane fjsp = new JScrollPane
+				(friendTb,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
+		fjsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
+		fjsp.setForeground(Color.GRAY);
+		fjsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		fjsp.setOpaque(false);
+		fjsp.getViewport().setBackground(Color.WHITE);
+		fjsp.setEnabled(false);
+		fjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		fjsp.setSize(530, 180);
+		fjsp.setLocation(60, 371);
+		friendPane.add(fjsp);
+		
+		friendWaitingTb = new JTable(); // 대기중인 일촌 신청 목록
+		friendWaitingTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendWaitingTb.setBounds(60, 108, 530, 200);
+
+		wModel = dbc.friend("대기",member.getMember_id());
+		
+		friendWaitingTb = new JTable(wModel);
+		friendWaitingTb.setRowHeight(25);
+		friendWaitingTb.setRowMargin(0);
+		friendWaitingTb.setIntercellSpacing(new Dimension(0, 0));
+		friendWaitingTb.setGridColor(Color.WHITE);
+		friendWaitingTb.setForeground(Color.DARK_GRAY);
+		friendWaitingTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		friendWaitingTb.setShowVerticalLines(false);
+		friendWaitingTb.setShowHorizontalLines(false);
+		friendWaitingTb.setShowGrid(false);
+		friendWaitingTb.setOpaque(false);
+		friendWaitingTb.setBorder(new EmptyBorder(0, 0, 0, 0));
+		friendWaitingTb.setBackground(Color.WHITE);
+		friendWaitingTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friendWaitingTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
+		friendWaitingTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
+//		friendWaitingTb.setTableHeader(null);
+		friendWaitingTb.addMouseListener(new WaitingListener());
+		
+		JScrollPane fwjsp = new JScrollPane
+				(friendWaitingTb,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		fwjsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
+		fwjsp.setForeground(Color.GRAY);
+		fwjsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		fwjsp.setOpaque(false);
+		fwjsp.getViewport().setBackground(Color.WHITE);
+		fwjsp.setEnabled(false);
+		fwjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		fwjsp.setSize(530, 180);
+		fwjsp.setLocation(60, 121);
+		friendPane.add(fwjsp);
+		
+		columnHide();
 	
 	}
 
@@ -545,13 +635,13 @@ public class SettingPane extends JPanel implements ActionListener{
 			} else {
 				member.setHome_book(false);
 			}
-			
-			DBConnection dbc = DBConnection.getInstance();
+
 			int result = dbc.modifyMyMenu(member);
 			
 			if(result > 0) {
-				new HomeFrame(member_id);
-				homeFrame.dispose();
+				MasterSession ms = MasterSession.getInstance();
+				menuPane.menuSetting(ms.getMaster_member());
+				JOptionPane.showMessageDialog(null, "메뉴 수정 완료!");
 			} else {
 				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","메뉴 수정 실패", JOptionPane.ERROR_MESSAGE);
 			}
@@ -567,14 +657,18 @@ public class SettingPane extends JPanel implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 			member.setMember_email(emailTf.getText());
 			member.setMember_pw(pwdTf.getText());
-			
-			DBConnection dbc = DBConnection.getInstance();
+
 			int result = dbc.modifyMyInfo(member);
 			
 			if(result > 0) {
-				JOptionPane.showMessageDialog(null, "내정보 수정이 완료되었습니다.\n홈페이지를 재시작합니다!");
-				new HomeFrame(member_id);
-				homeFrame.dispose();
+				JOptionPane.showMessageDialog(null, "내정보 수정 완료!");
+				emailTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+				emailTf.setEditable(false);
+				modifyConfirmBt.setVisible(false);
+				modifyBt.setVisible(true);
+				pwdTf.setText("*****************");
+				pwdTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+				pwdTf.setEditable(false);
 			} else {
 				JOptionPane.showMessageDialog(null, "알 수 없는 오류로 수정 실패","내정보 수정 실패", JOptionPane.ERROR_MESSAGE);
 			}
@@ -602,10 +696,9 @@ public class SettingPane extends JPanel implements ActionListener{
 				// 스킨 적용을 눌렀을 때
 				System.out.println("[SettingPane-Select Skin]: " + skd.getskinPath());
 				// 메인 프레임에 얹어진 스킨 라벨 설정 메소드
-				backSkinLb.skinSetting(skd.getskinPath());
+				SkinLb.skinSetting(skd.getskinPath());
 				
 				member.setHome_skin(skd.getskinPath());
-				DBConnection dbc = DBConnection.getInstance();
 				member = dbc.modifyMySetting("skin", member);
 			} else if(result == 1) {
 				// 스킨 삭제를 눌렀을 때
@@ -655,6 +748,32 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 	}
 	
+	// 스킨 초기화 액션
+	private class reSkinHandler implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			int num = JOptionPane.showConfirmDialog
+					(null, "스킨을 초기화 하시겠습니까?","스킨 초기화",JOptionPane.YES_NO_OPTION);
+	        if(num == JOptionPane.YES_OPTION) {
+				int result = dbc.skinReset(member);
+				
+				if(result > 0) {
+					SkinLb.skinSetting("../SistWorld/data/images/back.jpg");
+					
+					JOptionPane.showMessageDialog(null, "스킨 초기화 완료!");
+//					new HomeFrame(member_id);
+//					homeFrame.dispose();
+				} else {
+					JOptionPane.showMessageDialog
+					(null, "스킨 초기화 실패하였습니다.\n다시 시도해 주십시오.","실패", JOptionPane.ERROR_MESSAGE);
+				}
+	        }
+			
+		}
+		
+	}
+	
 	//회원 탈퇴
 	private class OutHandler implements ActionListener {
 
@@ -667,13 +786,13 @@ public class SettingPane extends JPanel implements ActionListener{
 					int num = JOptionPane.showConfirmDialog
 							(null, "정말 탈퇴하시겠습니까?","탈퇴 확인",JOptionPane.YES_NO_OPTION);
 			        if(num == JOptionPane.YES_OPTION) {
-			        	
-			        	DBConnection dbc = DBConnection.getInstance();
+
 						int result = dbc.out(member);
 						if(result > 0) {
 							JOptionPane.showMessageDialog
 							(null, "탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.");
-							FileDelete("../SistWorld/data/user/"+member.getMember_id());
+							// 해당 유저의 모든 파일 삭제
+							new FileAllDelete("../SistWorld/data/user/"+member.getMember_id());
 							new LoginFrame();
 							homeFrame.dispose();
 						} else {
@@ -693,31 +812,126 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 	}
 	
-	//탈퇴 - 해당 유저의 파일및 폴더 삭제
-	public void FileDelete(String path) {
-		 File folder = new File(path);
-		 try {
-			 if(folder.exists()){
-				 File[] folder_list = folder.listFiles(); //파일리스트 얻어오기
-				 
-				 for (int i = 0; i < folder_list.length; i++) {
-					 
-					 if(folder_list[i].isFile()) {
-						 
-						 folder_list[i].delete();
-						 System.out.println(member.getMember_id()+"의 파일이 삭제되었습니다.");
-					 
-					 } else {
-				     	FileDelete(folder_list[i].getPath()); //재귀함수호출
-						System.out.println("폴더가 삭제되었습니다.");
-				     }
-					 folder_list[i].delete();
-				 }
-				 folder.delete(); //폴더 삭제
-		     }
-		   } catch (Exception e) {
-			   e.getStackTrace();
-		   }
+	//일촌 대기자 액션
+	private class WaitingListener extends MouseAdapter {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    	
+	    	if (e.getClickCount() == 1) {
+	    		
+	    		int row = friendWaitingTb.getSelectedRow();
+	    		
+    			String[] buttons = {"수락", "거절", "취소"};
+		        int result = JOptionPane.showOptionDialog
+		        		(null, friendWaitingTb.getModel().getValueAt(row,4)+"님의 일촌 신청을 수락하시겠습니까?", "일촌",
+		                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, "세번째값");
+		        
+	        	FriendAsk ask = new FriendAsk();
+	        	
+				//미니홈페이지의 주인
+				ask.setMember_id((String)friendWaitingTb.getModel().getValueAt(row,0));
+				ask.setMember_name((String)friendWaitingTb.getModel().getValueAt(row,1));
+				ask.setMember_nick((String)friendWaitingTb.getModel().getValueAt(row,2));
+				
+				//일촌 신청한 사람
+				ask.setFriend_id((String)friendWaitingTb.getModel().getValueAt(row,3));
+				ask.setFriend_name((String)friendWaitingTb.getModel().getValueAt(row,4));
+				ask.setFriend_nick((String)friendWaitingTb.getModel().getValueAt(row,5));
+
+		        if(result == 0 ) { //수락
+
+		        	int rs = dbc.friendAcceptOrDeny("수락", ask);
+
+		        	if(rs>0) {
+		        		JOptionPane.showMessageDialog
+						(null, friendWaitingTb.getModel().getValueAt(row,4)+"님과 일촌이 되었습니다!");
+		        		
+						wModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+						wModel = dbc.friend("대기",member.getMember_id());
+						friendWaitingTb.setModel(wModel);
+						
+						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+						fModel = dbc.friend("일촌",member.getMember_id());
+						friendTb.setModel(fModel);
+						
+						columnHide();
+		        	}
+		        } else if(result == 1) { //거절
+		        	int rs = dbc.friendAcceptOrDeny("거절", ask);
+
+		        	if(rs>0) {
+		        		JOptionPane.showMessageDialog
+						(null, friendWaitingTb.getModel().getValueAt(row,4)+"님의 일촌 신청을 거절하였습니다!");
+		        		
+						wModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+						wModel = dbc.friend("대기",member.getMember_id());
+						friendWaitingTb.setModel(wModel);
+						
+						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+						fModel = dbc.friend("일촌",member.getMember_id());
+						friendTb.setModel(fModel);
+						
+						columnHide();
+		        	}    			
+	    		}
+	    	}
+	    }
 	}
 	
+	public void columnHide() {
+		friendTb.getColumnModel().getColumn(0).setWidth(0); //내아이디 숨김
+		friendTb.getColumnModel().getColumn(0).setMinWidth(0); //내아이디 숨김
+		friendTb.getColumnModel().getColumn(0).setMaxWidth(0); //내아이디 숨김
+		
+		friendTb.getColumnModel().getColumn(3).setWidth(0); //친구아이디 숨김
+		friendTb.getColumnModel().getColumn(3).setMinWidth(0); //친구아이디 숨김
+		friendTb.getColumnModel().getColumn(3).setMaxWidth(0); //친구아이디 숨김
+		
+		friendWaitingTb.getColumnModel().getColumn(0).setWidth(0); //내아이디 숨김
+		friendWaitingTb.getColumnModel().getColumn(0).setMinWidth(0); //내아이디 숨김
+		friendWaitingTb.getColumnModel().getColumn(0).setMaxWidth(0); //내아이디 숨김
+		
+		friendWaitingTb.getColumnModel().getColumn(3).setWidth(0); //친구아이디 숨김
+		friendWaitingTb.getColumnModel().getColumn(3).setMinWidth(0); //친구아이디 숨김
+		friendWaitingTb.getColumnModel().getColumn(3).setMaxWidth(0); //친구아이디 숨김
+	}
+	
+	//일촌 리스트 선택 액션
+	private class friendListener extends MouseAdapter {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    	
+	    	if (e.getClickCount() == 1) {
+	    		int row = friendTb.getSelectedRow();
+		        int result = JOptionPane.showConfirmDialog
+				(null, friendTb.getModel().getValueAt(row,4)+"님과 일촌을 끊으시겠습니까?","일촌 추방",JOptionPane.YES_NO_OPTION);
+		        
+	        	FriendAsk ask = new FriendAsk();
+	        	
+				//미니홈페이지의 주인
+				ask.setMember_id((String)friendTb.getModel().getValueAt(row,0));
+				
+				//일촌 신청한 사람
+				ask.setFriend_id((String)friendTb.getModel().getValueAt(row,3));
+
+		        if(result == JOptionPane.YES_OPTION ) { //수락
+		        	
+		        	//일촌 삭제
+		        	int rs = dbc.friendAcceptOrDeny("삭제", ask);
+
+		        	if(rs>0) {
+		        		JOptionPane.showMessageDialog
+						(null, friendTb.getModel().getValueAt(row,4)+"님과의 일촌을 끊었습니다!");
+
+						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+						fModel = dbc.friend("일촌",member.getMember_id());
+						friendTb.setModel(fModel);
+		        	}
+		        }
+	    	}
+	    }
+	}
+
 }
