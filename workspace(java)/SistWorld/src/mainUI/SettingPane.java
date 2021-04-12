@@ -42,6 +42,7 @@ import model.Skin;
 import service.FileAllDelete;
 import service.ImageResizeUpload;
 import service.MasterSession;
+import java.awt.Component;
 
 
 public class SettingPane extends JPanel implements ActionListener{
@@ -106,9 +107,11 @@ public class SettingPane extends JPanel implements ActionListener{
 	private JLabel friendLb;
 	private JTable friendTb;
 	private JTable friendWaitingTb;
+	private JTable friendSendTb;
 	private JLabel emailLb;
 	private DefaultTableModel wModel;
 	private DefaultTableModel fModel;
+	private DefaultTableModel sModel;
 	
 	MenuPane menuPane;
 	
@@ -130,7 +133,9 @@ public class SettingPane extends JPanel implements ActionListener{
 		myInfoPane = new JPanel();
 		myInfoPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		customPane = new JPanel();
+		customPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		friendPane = new JPanel();
+		friendPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		
 		// 관리 메뉴 - 카테고리 목록, 디테일 패널
 		settingCategoryPane = new JPanel();
@@ -328,7 +333,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		menuTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		menuTitleLb.setForeground(new Color(9, 131, 178));
 		menuTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
-		menuTitleLb.setBounds(39, 67, 530, 30);
+		menuTitleLb.setBounds(60, 67, 530, 30);
 		customPane.add(menuTitleLb);
 		
 		customPane.setLayout(null);
@@ -386,8 +391,9 @@ public class SettingPane extends JPanel implements ActionListener{
 		skinBt.setContentAreaFilled(false);
 		skinBt.setBorder(null);
 		skinBt.setBackground(Color.WHITE);
-		skinBt.setBounds(40, 507, 42, 20);
+		skinBt.setBounds(60, 485, 42, 20);
 		customPane.add(skinBt);
+		
 		skinHandler skinhandler = new skinHandler();
 		skinBt.addActionListener(skinhandler);
 		
@@ -396,14 +402,14 @@ public class SettingPane extends JPanel implements ActionListener{
 		skinTitleLb.setHorizontalAlignment(SwingConstants.CENTER);
 		skinTitleLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		skinTitleLb.setForeground(new Color(9, 131, 178));
-		skinTitleLb.setBounds(40, 306, 530, 30);
+		skinTitleLb.setBounds(60, 284, 530, 30);
 		customPane.add(skinTitleLb);
 		
 		JLabel lblNewLabel = new JLabel("원하는 스킨을 클릭하세요.");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
 		lblNewLabel.setForeground(new Color(9, 131, 178));
-		lblNewLabel.setBounds(369, 511, 200, 15);
+		lblNewLabel.setBounds(389, 489, 200, 15);
 		customPane.add(lblNewLabel);
 		
 		skinModel = new DefaultListModel();
@@ -451,7 +457,7 @@ public class SettingPane extends JPanel implements ActionListener{
 				//수평 스크롤바 설치 여부
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		skinSp.setSize(530, 150);
-		skinSp.setLocation(40, 356);
+		skinSp.setLocation(60, 334);
 		customPane.add(skinSp);
 		
 		JButton resetBt = new JButton();
@@ -462,7 +468,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		resetBt.setContentAreaFilled(false);
 		resetBt.setBorder(null);
 		resetBt.setBackground(Color.WHITE);
-		resetBt.setBounds(83, 507, 42, 20);
+		resetBt.setBounds(103, 485, 42, 20);
 		customPane.add(resetBt);
 		resetBt.addActionListener(new reSkinHandler());
 		
@@ -473,29 +479,37 @@ public class SettingPane extends JPanel implements ActionListener{
 		friendLb.setForeground(new Color(9, 131, 178));
 		friendLb.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		friendLb.setHorizontalAlignment(SwingConstants.CENTER);
-		friendLb.setBounds(60, 20, 530, 30);
+		friendLb.setBounds(60, 27, 530, 30);
 		friendPane.add(friendLb);
 		friendLb.setBackground(Color.WHITE);
 
-		existFriendLb = new JLabel("일촌 목록");
+		existFriendLb = new JLabel("현재 일촌 목록");
+		existFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
 		existFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		existFriendLb.setForeground(new Color(9, 131, 178));
-		existFriendLb.setBounds(296, 334, 57, 15);
+		existFriendLb.setBounds(275, 80, 100, 20);
 		friendPane.add(existFriendLb);
 		
-		waitingFriendLb = new JLabel("대기중인 일촌 신청");
+		waitingFriendLb = new JLabel("도착한 일촌 신청");
 		waitingFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		waitingFriendLb.setForeground(new Color(9, 131, 178));
 		waitingFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
-		waitingFriendLb.setBounds(260, 83, 130, 15);
+		waitingFriendLb.setBounds(226, 250, 200, 15);
 		friendPane.add(waitingFriendLb);
 		
-		friendTb = new JTable(); // 현재 일촌 목록
-		friendTb.setBorder(new LineBorder(new Color(0, 0, 0)));
-		friendTb.setBounds(60, 359, 530, 200);
+		JLabel sendFriendLb = new JLabel("전송한 일촌 신청");
+		sendFriendLb.setHorizontalAlignment(SwingConstants.CENTER);
+		sendFriendLb.setForeground(new Color(9, 131, 178));
+		sendFriendLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		sendFriendLb.setBounds(226, 418, 200, 15);
+		friendPane.add(sendFriendLb);
+		
+		//현재 일촌 목록
 		fModel = dbc.friend("일촌",member.getMember_id());
 		
 		friendTb = new JTable(fModel);
+		friendTb.setBorder(new LineBorder(new Color(0, 0, 0)));
+		friendTb.setBounds(60, 359, 530, 200);
 		friendTb.setRowHeight(25);
 		friendTb.setRowMargin(0);
 		friendTb.setIntercellSpacing(new Dimension(0, 0));
@@ -511,7 +525,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		friendTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		friendTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
 		friendTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
-//		friendTb.setTableHeader(null);
+		friendTb.setTableHeader(null);
 		friendTb.addMouseListener(new friendListener());
 		
 		JScrollPane fjsp = new JScrollPane
@@ -526,17 +540,16 @@ public class SettingPane extends JPanel implements ActionListener{
 		fjsp.getViewport().setBackground(Color.WHITE);
 		fjsp.setEnabled(false);
 		fjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		fjsp.setSize(530, 180);
-		fjsp.setLocation(60, 371);
+		fjsp.setSize(530, 120);
+		fjsp.setLocation(60, 107);
 		friendPane.add(fjsp);
 		
-		friendWaitingTb = new JTable(); // 대기중인 일촌 신청 목록
-		friendWaitingTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		friendWaitingTb.setBounds(60, 108, 530, 200);
-
+		//나에게 들어온 일촌 신청 목록
 		wModel = dbc.friend("대기",member.getMember_id());
 		
 		friendWaitingTb = new JTable(wModel);
+		friendWaitingTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendWaitingTb.setBounds(60, 108, 530, 200);
 		friendWaitingTb.setRowHeight(25);
 		friendWaitingTb.setRowMargin(0);
 		friendWaitingTb.setIntercellSpacing(new Dimension(0, 0));
@@ -552,7 +565,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		friendWaitingTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		friendWaitingTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
 		friendWaitingTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
-//		friendWaitingTb.setTableHeader(null);
+		friendWaitingTb.setTableHeader(null);
 		friendWaitingTb.addMouseListener(new WaitingListener());
 		
 		JScrollPane fwjsp = new JScrollPane
@@ -566,11 +579,48 @@ public class SettingPane extends JPanel implements ActionListener{
 		fwjsp.getViewport().setBackground(Color.WHITE);
 		fwjsp.setEnabled(false);
 		fwjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		fwjsp.setSize(530, 180);
-		fwjsp.setLocation(60, 121);
+		fwjsp.setSize(530, 120);
+		fwjsp.setLocation(60, 275);
 		friendPane.add(fwjsp);
 		
-		columnHide();
+		//내가 전송한 일촌 신청 목록
+		sModel = dbc.friend("전송",member.getMember_id());
+		friendSendTb = new JTable(sModel);
+		friendSendTb.setEnabled(false);
+		friendSendTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendSendTb.setBounds(60, 108, 530, 200);
+		friendSendTb.setRowHeight(25);
+		friendSendTb.setRowMargin(0);
+		friendSendTb.setIntercellSpacing(new Dimension(0, 0));
+		friendSendTb.setGridColor(Color.WHITE);
+		friendSendTb.setForeground(Color.DARK_GRAY);
+		friendSendTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		friendSendTb.setShowVerticalLines(false);
+		friendSendTb.setShowHorizontalLines(false);
+		friendSendTb.setShowGrid(false);
+		friendSendTb.setOpaque(false);
+		friendSendTb.setBorder(new EmptyBorder(0, 0, 0, 0));
+		friendSendTb.setBackground(Color.WHITE);
+		friendSendTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		friendSendTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
+		friendSendTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
+		friendSendTb.setTableHeader(null);
+		
+		JScrollPane sendsp = new JScrollPane(friendSendTb,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		sendsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
+		sendsp.setForeground(Color.GRAY);
+		sendsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		sendsp.setOpaque(false);
+		sendsp.getViewport().setBackground(Color.WHITE);
+		sendsp.setEnabled(false);
+		sendsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		sendsp.setSize(530, 120);
+		sendsp.setLocation(60, 443);
+		friendPane.add(sendsp);
+
+		tableRefresh();
 	
 	}
 
@@ -589,8 +639,10 @@ public class SettingPane extends JPanel implements ActionListener{
 				break;
 				
 			case "일촌 관리":
+				tableRefresh();
 				c1.show(settingDetailPane,"friend");
 				break;
+				
 			case "내정보 수정하기":
 				String pw = JOptionPane.showInputDialog("비밀번호를 입력하세요.");
 				
@@ -847,15 +899,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		        		JOptionPane.showMessageDialog
 						(null, friendWaitingTb.getModel().getValueAt(row,4)+"님과 일촌이 되었습니다!");
 		        		
-						wModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
-						wModel = dbc.friend("대기",member.getMember_id());
-						friendWaitingTb.setModel(wModel);
-						
-						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
-						fModel = dbc.friend("일촌",member.getMember_id());
-						friendTb.setModel(fModel);
-						
-						columnHide();
+						tableRefresh();
 		        	}
 		        } else if(result == 1) { //거절
 		        	int rs = dbc.friendAcceptOrDeny("거절", ask);
@@ -864,22 +908,72 @@ public class SettingPane extends JPanel implements ActionListener{
 		        		JOptionPane.showMessageDialog
 						(null, friendWaitingTb.getModel().getValueAt(row,4)+"님의 일촌 신청을 거절하였습니다!");
 		        		
-						wModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
-						wModel = dbc.friend("대기",member.getMember_id());
-						friendWaitingTb.setModel(wModel);
-						
-						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
-						fModel = dbc.friend("일촌",member.getMember_id());
-						friendTb.setModel(fModel);
-						
-						columnHide();
+						tableRefresh();
 		        	}    			
 	    		}
 	    	}
 	    }
 	}
+
+	//일촌 리스트 선택 액션
+	private class friendListener extends MouseAdapter {
+
+	    @Override
+	    public void mouseClicked(MouseEvent e) {
+	    	
+	    	if (e.getClickCount() == 1) {
+	    		int row = friendTb.getSelectedRow();
+	    		
+	    		String[] buttons = {"방문하기", "일촌끊기", "취소"};
+		        int result = JOptionPane.showOptionDialog
+		        		(null, friendTb.getModel().getValueAt(row,4)+"님과 어떤 작업을 하시겠습니까?", "일촌",
+		                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, buttons, "세번째값");
+
+	        	FriendAsk ask = new FriendAsk();
+	        	
+				//미니홈페이지의 주인
+				ask.setMember_id((String)friendTb.getModel().getValueAt(row,0));
+				
+				//일촌 신청한 사람
+				ask.setFriend_id((String)friendTb.getModel().getValueAt(row,3));
+
+		        if(result == 0 ) { //방문하기
+		        	new HomeFrame((String)friendTb.getModel().getValueAt(row,3));
+		        } else if(result == 0 ){ //일촌 끊기
+		        	int num = JOptionPane.showConfirmDialog
+							(null,
+							"정말"+friendTb.getModel().getValueAt(row,4)+"님과 일촌을 끊으시겠습니까?"
+							,"절교 확인",JOptionPane.YES_NO_OPTION);
+		        	if(num == JOptionPane.YES_OPTION) {
+			        	//일촌 삭제
+			        	int rs = dbc.friendAcceptOrDeny("삭제", ask);
 	
-	public void columnHide() {
+			        	if(rs>0) {
+			        		JOptionPane.showMessageDialog
+							(null, friendTb.getModel().getValueAt(row,4)+"님과의 일촌을 끊었습니다!");
+	
+			        		tableRefresh();
+			        	}
+		        	}
+		        }
+	    	}
+	    }
+	}
+	
+	//컬럼 숨기는 메소드
+	public void tableRefresh() {
+		wModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+		wModel = dbc.friend("대기",member.getMember_id());
+		friendWaitingTb.setModel(wModel);
+		
+		fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
+		fModel = dbc.friend("일촌",member.getMember_id());
+		friendTb.setModel(fModel);
+		
+		sModel.setRowCount(0);
+		sModel = dbc.friend("전송",member.getMember_id());
+		friendSendTb.setModel(sModel);
+		
 		friendTb.getColumnModel().getColumn(0).setWidth(0); //내아이디 숨김
 		friendTb.getColumnModel().getColumn(0).setMinWidth(0); //내아이디 숨김
 		friendTb.getColumnModel().getColumn(0).setMaxWidth(0); //내아이디 숨김
@@ -895,43 +989,13 @@ public class SettingPane extends JPanel implements ActionListener{
 		friendWaitingTb.getColumnModel().getColumn(3).setWidth(0); //친구아이디 숨김
 		friendWaitingTb.getColumnModel().getColumn(3).setMinWidth(0); //친구아이디 숨김
 		friendWaitingTb.getColumnModel().getColumn(3).setMaxWidth(0); //친구아이디 숨김
+		
+		friendSendTb.getColumnModel().getColumn(0).setWidth(0); //내아이디 숨김
+		friendSendTb.getColumnModel().getColumn(0).setMinWidth(0); //내아이디 숨김
+		friendSendTb.getColumnModel().getColumn(0).setMaxWidth(0); //내아이디 숨김
+		
+		friendSendTb.getColumnModel().getColumn(3).setWidth(0); //친구아이디 숨김
+		friendSendTb.getColumnModel().getColumn(3).setMinWidth(0); //친구아이디 숨김
+		friendSendTb.getColumnModel().getColumn(3).setMaxWidth(0); //친구아이디 숨김
 	}
-	
-	//일촌 리스트 선택 액션
-	private class friendListener extends MouseAdapter {
-
-	    @Override
-	    public void mouseClicked(MouseEvent e) {
-	    	
-	    	if (e.getClickCount() == 1) {
-	    		int row = friendTb.getSelectedRow();
-		        int result = JOptionPane.showConfirmDialog
-				(null, friendTb.getModel().getValueAt(row,4)+"님과 일촌을 끊으시겠습니까?","일촌 추방",JOptionPane.YES_NO_OPTION);
-		        
-	        	FriendAsk ask = new FriendAsk();
-	        	
-				//미니홈페이지의 주인
-				ask.setMember_id((String)friendTb.getModel().getValueAt(row,0));
-				
-				//일촌 신청한 사람
-				ask.setFriend_id((String)friendTb.getModel().getValueAt(row,3));
-
-		        if(result == JOptionPane.YES_OPTION ) { //수락
-		        	
-		        	//일촌 삭제
-		        	int rs = dbc.friendAcceptOrDeny("삭제", ask);
-
-		        	if(rs>0) {
-		        		JOptionPane.showMessageDialog
-						(null, friendTb.getModel().getValueAt(row,4)+"님과의 일촌을 끊었습니다!");
-
-						fModel.setRowCount(0); //전체 화면 지워줌&새로쓰기
-						fModel = dbc.friend("일촌",member.getMember_id());
-						friendTb.setModel(fModel);
-		        	}
-		        }
-	    	}
-	    }
-	}
-
 }

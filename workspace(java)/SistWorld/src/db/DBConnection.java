@@ -591,14 +591,16 @@ public class DBConnection {
 		try {
 			
 			if(flag.equals("대기")) {
-				sql = "select * from friend_waiting where member_id = ? or friend_id=?";
+				sql = "select * from friend_waiting where member_id = ?";
 				pstmt = con.prepareStatement(sql);
-				pstmt.setString(1, member_id);
-				pstmt.setString(2, member_id);
-			
+				pstmt.setString(1, member_id);	
 			} else if(flag.equals("일촌")){
 				sql = "select * from "+member_id+"_friend";
 				pstmt = con.prepareStatement(sql);
+			} else if(flag.equals("전송")) {
+				sql = "select * from friend_waiting where friend_id = ?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, member_id);
 			}
 			
 			rs = pstmt.executeQuery();
@@ -611,14 +613,14 @@ public class DBConnection {
 				String friend_name = rs.getString("friend_name");
 				String friend_nick = rs.getString("friend_nick");
 				Object[] data = new Object[6];
-				if(mem_id.equals(member_id)) {
+				if(flag.equals("대기")||flag.equals("일촌")) {
 					data[0] = mem_id;
 					data[1] = member_name;
 					data[2] = member_nick;
 					data[3] = friend_id;
 					data[4] = friend_name;
 					data[5] = friend_nick;
-				}else {
+				} else if(flag.equals("전송")) {
 					data[0] = friend_id;
 					data[1] = friend_name;
 					data[2] = friend_nick;
@@ -626,7 +628,6 @@ public class DBConnection {
 					data[4] = member_name;
 					data[5] = member_nick;
 				}
-				
 				model.addRow(data);
 			}
 
