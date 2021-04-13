@@ -251,7 +251,7 @@ public class DBConnection {
 
 			while(rs.next()) {
 				String friend_id = rs.getString("friend_id");
-				String cmt = rs.getString("FREIND_CMT");
+				String cmt = rs.getString("FRIEND_CMT");
 				String nick = "("+rs.getString("FRIEND_NICK")+")";
 				String name = rs.getString("FRIEND_NAME");
 				Object[] data = {friend_id, cmt, nick, name};
