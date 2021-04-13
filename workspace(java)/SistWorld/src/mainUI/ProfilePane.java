@@ -233,18 +233,19 @@ public class ProfilePane extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String member_id = dbc.surfer();
+				String member_id = dbc.surfer(ms.getMaster_id());
 				
-				//현재 파도탄 홈페이지와 다른 이름만 가져오기
+				//현재 접속한 홈페이지와 다른 아이디만 가져오기
 				while(member_id.equals(member.getMember_id())) {
-					member_id = dbc.surfer();
+					member_id = dbc.surfer(ms.getMaster_id());
 				}
 				
-				while(member_id.equals(ms.getMaster_id())) {
-					member_id = dbc.surfer();
+				if(member_id.equals("")) {
+					JOptionPane.showMessageDialog(null,
+							"당신은 인싸군요. 더이상 파도탈 사람이 없습니다.");
+				} else {
+					new HomeFrame(member_id);
 				}
-				
-				new HomeFrame(member_id);
 			}
 		});
 		

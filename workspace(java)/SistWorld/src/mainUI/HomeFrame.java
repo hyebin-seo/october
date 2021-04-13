@@ -5,14 +5,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import db.DBConnection;
 import model.Member;
-import service.FriendCheck;
 import service.ImageUpload;
 import service.MasterSession;
 import service.OwnerCheck;
@@ -20,6 +22,7 @@ import service.OwnerCheck;
 public class HomeFrame extends JFrame implements ActionListener{
 
 	MasterSession ms = MasterSession.getInstance();
+	DBConnection dbc = DBConnection.getInstance();
 	
 	// 회원 목록
 	Member member;
@@ -50,7 +53,6 @@ public class HomeFrame extends JFrame implements ActionListener{
 	}
 
 	public HomeFrame(String member_id) {
-		MasterSession ms = MasterSession.getInstance();
 		this.member = new OwnerCheck(ms.getMaster_id(),member_id).getMember();
 		this.member_id = member_id;
 		
@@ -63,7 +65,7 @@ public class HomeFrame extends JFrame implements ActionListener{
 		// 홈 메인 카드 패널 홈/다이어리/사진첩/방명록
         // 관리 패널은 객체 생성 순서때문에 제일 뒤로 감
 		homePane = new HomePane(member);
-		diaryPane = new DiaryPane();
+		diaryPane = new DiaryPane(member);
 		galleryPane = new GalleryPane(member);
 		bookPane = new BookPane(member);
 		
@@ -73,7 +75,13 @@ public class HomeFrame extends JFrame implements ActionListener{
 		this.setBounds(0, 0, 1280, 720);
 		this.setLocationRelativeTo(null);//창이 가운데 나오게
 		if(ms.getMaster_id().equals(member_id)) {
-			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			this.addWindowListener(new WindowAdapter(){
+                public void windowClosing(WindowEvent e) { 
+            		dbc.close();
+            		System.exit(0);
+                }
+			});
 		}
 		getContentPane().setLayout(null);
 		getContentPane().add(menuPane);

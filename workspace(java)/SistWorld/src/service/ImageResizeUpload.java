@@ -18,6 +18,14 @@ public class ImageResizeUpload {
 	private Image imgResize;
 	private ImageIcon resizeIcon;
 	private String userImgPath;
+	
+	public ImageResizeUpload(String filePath, int width, int height) {
+		Image Img = new ImageIcon(filePath).getImage();
+		Image ImgResize = Img.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH);
+		this.imgResize = ImgResize;
+		ImageIcon resizeIcon = new ImageIcon(ImgResize);
+		this.resizeIcon = resizeIcon;
+	}
 
 	public ImageResizeUpload(String flag, String member_id, int width, int height) {
 

@@ -1,12 +1,16 @@
 package mainUI;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -18,16 +22,17 @@ import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JTextFieldDateEditor;
 
 import db.DBConnection;
 import model.Member;
-import java.awt.Font;
-import java.awt.Color;
-import javax.swing.border.LineBorder;
 
 public class JoinFrame extends JFrame{
+	DBConnection dbc = DBConnection.getInstance();
+	
 	private JTextField idTf;
 	private JPasswordField pwdTf;
 	private JTextField nameTf;
@@ -46,24 +51,24 @@ public class JoinFrame extends JFrame{
 		getContentPane().setLayout(null);
 
 		JLabel joinTitle = new JLabel("Join SistWorld");
-		joinTitle.setBorder(new LineBorder(new Color(9,131,178), 5, true));
+		joinTitle.setBorder(new LineBorder(new Color(9, 131, 178), 3, true));
 		joinTitle.setForeground(new Color(9,131,178));
 		joinTitle.setFont(new Font("맑은 고딕", Font.BOLD, 15));
 		joinTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		joinTitle.setBounds(-8, 22, 310, 52);
+		joinTitle.setBounds(31, 25, 230, 40);
 		getContentPane().add(joinTitle);
 		
 		// 아이디
 		JLabel idLb = new JLabel("ID :");
 		idLb.setForeground(new Color(9,131,178));
 		idLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		idLb.setBounds(0, 99, 110, 20);
+		idLb.setBounds(0, 93, 110, 20);
 		idLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(idLb);
 		
 		idTf = new JTextField();
 		idTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		idTf.setBounds(122, 101, 130, 20);
+		idTf.setBounds(122, 95, 130, 20);
 		getContentPane().add(idTf);
 		idTf.setColumns(10);
 		
@@ -90,13 +95,13 @@ public class JoinFrame extends JFrame{
 		JLabel pwdLb = new JLabel("PASSWORD :");
 		pwdLb.setForeground(new Color(9,131,178));
 		pwdLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		pwdLb.setBounds(0, 151, 110, 20);
+		pwdLb.setBounds(0, 145, 110, 20);
 		pwdLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(pwdLb);
 		
 		pwdTf = new JPasswordField(30);
 		pwdTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		pwdTf.setBounds(122, 153, 130, 20);
+		pwdTf.setBounds(122, 147, 130, 20);
 		pwdTf.setColumns(10);
 		getContentPane().add(pwdTf);
 		
@@ -104,13 +109,13 @@ public class JoinFrame extends JFrame{
 		JLabel nameLb = new JLabel("NAME :");
 		nameLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		nameLb.setForeground(new Color(9,131,178));
-		nameLb.setBounds(0, 203, 110, 20);
+		nameLb.setBounds(0, 197, 110, 20);
 		nameLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(nameLb);
 		
 		nameTf = new JTextField();
 		nameTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		nameTf.setBounds(122, 205, 130, 20);
+		nameTf.setBounds(122, 199, 130, 20);
 		nameTf.setColumns(10);
 		getContentPane().add(nameTf);
 		
@@ -118,14 +123,24 @@ public class JoinFrame extends JFrame{
 		JLabel birthLb = new JLabel("BIRTH :");
 		birthLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		birthLb.setForeground(new Color(9,131,178));
-		birthLb.setBounds(0, 255, 110, 20);
+		birthLb.setBounds(0, 249, 110, 20);
 		birthLb.setHorizontalAlignment(SwingConstants.RIGHT);
 		getContentPane().add(birthLb);
 
 		// jcalendar-1.4.jar 필요
 		dateChooser = new JDateChooser();
-		dateChooser.setBounds(122, 256, 130, 21);
-		dateChooser.setDate(new Date());
+		dateChooser.setBounds(122, 250, 130, 21);
+		try {
+			Date currentDate = new Date();
+			Date firstDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01");
+			dateChooser.setDate(firstDate); //처음 열 때 날짜 : 1900년대
+			dateChooser.setMaxSelectableDate(currentDate); // 선택 가능 최대 범위 : 오늘까지
+			JTextFieldDateEditor editor
+			= (JTextFieldDateEditor) dateChooser.getDateEditor(); //타이핑 입력 못하게 막기
+			editor.setEditable(false);
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		getContentPane().add(dateChooser);
 	
 		// 성별
@@ -133,7 +148,7 @@ public class JoinFrame extends JFrame{
 		genderLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		genderLb.setForeground(new Color(9,131,178));
 		genderLb.setHorizontalAlignment(SwingConstants.RIGHT);
-		genderLb.setBounds(0, 307, 110, 20);
+		genderLb.setBounds(0, 301, 110, 20);
 		getContentPane().add(genderLb);
 		
 		female = new JRadioButton("남자");
@@ -154,7 +169,7 @@ public class JoinFrame extends JFrame{
 		
 		JPanel genderPl = new JPanel();
 		genderPl.setBackground(Color.WHITE);
-		genderPl.setBounds(122, 309, 130, 20);
+		genderPl.setBounds(122, 303, 130, 20);
 		genderPl.setLayout(null);
 		genderPl.add(male);
 		genderPl.add(female);
@@ -165,12 +180,12 @@ public class JoinFrame extends JFrame{
 		emailLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		emailLb.setForeground(new Color(9,131,178));
 		emailLb.setHorizontalAlignment(SwingConstants.RIGHT);
-		emailLb.setBounds(0, 359, 110, 20);
+		emailLb.setBounds(0, 353, 110, 20);
 		getContentPane().add(emailLb);
 		
 		emailTf = new JTextField();
 		emailTf.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		emailTf.setBounds(122, 361, 130, 20);
+		emailTf.setBounds(122, 355, 130, 20);
 		emailTf.setColumns(10);
 		getContentPane().add(emailTf);
 		
@@ -213,13 +228,19 @@ public class JoinFrame extends JFrame{
 					member.setMember_gender(member_gender);
 					member.setMember_email(member_email);
 					
+					//공백검사
 					if(member_id.equals("")||member_pw.equals("")||member_name.equals("")||
 					   member_birth.equals("")||member_gender.equals("")||member_email.equals("")) {
 						JOptionPane.showMessageDialog(null, "모든 정보를 입력해주세요!");
 						return;
 					}
 					
-					DBConnection dbc = DBConnection.getInstance();
+					//이메일 유효성체크
+					if(!isValid("email",member_email)) {
+						JOptionPane.showMessageDialog(null, "이메일이 올바르지 않습니다!");
+						return;
+					}
+
 					int rs = dbc.join(member);
 					
 					if(rs > 0) {
@@ -276,14 +297,17 @@ public class JoinFrame extends JFrame{
 		overBt.setContentAreaFilled(false);
 		overBt.setBorder(null);
 		overBt.setBackground(Color.GRAY);
-		overBt.setBounds(198, 121, 59, 20);
+		overBt.setBounds(198, 115, 59, 20);
 		getContentPane().add(overBt);
 		
 		overBt.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DBConnection dbc = DBConnection.getInstance();
+				if(!isValid("id",idTf.getText())) {
+					JOptionPane.showMessageDialog(null, "아이디는 영문자와 숫자로만 구성할 수 있습니다.");
+					return;
+				}
 				checkFlag = dbc.overCheck(idTf.getText());
 				
 				if(checkFlag == 1) {
@@ -296,4 +320,18 @@ public class JoinFrame extends JFrame{
 
 	
 	}
+	
+	// 유효성 검사 : 정규식
+	public boolean isValid(String flag, String str) {
+		boolean err = false;
+		String check = "";
+		if(flag.equals("email")) { //이메일 형식만 가능
+			check = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+		} else if(flag.equals("id")) { //소문자&숫자만 가능
+			check = "^[a-z0-9]*$";
+		}
+		err = Pattern.matches(check, str);
+		return err; 
+	}
+
 }

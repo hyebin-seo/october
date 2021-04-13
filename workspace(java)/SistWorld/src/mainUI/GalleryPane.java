@@ -11,39 +11,36 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import db.DBConnection;
+import model.Gal_1;
+import model.Gal_menu;
 import model.Member;
 
 public class GalleryPane extends JPanel {
+	
+	DBConnection dbc = DBConnection.getInstance(); //#수정
 
 	Connection con = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
-	String filepath;
-	
+	String menuName = "";
 	OpenActionListner oA = new OpenActionListner();
+	RoundedButton createBtn;
+	// menuId값의 변수 
+	int firstVal = 0; 
+	int SecondVal = 0;
+	int ThirdVal = 0;
+	int currentMenu = 0;
 
-	int flag = 0; //버튼을 만들기 위한 변수 
-	
-	
 	private JFrame frame;
-	
-	
-	
+
 	// 사진첩 목록 패널
 	private JPanel photoSidelist;
 
@@ -57,38 +54,72 @@ public class GalleryPane extends JPanel {
 	// 사진첩메인 패널
 	private JPanel photoMain;
 	private JLabel lblNoexist;
-
-	// 사진첩메인 라벨 및 check box
-	private JLabel showDialog;
-	private JCheckBox Checkbox1;
-	private JCheckBox Checkbox2;
-	private JCheckBox Checkbox3;
 	private ButtonGroup bg;
 
 	// 사진 업로드 하는 버튼
+	private JFileChooser chooser;
 	private RoundedButton uploadBtn;
 	private JLabel preLabel;
 	private RoundedButton finalUpload;
 	private JTextArea uploadText;
 	private RoundedButton cancelBtn;
-
-	// 사진 댓글 라벨 및 댓글 텍스트필드 및 텍스트area
-	private JLabel commentLable;
-	private JTextField commentTextField;
-	private JTextArea commentTextArea;
-	private JPanel commentPanel;
-	private JScrollBar commentScroll;
 	private JPanel uploadPanel;
 	private RoundedButton savePhoto;
 	private JPanel prepanel;
+	private JPanel showPanel;
+	private JLabel showLabel;
+	private JLabel showText;
+	
 
 	public GalleryPane(Member member) {
 
 		this.setBounds(40, 40, 910, 600);
 		setLayout(null);
 
-		// 사진 업로드 버튼
+		// 사진첩 메인 패널 및 라벨,checkbox
+		photoMain = new JPanel();
+		photoMain.setBorder(new LineBorder(Color.gray, 1));
+		photoMain.setBounds(260, 0, 650, 600);
+		photoMain.setBackground(Color.WHITE);
+		this.add(photoMain);
+		photoMain.setLayout(null);
 
+		lblNoexist = new JLabel("등록된 게시물이 없습니다!!");
+		lblNoexist.setBounds(197, 226, 265, 65);
+		lblNoexist.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		lblNoexist.setFont(new Font("굴림", Font.PLAIN, 20));
+		photoMain.add(lblNoexist);
+
+		showPanel = new JPanel();
+		showPanel.setBounds(12, 81, 626, 401);
+		showPanel.setBorder(new LineBorder(Color.gray, 1));
+		photoMain.add(showPanel);
+		showPanel.setLayout(null);
+
+		showLabel = new JLabel("");
+		showLabel.setBounds(0, 0, 626, 360);
+		showLabel.setBorder(new LineBorder(Color.gray, 1));
+		showPanel.add(showLabel);
+
+		showText = new JLabel("");
+		showText.setBounds(0, 361, 626, 41);
+		showText.setBorder(new LineBorder(Color.gray, 1));
+		showPanel.add(showText);
+
+		uploadBtn = new RoundedButton("업로드");
+		uploadBtn.setBounds(559, 47, 91, 23);
+		uploadBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		photoMain.add(uploadBtn);
+		uploadBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				uploadText.setText(null);
+				uploadPanel.setVisible(true);
+				photoMain.setVisible(false);
+			}
+		});
+
+		// 사진 업로드 버튼
 		uploadPanel = new JPanel();
 		uploadPanel.setBounds(260, 0, 650, 600);
 		uploadPanel.setBackground(Color.white);
@@ -115,12 +146,53 @@ public class GalleryPane extends JPanel {
 		finalUpload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				// src에 사진데이터 저장
+				
+				File f = chooser.getSelectedFile();
+				double dValue = Math.random(); // 난수발생
+				int ran = (int) (dValue * 100000); //#수정
+				//#수정 경로가 상대경로가 아니어서 파일이 저장되지 않아 수정합니다.
+				oA.fileSave(f, "../SistWorld/data/user/"+member.getMember_id(), f.getName(), ran); // 데이터저장
+				
+				Gal_1 gallery = new Gal_1();
+				Gal_menu gall = new Gal_menu();
+
+				String splitData[] = f.getName().split("\\.");
+				String fileName = splitData[0];
+				String ext = splitData[1];
+
+				gallery.setGal_content(uploadText.getText());
+				gallery.setNew_file_name(fileName + "_" + ran);
+				gallery.setOld_file_name(fileName);
+				gallery.setFile_ext(ext);
+				gallery.setMenu_id(currentMenu);
+
+				int result = dbc.insertGallery(gallery);
+				if (result > 0) {
+					System.out.println("데이터 추가");
+				} else {
+					System.out.println("데이터추가 실패!");
+				}
+				
+				gallery = dbc.selectGallery(currentMenu);
+				ImageIcon icon = new ImageIcon("../SistWorld/data/user/"+member.getMember_id()+"/" + gallery.getNew_file_name()
+						+ "." + gallery.getFile_ext());
+				Image img = icon.getImage();
+				Image ImgResize = img.getScaledInstance(showLabel.getWidth(), showLabel.getHeight(),
+						Image.SCALE_SMOOTH);
+				ImageIcon resizeIcon = new ImageIcon(ImgResize);
+				showLabel.setIcon(resizeIcon);// 게시물 사진 추가 로직
+				showText.setText(gallery.getGal_content());
+
 				lblNoexist.setVisible(false);
 				uploadPanel.setVisible(false);
 				photoMain.setVisible(true);
 				preLabel.setIcon(null);
+
 			}
+
 		});
+
 		finalUpload.setBounds(431, 0, 91, 23);
 		prepanel.add(finalUpload);
 
@@ -131,7 +203,7 @@ public class GalleryPane extends JPanel {
 				uploadPanel.setVisible(false);
 				preLabel.setIcon(null);
 				uploadText.setText(null);
-				
+
 			}
 		});
 		cancelBtn.setBounds(534, 0, 91, 23);
@@ -148,8 +220,7 @@ public class GalleryPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) { // 사진 이미지 불러오는 메서드
-				JFileChooser chooser = new JFileChooser("c:");
-				
+				chooser = new JFileChooser("c:");
 
 				FileNameExtensionFilter filter = new FileNameExtensionFilter("Images File", "jpg", "jpeg", "gif",
 						"png");
@@ -160,21 +231,17 @@ public class GalleryPane extends JPanel {
 					JOptionPane.showMessageDialog(null, "파일을 선택하지않았습니다.", "경고", JOptionPane.WARNING_MESSAGE);
 					return;
 				} else {
-					System.out.println("[GalleyPane-chooseImage]"+chooser.getSelectedFile().getPath());
-					File f = chooser.getSelectedFile();
-	                oA.fileSave(f, "C:\\NCS\\workspace(java)\\SistWorld\\src\\data\\jun1", f.getName());
-	                System.out.println(f.getName());
-				}
-				String filePath = chooser.getSelectedFile().getPath();
-				Image img = new ImageIcon(filepath).getImage();
-				Image ImgResize = img.getScaledInstance(preLabel.WIDTH, preLabel.HEIGHT, Image.SCALE_SMOOTH);
-				ImageIcon resizeIcon = new ImageIcon(ImgResize);
-                preLabel.setIcon(resizeIcon);
-				
+					String filePath = chooser.getSelectedFile().getPath();
+					Image img = new ImageIcon(filePath).getImage();
+					Image ImgResize = img.getScaledInstance(preLabel.getWidth(), preLabel.getHeight(),
+							Image.SCALE_SMOOTH);
+					ImageIcon resizeIcon = new ImageIcon(ImgResize);
+					preLabel.setIcon(resizeIcon);
+					System.out.println("[GalleyPane-chooseImage]" + chooser.getSelectedFile().getPath());
 
+				}
 			}
 		});
-		
 
 		// 사진첩 패널 및 목록 버튼
 		photoSidelist = new JPanel();
@@ -183,14 +250,6 @@ public class GalleryPane extends JPanel {
 		photoSidelist.setBackground(Color.white);
 		photoSidelist.setForeground(Color.BLACK);
 		this.add(photoSidelist);
-		photoSidelist.setLayout(null);
-
-		// sidepanel 버튼(전체보기, Add앨범, firstBtn, SecondBtn, ThirdBtn 이벤트 및 속성)
-
-		allBtn = new RoundedButton("전체보기");
-		allBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		allBtn.setBounds(0, 51, 260, 23);
-		photoSidelist.add(allBtn);
 
 		RoundedButton AddBtn = new RoundedButton("Add 앨범");
 		AddBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
@@ -198,227 +257,188 @@ public class GalleryPane extends JPanel {
 		AddBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				System.out.println(flag);
+				int menuCnt = dbc.selectMenuCnt(member.getMember_id());
+				System.out.println("sele>>" + menuCnt);
 
-				// sidepanel 버튼 생성 이벤트 작업
-				if (flag <= 0) {
-
-					firstBtn = new RoundedButton(JOptionPane.showInputDialog("폴더명을 입력해주세요"));
-					if (firstBtn != null) {
-						firstBtn.setBounds(18, 102, 99, 61);
-						firstBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-						photoSidelist.add(firstBtn);
-						firstBtn.setVisible(false);
-						firstBtn.setVisible(true);
-						flag++;
-					} else {
-					}
-
-				} else if (flag > 0 && flag <= 1) {
-					ThirdBtn = new RoundedButton(JOptionPane.showInputDialog("원하신는 이름을 적어주세요"));
-					ThirdBtn.setBounds(140, 102, 99, 61);
-					ThirdBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-					photoSidelist.add(ThirdBtn);
-					ThirdBtn.setVisible(false);
-					ThirdBtn.setVisible(true);
-					flag++;
-
-				} else if (flag > 1 && flag <= 2) {
-					SecondBtn = new RoundedButton(JOptionPane.showInputDialog("원하신는 이름을 적어주세요"));
-					SecondBtn.setBounds(18, 193, 99, 61);
-					SecondBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-					photoSidelist.add(SecondBtn);
-					SecondBtn.setVisible(false);
-					SecondBtn.setVisible(true);
-					flag++;
-
-				} else if (flag == 3) {
-
+				if (menuCnt >= 3) {
 					JOptionPane.showMessageDialog(null, "더이상 사진첩 메뉴를 만들 수 없습니다.");
+				} else {
+					menuName = JOptionPane.showInputDialog("폴더명을 입력하세요.");
 
+					if (!"".equals(menuName)) {
+						dbc.insertMenu(menuName, member.getMember_id());
+						showSideMenu(member.getMember_id());
+						panelRefresh();
+					} else {
+						System.out.println("메뉴등록에 실패했습니다.");
+					}
 				}
 
 			}
 		});
+		photoSidelist.setLayout(null);
 
-		handleBtn = new RoundedButton("폴더관리하기 >>");
+		handleBtn = new RoundedButton("폴더삭제 >>");
 		handleBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		handleBtn.setBounds(0, 551, 260, 45);
+		handleBtn.setBounds(0, 575, 259, 25);
 		photoSidelist.add(handleBtn);
 
 		// sidepanel에서 생성된 버튼을 블러처리하는 이벤트
 		handleBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String name = null;
-				name = JOptionPane.showInputDialog("삭제할 폴더의 이름을 작성해주세요");
+				menuName = JOptionPane.showInputDialog("폴더명을 입력하세요.");
+				sideMenuDelete(menuName, member.getMember_id());
 
-				System.out.println(firstBtn.getText());
-				System.out.println(name);
-				System.out.println(flag);
-				if (name.equals(firstBtn.getText())) {
-					System.out.println(name);
-					System.out.println(firstBtn.getText());
-					firstBtn.setVisible(false);
-					flag--;
-				} else if (name.equals(SecondBtn.getText())) {
-					System.out.println(name);
-					System.out.println(SecondBtn.getText());
-					SecondBtn.setVisible(false);
-					flag--;
-				} else if (name.equals(ThirdBtn.getText())) {
-					System.out.println(name);
-					System.out.println(ThirdBtn.getText());
-					ThirdBtn.setVisible(false);
-					flag--;
-				} else if (name.equals(null)) {
-					System.out.println(name);
-					System.out.println("실수햇지롱~");
-				}
 			}
 		});
 
-		AddBtn.setBounds(0, 0, 91, 23);
+		showSideMenu(member.getMember_id());
+
+		// sidepanel 버튼(전체보기, Add앨범, firstBtn, SecondBtn, ThirdBtn 이벤트 및 속성)
+
+		allBtn = new RoundedButton();
+
+		allBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		allBtn.setBounds(0, 60, 259, 25);
+		photoSidelist.add(allBtn);
+
+		AddBtn.setBounds(0, 0, 83, 25);
 		photoSidelist.add(AddBtn);
-
-		// 사진첩 메인 패널 및 라벨,checkbox
-		photoMain = new JPanel();
-		photoMain.setBorder(new LineBorder(Color.gray, 1));
-		photoMain.setBounds(260, 0, 650, 600);
-		photoMain.setBackground(Color.WHITE);
-		this.add(photoMain);
-		photoMain.setLayout(null);
-
-		showDialog = new JLabel("전체보기입니다.");
-		showDialog.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		showDialog.setBounds(12, 5, 93, 15);
-		photoMain.add(showDialog);
-
-		Checkbox1 = new JCheckBox("펼쳐보기");
-		Checkbox1.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		Checkbox1.setBounds(12, 23, 73, 23);
-		Checkbox1.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showDialog.setText(Checkbox1.getText());
-
-			}
-		});
-		photoMain.add(Checkbox1);
-
-		Checkbox2 = new JCheckBox("작게보기");
-		Checkbox2.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		Checkbox2.setBounds(88, 23, 73, 23);
-		Checkbox2.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showDialog.setText(Checkbox2.getText());
-
-			}
-		});
-		photoMain.add(Checkbox2);
-
-		Checkbox3 = new JCheckBox("슬라이드");
-		Checkbox3.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		Checkbox3.setBounds(160, 23, 73, 23);
-		Checkbox3.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showDialog.setText(Checkbox3.getText());
-
-			}
-		});
-		photoMain.add(Checkbox3);
 		bg = new ButtonGroup();
-		bg.add(Checkbox1);
-		bg.add(Checkbox2);
-		bg.add(Checkbox3);
-
-		commentPanel = new JPanel();
-		commentPanel.setBounds(53, 443, 530, 157);
-		photoMain.add(commentPanel);
-		commentPanel.setBackground(Color.GRAY);
-		commentPanel.setLayout(null);
-
-		// 사진 댓글 라벨 및 댓글 텍스트필드 및 텍스트Area
-		commentLable = new JLabel("댓    글 : ");
-		commentLable.setBounds(32, 37, 63, 17);
-		commentPanel.add(commentLable);
-		commentLable.setFont(new Font("굴림", Font.PLAIN, 14));
-
-		commentTextField = new JTextField();
-		commentTextField.setBounds(107, 36, 337, 21);
-		commentPanel.add(commentTextField);
-		commentTextField.setColumns(10);
-
-		commentTextArea = new JTextArea();
-		commentTextArea.setLineWrap(true);
-		commentTextArea.setBorder(new LineBorder(Color.gray, 1));
-		commentTextArea.setBounds(107, 62, 337, 85);
-		commentPanel.add(commentTextArea);
-
-		commentScroll = new JScrollBar();
-		commentScroll.setBounds(427, 67, 17, 80);
-		commentPanel.add(commentScroll);
-
-		JScrollBar scrollBar = new JScrollBar();
-		scrollBar.setBounds(427, 63, 17, 84);
-		commentPanel.add(scrollBar);
-
-		uploadBtn = new RoundedButton("업로드");
-		uploadBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		uploadBtn.setBounds(559, 47, 91, 23);
-		photoMain.add(uploadBtn);
-
-		lblNoexist = new JLabel("등록된 게시물이 없습니다!!");
-		lblNoexist.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		lblNoexist.setBounds(197, 226, 265, 65);
-		lblNoexist.setFont(new Font("굴림", Font.PLAIN, 20));
-		photoMain.add(lblNoexist);
-		uploadBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				uploadPanel.setVisible(true);
-				photoMain.setVisible(false);
-			}
-		});
 
 	}
 
-	// DB연동하는 메서드
+	public void sideMenuDelete(String menuName, String memberId) {
+		int menuId = dbc.sideMenuDelete(menuName, memberId);
+		
+		if (menuId > 0) {
+	
+			if (menuId == currentMenu) {
+				currentMenu = 0;
+	
+				showGalleryList(currentMenu, memberId);
+				showSideMenu(memberId);
+				
+			} else {
+	
+				showGalleryList(currentMenu, memberId);
+				showSideMenu(memberId);
+			}
+		} else {
+	
+			JOptionPane.showMessageDialog(null, "입력하신 폴더명은 존재하지 않습니다!!");
+		}
+	}
 
-	private void connect() {
-
-		String driver = "oracle.jdbc.driver.OracleDriver";
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		String user = "web";
-		String password = "1234";
-
+	//#수정
+	public void showSideMenu(String memberId) {
+		
 		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, user, password);
+			List<Gal_menu> menuList = dbc.showSideMenu(memberId);
+
+			if (menuList.size() > 0) {
+				for (int i = 0; i < menuList.size(); i++) {
+
+					if (i == 0) {
+						firstBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						firstBtn.setBounds(137, 102, 99, 61);
+						firstBtn.setVisible(true);
+						photoSidelist.add(firstBtn);
+						firstVal = menuList.get(i).getMenu_id();
+						firstBtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								showLabel.setIcon(null);
+								showText.setText(null);
+								lblNoexist.setVisible(true);
+								showGalleryList(firstVal,memberId);
+								allBtn.setText(firstBtn.getText());
+								currentMenu = firstVal;
+							}
+						});
+
+					} else if (i == 1) {
+						SecondBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						SecondBtn.setBounds(12, 193, 99, 61);
+						SecondBtn.setVisible(true);
+						photoSidelist.add(SecondBtn);
+						SecondVal = menuList.get(i).getMenu_id();
+						SecondBtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								showLabel.setIcon(null);
+								showText.setText(null);
+								lblNoexist.setVisible(true);
+								showGalleryList(SecondVal, memberId);
+								allBtn.setText(SecondBtn.getText());
+								currentMenu = SecondVal;
+							}
+						});
+					} else if (i == 2) {
+						ThirdBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						ThirdBtn.setBounds(137, 193, 99, 61);
+						ThirdBtn.setVisible(true);
+						photoSidelist.add(ThirdBtn);
+						ThirdVal = menuList.get(i).getMenu_id();
+						ThirdBtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								showLabel.setIcon(null);
+								showText.setText(null);
+								lblNoexist.setVisible(true);
+								showGalleryList(ThirdVal, memberId);
+								allBtn.setText(ThirdBtn.getText());
+								currentMenu = ThirdVal;
+							}
+						});
+					}
+				}
+				if (currentMenu == 0) {
+					currentMenu = firstVal;
+					showGalleryList(firstVal, memberId);// 메뉴가 1개 이상일때 default로 첫번째 메뉴 선택됨
+				} else {
+					showGalleryList(currentMenu, memberId);
+				}
+				panelRefresh();
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	//
-	public void insert() {
-
+	public void showGalleryList(int menuId, String memberId) {
 		try {
-			String sql = "insert into sidepanel values(?)";
-			pstmt = con.prepareStatement(sql);
+			List<Gal_1> galList = dbc.showGalleryList(menuId, memberId); //#수정
+			
+			if (galList.size() > 0) {
+				for (int i = 0; i < galList.size(); i++) {
+					Gal_1 gal = galList.get(i);
+					String path = "";
+					ImageIcon icon = new ImageIcon(
+							"../SistWorld/data/user/"+memberId+"/" + gal.getNew_file_name() + "." + gal.getFile_ext());
+					Image img = icon.getImage();
+					Image ImgResize = img.getScaledInstance(showLabel.getWidth(), showLabel.getHeight(),
+							Image.SCALE_SMOOTH);
+					ImageIcon resizeIcon = new ImageIcon(ImgResize);
+					showLabel.setIcon(resizeIcon);// 게시물 사진 추가 로직
+					showText.setText(gal.getGal_content());
+					lblNoexist.setVisible(false);
+				}
+			} else {
+				showLabel.setIcon(null);
+				showText.setText("");
+				lblNoexist.setVisible(true);
 
-			pstmt.setString(1, firstBtn.getText());
-			pstmt.executeUpdate();
+			}
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 	
+	public void panelRefresh() {
+		photoSidelist.revalidate();
+		photoSidelist.repaint();
+	}
 }

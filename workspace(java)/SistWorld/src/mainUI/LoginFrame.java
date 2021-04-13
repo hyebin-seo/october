@@ -83,7 +83,7 @@ public class LoginFrame extends JFrame{
 		idTf = new JTextField(10);
 		idTf.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		idTf.setBounds(230, 191, 130, 30);
-		idTf.setText("hong"); //TODO 임시
+		idTf.setText("nana"); //TODO 임시
 		
 		// 비밀번호 입력
 		pwdPf = new JPasswordField(10);

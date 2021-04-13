@@ -37,8 +37,7 @@ public class HomePane extends JPanel{
 	
 	DBConnection dbc = DBConnection.getInstance();
 	MasterSession ms = MasterSession.getInstance();
-	
-	
+
 	// 멤버정보
 	Member member;
 
@@ -124,6 +123,7 @@ public class HomePane extends JPanel{
 		mainDetailPane.add(friendLb);
 		
 		friendTf = new JTextField();
+		friendTf.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
 		friendTf.setBounds(101, 372, 430, 20);
 		mainDetailPane.add(friendTf);
 		friendTf.setColumns(10);
@@ -139,26 +139,10 @@ public class HomePane extends JPanel{
 		freindBt.addActionListener(new cmtHandler());
 
 		// 일촌평
-		DBConnection dbc = DBConnection.getInstance();
 		model = dbc.friendCmt(member.getMember_id());
 
 		// 일촌평 헤더 "friend_id","cmt","nick","name"
-		cmtTb = new JTable(model);
-		cmtTb.setRowHeight(25);
-		cmtTb.setRowMargin(0);
-		cmtTb.setIntercellSpacing(new Dimension(0, 0));
-		cmtTb.setGridColor(Color.WHITE);
-		cmtTb.setForeground(Color.DARK_GRAY);
-		cmtTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		cmtTb.setShowVerticalLines(false);
-		cmtTb.setShowHorizontalLines(false);
-		cmtTb.setShowGrid(false);
-		cmtTb.setOpaque(false);
-		cmtTb.setBorder(new EmptyBorder(0, 0, 0, 0));
-		cmtTb.setBackground(Color.WHITE);
-		cmtTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		cmtTb.getTableHeader().setReorderingAllowed(false); // 이동 불가
-		cmtTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
+		cmtTb = new CustomJTable(model);
 		cmtTb.getColumnModel().getColumn(1).setPreferredWidth(300); //셀크기 조정
 		cmtTb.getColumnModel().getColumn(2).setPreferredWidth(40); //셀크기 조정
 		cmtTb.getColumnModel().getColumn(3).setPreferredWidth(20); //셀크기 조정
@@ -168,18 +152,12 @@ public class HomePane extends JPanel{
 		cmtTb.setTableHeader(null);
 		cmtTb.addMouseListener(new tableListener());
 
-		JScrollPane jsp = new JScrollPane
+		JScrollPane jsp = new CustomJsp
 				(cmtTb,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		jsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
-		jsp.setForeground(Color.GRAY);
-		jsp.setBorder(new EmptyBorder(0, 0, 0, 0));
-		jsp.setOpaque(false);
-		jsp.getViewport().setBackground(Color.WHITE);
-		jsp.setEnabled(false);
-		jsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		jsp.addMouseListener(new tableListener());
+		jsp.setBorder(new EmptyBorder(0, 0, 0, 0));
 		jsp.setSize(530, 170);
 		jsp.setLocation(60, 400);
 		mainDetailPane.add(jsp);
@@ -238,7 +216,6 @@ public class HomePane extends JPanel{
 					file.delete();
 				}
 				member.setHome_miniroom(iru.getUserImgPath());
-				DBConnection dbc = DBConnection.getInstance();
 				member = dbc.modifyMySetting("miniroom", member);
 			}
 	
@@ -262,7 +239,6 @@ public class HomePane extends JPanel{
 			    	int rs = JOptionPane.showConfirmDialog
 							(null, friend_name+"에게 파도 탈까요?","파도타기",JOptionPane.YES_NO_OPTION);
 			        if(rs == JOptionPane.YES_OPTION) {
-				    	DBConnection dbc = DBConnection.getInstance();
 				    	boolean memberCheck = dbc.memberCheck(friend_id);
 				    	if(memberCheck) {
 				    		new HomeFrame(friend_id);

@@ -506,116 +506,41 @@ public class SettingPane extends JPanel implements ActionListener{
 		
 		//현재 일촌 목록
 		fModel = dbc.friend("일촌",member.getMember_id());
-		
-		friendTb = new JTable(fModel);
-		friendTb.setBorder(new LineBorder(new Color(0, 0, 0)));
+		friendTb = new CustomJTable(fModel);
 		friendTb.setBounds(60, 359, 530, 200);
-		friendTb.setRowHeight(25);
-		friendTb.setRowMargin(0);
-		friendTb.setIntercellSpacing(new Dimension(0, 0));
-		friendTb.setGridColor(Color.WHITE);
-		friendTb.setForeground(Color.DARK_GRAY);
-		friendTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		friendTb.setShowVerticalLines(false);
-		friendTb.setShowHorizontalLines(false);
-		friendTb.setShowGrid(false);
-		friendTb.setOpaque(false);
-		friendTb.setBorder(new EmptyBorder(0, 0, 0, 0));
-		friendTb.setBackground(Color.WHITE);
-		friendTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		friendTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
-		friendTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
-		friendTb.setTableHeader(null);
 		friendTb.addMouseListener(new friendListener());
 		
-		JScrollPane fjsp = new JScrollPane
+		JScrollPane fjsp = new CustomJsp
 				(friendTb,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
-		fjsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
-		fjsp.setForeground(Color.GRAY);
-		fjsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		fjsp.setOpaque(false);
-		fjsp.getViewport().setBackground(Color.WHITE);
-		fjsp.setEnabled(false);
-		fjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		fjsp.setSize(530, 120);
 		fjsp.setLocation(60, 107);
 		friendPane.add(fjsp);
 		
 		//나에게 들어온 일촌 신청 목록
 		wModel = dbc.friend("대기",member.getMember_id());
-		
-		friendWaitingTb = new JTable(wModel);
-		friendWaitingTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendWaitingTb = new CustomJTable(wModel);
 		friendWaitingTb.setBounds(60, 108, 530, 200);
-		friendWaitingTb.setRowHeight(25);
-		friendWaitingTb.setRowMargin(0);
-		friendWaitingTb.setIntercellSpacing(new Dimension(0, 0));
-		friendWaitingTb.setGridColor(Color.WHITE);
-		friendWaitingTb.setForeground(Color.DARK_GRAY);
-		friendWaitingTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		friendWaitingTb.setShowVerticalLines(false);
-		friendWaitingTb.setShowHorizontalLines(false);
-		friendWaitingTb.setShowGrid(false);
-		friendWaitingTb.setOpaque(false);
-		friendWaitingTb.setBorder(new EmptyBorder(0, 0, 0, 0));
-		friendWaitingTb.setBackground(Color.WHITE);
-		friendWaitingTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		friendWaitingTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
-		friendWaitingTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
-		friendWaitingTb.setTableHeader(null);
 		friendWaitingTb.addMouseListener(new WaitingListener());
 		
-		JScrollPane fwjsp = new JScrollPane
+		JScrollPane fwjsp = new CustomJsp
 				(friendWaitingTb,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		fwjsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
-		fwjsp.setForeground(Color.GRAY);
-		fwjsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		fwjsp.setOpaque(false);
-		fwjsp.getViewport().setBackground(Color.WHITE);
-		fwjsp.setEnabled(false);
-		fwjsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		fwjsp.setSize(530, 120);
 		fwjsp.setLocation(60, 275);
 		friendPane.add(fwjsp);
 		
 		//내가 전송한 일촌 신청 목록
 		sModel = dbc.friend("전송",member.getMember_id());
-		friendSendTb = new JTable(sModel);
-		friendSendTb.setEnabled(false);
-		friendSendTb.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		friendSendTb = new CustomJTable(sModel);
+		friendSendTb.setCellSelectionEnabled(false);
 		friendSendTb.setBounds(60, 108, 530, 200);
-		friendSendTb.setRowHeight(25);
-		friendSendTb.setRowMargin(0);
-		friendSendTb.setIntercellSpacing(new Dimension(0, 0));
-		friendSendTb.setGridColor(Color.WHITE);
-		friendSendTb.setForeground(Color.DARK_GRAY);
-		friendSendTb.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		friendSendTb.setShowVerticalLines(false);
-		friendSendTb.setShowHorizontalLines(false);
-		friendSendTb.setShowGrid(false);
-		friendSendTb.setOpaque(false);
-		friendSendTb.setBorder(new EmptyBorder(0, 0, 0, 0));
-		friendSendTb.setBackground(Color.WHITE);
-		friendSendTb.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		friendSendTb.getTableHeader().setReorderingAllowed(false); // 셀 좌우 이동 불가
-		friendSendTb.getTableHeader().setResizingAllowed(false); // 크기 조절 불가
-		friendSendTb.setTableHeader(null);
 		
-		JScrollPane sendsp = new JScrollPane(friendSendTb,
+		JScrollPane sendsp = new CustomJsp(friendSendTb,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		sendsp.setViewportBorder(new EmptyBorder(0, 0, 0, 0));
-		sendsp.setForeground(Color.GRAY);
-		sendsp.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		sendsp.setOpaque(false);
-		sendsp.getViewport().setBackground(Color.WHITE);
-		sendsp.setEnabled(false);
-		sendsp.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		sendsp.setSize(530, 120);
 		sendsp.setLocation(60, 443);
 		friendPane.add(sendsp);
@@ -664,7 +589,7 @@ public class SettingPane extends JPanel implements ActionListener{
 		}
 
 	}
-	
+
 	//메뉴 설정
 	private class menuHandler implements ActionListener{
 

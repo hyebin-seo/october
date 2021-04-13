@@ -34,7 +34,7 @@ public class OpenActionListner implements ActionListener {
 			System.out.println(chooser.getSelectedFile().getPath());
 			
 			File f = chooser.getSelectedFile();
-			fileSave(f, chooser.getSelectedFile().getPath(), f.getName());
+			//fileSave(f, chooser.getSelectedFile().getPath(), f.getName()); 추후 삭제
 			
 			
 		}
@@ -44,15 +44,18 @@ public class OpenActionListner implements ActionListener {
 		
 	}
 	
-	public void fileSave(File file, String path, String name) {
+	public void fileSave(File file, String path, String name, int ran) {
 		try {
 			File f = new File(path);
 			if(!f.isFile()) {
 				f.mkdirs();
 			}
 			
-			String filePath = path+"\\"+name;
-			
+			System.out.println(name);
+			String splitData[] =name.split("\\.");
+			String fileName = splitData[0];
+			String ext = splitData[1];
+			String filePath = (path+"\\"+fileName + "_" + ran+"."+ext);
 			FileInputStream fis = new FileInputStream(file);
 			FileOutputStream fos = new FileOutputStream(filePath);
 			

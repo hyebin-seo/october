@@ -6,11 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
+import model.DiaryDTO;
 import model.FriendAsk;
+import model.Gal_1;
+import model.Gal_menu;
+import model.GuestBookCommDTO;
+import model.GuestBookDTO;
 import model.Member;
 import service.MasterSession;
 
@@ -19,12 +26,12 @@ public class DBConnection {
 	private static DBConnection dbc;
 	
 	String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	String user = "web";
+	String user = "web"; //현재 데이터 베이스 명
 	String password = "1234";
 
-	Connection con = null; // DB와 연결 객체
-	PreparedStatement pstmt = null; // sql문을 전송하는 객체
-	ResultSet rs = null; // sql 실행 결과를 가지고 있는 객체
+	Connection con = null; //DB와 연결 객체
+	PreparedStatement pstmt = null; //sql문을 전송하는 객체
+	ResultSet rs = null; //sql 실행 결과를 가지고 있는 객체
 	
 	private DBConnection() {
 		init();
@@ -41,6 +48,16 @@ public class DBConnection {
 		}
 		
 		return dbc;
+	}
+	
+	public void close() {
+		try {
+			rs.close();
+			pstmt.close();
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	//드라이버 로딩
@@ -60,6 +77,7 @@ public class DBConnection {
 		}
 	}
 	
+	//*************************로그인&회원가입 관련 메소드 시작************************
 	//비밀번호 일치 체크
 	public boolean loginCheck(String member_id, String member_pw) {
 		
@@ -128,21 +146,6 @@ public class DBConnection {
 				} else {
 					member.setHome_book(false);
 				}
-				
-				//객체 생성 데이터 확인
-//				System.out.println("[dbc]:"+member);
-//				System.out.println("[dbc-id]:"+member.getMember_id());
-//				System.out.println("[dbc-pw]:"+member.getMember_pw());
-//				System.out.println("[dbc-name]:"+member.getMember_name());
-//				System.out.println("[dbc-birth]:"+member.getMember_birth());
-//				System.out.println("[dbc-gender]:"+member.getMember_gender());
-//				System.out.println("[dbc-email]:"+member.getMember_email());
-//				System.out.println("[dbc-regdate]:"+member.getMember_regdate());
-//				System.out.println("[dbc-title]:"+member.getHome_title());
-//				System.out.println("[dbc-skin]:"+member.getHome_skin());
-//				System.out.println("[dbc-room]:"+member.getHome_miniroom());
-//				System.out.println("[dbc-pic]:"+member.getHome_profile_pic());
-//				System.out.println("[dbc-msg]:"+member.getHome_profile_msg());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -224,60 +227,9 @@ public class DBConnection {
 
 		return 1; //사용가능한 아이디
 	}
+	//*************************로그인&회원가입 관련 메소드 종료************************
 	
-	public boolean memberCheck(String friend_id) {
-		String sql = 
-				"SELECT COUNT(*) cnt FROM MEMBER WHERE MEMBER_ID =?";
-		
-		try {
-			pstmt = con.prepareStatement(sql);
-			
-			pstmt.setString(1, friend_id); //아이디
-			
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				int cnt = rs.getInt("cnt");
-				if(cnt > 0) {
-					return true; //존재하는 회원
-				}
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return false; //존재하지 않는 회원
-	}
-	
-	//회원탈퇴
-	public int out(Member member) {
-	
-		int result = 0;
-		String sql = 
-				"DELETE FROM MEMBER WHERE MEMBER_ID =?";
-		
-		try {
-			pstmt = con.prepareStatement(sql);
-			
-			pstmt.setString(1, member.getMember_id()); //아이디
-			
-			result = pstmt.executeUpdate();
-			
-			String dropsql = "DROP TABLE "+member.getMember_id()+"_FRIEND";
-
-			Statement stmt = con.createStatement();
-			stmt.execute(dropsql);
-			
-			System.out.println(member.getMember_id()+"_friend 테이블 삭제");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return result;
-	}
-	
+	//*************************메인&디테일 홈패널 관련 메소드 시작************************
 	//일촌평 불러오기
 	public DefaultTableModel friendCmt(String member_id) {
 		String[] header = {"friend_id","cmt","nick","name"};
@@ -362,6 +314,65 @@ public class DBConnection {
 		return result;
 	}
 	
+	//일촌평 클릭으로 파도타기 시 존재하는 회원체크
+	public boolean memberCheck(String friend_id) {
+		String sql = 
+				"SELECT COUNT(*) cnt FROM MEMBER WHERE MEMBER_ID =?";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, friend_id); //아이디
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				int cnt = rs.getInt("cnt");
+				if(cnt > 0) {
+					return true; //존재하는 회원
+				}
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false; //존재하지 않는 회원
+	}
+	
+	//파도타기
+	public String surfer(String member_id) {
+		
+		// 데이터베이스에 저장된 아이디 무작위 추출
+		String sql = 
+				"select member_id "
+				+ "from (select member_id from member "
+				+ "where member_id <> ? and member_id "
+				+ "NOT IN (select friend_id from "
+				+ member_id + "_friend)"
+				+ "order by dbms_random.value"
+				+ ") where rownum <= 1";
+		String memeber_id = "";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id); //아이디
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				memeber_id = rs.getString("member_id");
+				return memeber_id;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return memeber_id;
+	}
+	//*************************메인&디테일 홈패널 관련 메소드 종료************************
+	
+	//********************설정(내정보,커스텀,일촌)관련 메소드 시작************************
 	//내정보수정
 	public int modifyMyInfo(Member member) {
 
@@ -381,6 +392,34 @@ public class DBConnection {
 			if(result > 0) {
 				return result;
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
+	//회원탈퇴
+	public int out(Member member) {
+	
+		int result = 0;
+		String sql = 
+				"DELETE FROM MEMBER WHERE MEMBER_ID =?";
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, member.getMember_id()); //아이디
+			
+			result = pstmt.executeUpdate();
+			
+			String dropsql = "DROP TABLE "+member.getMember_id()+"_FRIEND";
+
+			Statement stmt = con.createStatement();
+			stmt.execute(dropsql);
+			
+			System.out.println(member.getMember_id()+"_friend 테이블 삭제");
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -491,33 +530,6 @@ public class DBConnection {
 		return member;
 	}
 	
-	//파도타기
-	public String surfer() {
-		
-		// 데이터베이스에 저장된 아이디 무작위 추출
-		String sql = 
-				"select member_id from"
-				+ "(select member_id from member order by dbms_random.value)"
-				+ "where rownum <= 1";
-		String memeber_id = "";
-		
-		try {
-			pstmt = con.prepareStatement(sql);
-
-			rs = pstmt.executeQuery();
-			
-			if(rs.next()) {
-				memeber_id = rs.getString("member_id");
-				return memeber_id;
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return memeber_id;
-	}
-	
 	// 일촌 여부
 	public int friendCheck(String homepage_id, String visitor_id) {
 		int result = 0;
@@ -579,7 +591,29 @@ public class DBConnection {
 	
 	//대기중인 일촌 신청, 현재 일촌 가져오기
 	public DefaultTableModel friend(String flag, String member_id) {
-		String[] header = {"member_id","나의 이름","나의 일촌명","friend_id","일촌 신청한 사람","신청한 일촌명"};
+		String[] header = {"member_id","나의 이름","나의 일촌명","friend_id","일촌 신청한 사람","일촌명"};
+		if(flag.equals("대기")) {
+			header[0] = "member_id";
+			header[1] = "나의 이름";
+			header[2] = "제안한 일촌명";
+			header[3] = "friend_id";
+			header[4] = "제안한 사람";
+			header[5] = "제안한 일촌명";
+		} else if(flag.equals("일촌")){
+			header[0] = "member_id";
+			header[1] = "나의 이름";
+			header[2] = "일촌명";
+			header[3] = "friend_id";
+			header[4] = "일촌";
+			header[5] = "일촌명";
+		} else if(flag.equals("전송")) {
+			header[0] = "member_id";
+			header[1] = "나의 이름";
+			header[2] = "신청한 일촌명";
+			header[3] = "friend_id";
+			header[4] = "신청한 일촌";
+			header[5] = "신청한 일촌명";
+		}
 		DefaultTableModel model= new DefaultTableModel(header, 0){  //셀 수정 못하게 하는 부분
 			 public boolean isCellEditable(int row, int column){
 			    return false;
@@ -714,6 +748,590 @@ public class DBConnection {
 		
 		return result;
 	}
+	//********************설정(내정보,커스텀,일촌)관련 메소드 종료************************
+	
+	//**************************다이어리 관련 메소드 시작******************************
+	// DB에서 글 번호에 맞는 정보를 받아오는 메서드
+	public DiaryDTO getDiaryDTO(int diary_index) {
 
+		DiaryDTO dto = new DiaryDTO();
+
+		try {
+			String sql = "select * from diary where diary_index=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, diary_index);
+
+			rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				dto.setDiary_index(rs.getInt("diary_index"));
+				dto.setDiary_title(rs.getString("diary_title"));
+				dto.setDiary_cont(rs.getString("diary_cont"));
+				dto.setDiary_date(rs.getString("diary_date"));
+				dto.setDiary_week(rs.getString("diary_week"));
+				dto.setDiary_mood(rs.getString("diary_mood"));
+				dto.setDiary_weather(rs.getString("diary_weather"));
+				dto.setMemeber_id(rs.getString("member_id")); //#수정
+			}
+			// return dto;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dto;
+	} // getDiaryDTO end
+
+	// 다이어리 글 목록 조회 메서드
+	public List<DiaryDTO> selectList(String member_id) {
+		List<DiaryDTO> dlist = new ArrayList<DiaryDTO>();
+
+		try {
+			String sql = "select diary_index,diary_title,diary_date "
+					+ "from diary where member_id = ?"; //#수정
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id); //#수정
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				DiaryDTO dto = new DiaryDTO();
+				dto.setDiary_index(rs.getInt("diary_index"));
+				dto.setDiary_title(rs.getString("diary_title"));
+				dto.setDiary_date(rs.getString("diary_date"));
+				dlist.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dlist;
+	} // selectList end
+
+	// 새로운 글 등록 메서드
+	public boolean diaryInsert(DiaryDTO dto) {
+		boolean ok = false;
+		
+		try {
+			//#수정
+			String sql =
+					"insert into diary values"
+					+ "(DIARY_SEQ.NEXTVAL,?,?,sysdate,TO_CHAR(SYSDATE, 'dy'),?,?,?)"; //#수정
+
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, dto.getDiary_title());
+			pstmt.setString(2, dto.getDiary_cont());
+			pstmt.setString(3, dto.getDiary_mood());
+			pstmt.setString(4, dto.getDiary_weather());
+			pstmt.setString(5, dto.getMemeber_id()); //#수정
+
+			int result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				JOptionPane.showMessageDialog(null, "글 작성이 성공하였습니다.");
+				ok = true;
+			} else {
+				JOptionPane.showMessageDialog(null, "글 작성이 실패하였습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ok;
+	}; // diaryInsert end
+
+	// 글 수정 메서드
+	public boolean DiaryUpdate(DiaryDTO updto) {
+		boolean ok = false;
+
+		try {
+			String sql = "update diary set diary_title=?, diary_cont=?, diary_mood=?, diary_weather=? "
+					+ " where diary_index=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, updto.getDiary_title());
+			pstmt.setString(2, updto.getDiary_cont());
+			pstmt.setString(3, updto.getDiary_mood());
+			pstmt.setString(4, updto.getDiary_weather());
+			pstmt.setInt(5, 11);
+
+			int result = pstmt.executeUpdate();
+
+			if (result > 0) {
+				JOptionPane.showMessageDialog(null, "글 수정이 성공하였습니다.");
+				ok = true;
+			} else {
+				JOptionPane.showMessageDialog(null, "글 수정이 실패하였습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return ok;
+	} // DiaryUpdate end
+
+	// 글 삭제 메서드
+	public boolean DiaryDelete(int diary_index) {
+
+		boolean ok = false;
+
+		try {
+			String sql = "delete from diary where diary_index=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, diary_index);
+			int result = pstmt.executeUpdate(); // -> 실행 / 삭제
+
+			String txtDel = JOptionPane.showInputDialog("삭제하시려면 '삭제'라고 입력해주세요.");
+			if (txtDel.equals("삭제")) {
+				if (result > 0) {
+					ok = true;
+					JOptionPane.showMessageDialog(null, "삭제했습니다.");
+				} else {
+					JOptionPane.showMessageDialog(null, "삭제 실패했습니다.");
+				}
+			} else {
+				JOptionPane.showMessageDialog(null, "잘못 입력했습니다.");
+			}
+		} catch (Exception e) {
+		}
+		return ok;
+	}
+	//**************************다이어리 관련 메소드 종료******************************
+
+	//**************************사진첩 관련 메소드 시작******************************
+	public int selectMenuCnt(String memberId) {
+		int cnt = 0;
+		try {
+			String sql = "select count(*) as cnt from gal_menu where member_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				cnt = rs.getInt("cnt");
+				System.out.println(cnt);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cnt;
+	}
+	
+	public int insertGallery(Gal_1 gallery) {
+		int result = 0;
+		String sql = "INSERT INTO GAL_1 VALUES (MENU1_SEQ.nextval,?,?,?,?,?,sysdate)";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+
+			pstmt.setString(1, gallery.getGal_content());
+			pstmt.setString(2, gallery.getNew_file_name());
+			pstmt.setString(3, gallery.getOld_file_name());
+			pstmt.setString(4, gallery.getFile_ext());
+			pstmt.setInt(5, gallery.getMenu_id());
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+
+	public Gal_1 selectGallery(int menuId) {
+		Gal_1 gal = new Gal_1();
+		String sql = "select * from gal_1 WHERE menu_id = ?";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, menuId);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				// gal.setGal_id(rs.getInt("gal_id"));
+				gal.setFile_ext(rs.getString("file_ext"));
+				gal.setGal_content(rs.getNString("gal_content"));
+				gal.setNew_file_name(rs.getString("new_file_name"));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return gal;
+	}
+
+	public int insertMenu(String menuName, String memberId) {
+		int result = 0;
+		try {
+			String sql = "insert into gal_menu(menu_id, menu_name, menu_regdate, member_id)"
+					+ " values (menu_seq.nextval, ?, sysdate, ?)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, menuName);
+			pstmt.setString(2, memberId);
+			result = pstmt.executeUpdate();
+			
+			if(result>0)
+				return result;
+
+		} catch (Exception e) {
+
+		}
+		return result;
+	}
+
+	public int sideMenuDelete(String menuName, String memberId) {
+		int menuId = 0;
+		try {
+			String sql = "select menu_id from gal_menu where menu_name = ? and member_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, menuName);
+			pstmt.setString(2, memberId);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				menuId = rs.getInt("menu_id");
+			}
+			
+			if (menuId > 0) {
+				sql = "DELETE FROM gal_menu WHERE menu_id = ?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setInt(1, menuId);
+
+				pstmt.executeUpdate();
+
+				return menuId;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return menuId;
+	}
+
+	
+	public List<Gal_menu> showSideMenu(String memberId) {
+		List<Gal_menu> menuList = new ArrayList<>();
+
+		try {
+			String sql = "SELECT menu_id, menu_name FROM gal_menu WHERE member_id = ? ORDER BY menu_regdate";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				Gal_menu galMenu = new Gal_menu();
+				galMenu.setMenu_id(rs.getInt("menu_id"));
+				galMenu.setMenu_name(rs.getString("menu_name"));
+				menuList.add(galMenu);
+			}
+			if (menuList.size() > 0) {
+				return menuList;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return menuList;
+	}
+
+	public List<Gal_1> showGalleryList(int menuId, String memberId) {
+		Gal_1 gal = null;
+		List<Gal_1> galList = new ArrayList<>();
+		String sql = "select * from gal_1 where menu_id = ? order by regdate desc";
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, menuId);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				gal = new Gal_1();
+				gal.setNew_file_name(rs.getString("new_file_name"));
+				gal.setGal_content(rs.getString("gal_content"));
+				gal.setFile_ext(rs.getString("file_ext"));
+				galList.add(gal);
+			}
+
+			if (galList.size() > 0) {
+				return galList;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return galList;
+	}
+	//**************************사진첩 관련 메소드 종료******************************
+	
+	//**************************방명록 관련 메소드 시작******************************
+	public void guestbookwrite(String content, String member_id, String host_id) {
+
+		try {
+			String sql =
+					"insert into guestbook values"
+					+ "(gb_no.nextval, 'n', ?, ?, ?, sysdate)";
+			
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id);
+			pstmt.setString(2, host_id);
+			pstmt.setString(3, content);
+			
+			int result = pstmt.executeUpdate();
+			if(result >0 ) {
+				System.out.println("글쓰기 성공");
+			}else {
+				System.out.println("글쓰기 실패");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void guestbookcommwrite(int guestBookNo, String commContent, String hostid) {
+		
+		try {
+			String sql = "insert into guestbook_comm values"
+					+ "(?, gbcomm_no.nextval, ?, ?, sysdate)";
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setInt(1, guestBookNo);
+			pstmt.setString(2, hostid);
+			pstmt.setString(3, commContent);
+			
+			int result = pstmt.executeUpdate();
+			
+			if(result > 0) {
+				System.out.println("댓글쓰기 성공");
+			}else {
+				System.out.println("댓글쓰기 실패");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	public ArrayList<GuestBookCommDTO> guestbookcommselect(int guestBookNo) {
+		
+		try {
+			String sql = "select * from guestbook_comm where gb_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, guestBookNo);
+			rs = pstmt.executeQuery();
+			
+			ArrayList<GuestBookCommDTO> gbcList = new ArrayList<>();
+			
+			while(rs.next()) {
+				
+				GuestBookCommDTO gbcd = new GuestBookCommDTO();
+				
+				gbcd.setGb_id(rs.getInt("gb_id"));
+				gbcd.setComment_id(rs.getInt("comment_id"));
+				gbcd.setWriter(rs.getString("writer"));
+				gbcd.setContent(rs.getString("content"));
+				gbcd.setCreate_date(rs.getString("create_date"));
+				
+				gbcList.add(gbcd);
+				
+			}
+			
+			return gbcList;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
+		
+	}
+	
+	public ArrayList<GuestBookDTO> guestbookOpen(String member_id) {
+
+		try {
+
+			String sql = "select * from guestbook where member_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id);
+
+			rs = pstmt.executeQuery();
+
+			ArrayList<GuestBookDTO> gbList = new ArrayList<>();
+
+			while (rs.next()) {
+
+				GuestBookDTO gbd = new GuestBookDTO();
+				
+				gbd.setGb_id(rs.getInt("gb_id"));
+				gbd.setScreat_at(rs.getString("secret_at"));
+				gbd.setCreate_date(rs.getString("create_date"));
+				gbd.setHost_id(rs.getString("host_id"));
+				gbd.setContent(rs.getString("content"));
+				gbd.setMember_id(rs.getString("member_id"));
+				gbList.add(gbd);
+			}
+			
+			return gbList;
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+	
+	public ArrayList<GuestBookDTO> guestbookselect(Member member) {
+
+		try {
+			//String sql = "select * from guestbook where member_id = ?";
+			
+			String sql = "select * from guestbook where host_id = ?";
+			
+			pstmt = con.prepareStatement(sql);
+			// psmt.setString(1, "주인장ID");
+			pstmt.setString(1, "somebody");
+
+			rs = pstmt.executeQuery();
+			// 주인장아이디에 등록된 방명록들의 글들을 받아와서 rs에 저장한다.
+			
+			ArrayList<GuestBookDTO> gbList = new ArrayList<>();
+
+//			for(int i = 0; i < paneList.size(); i++) {
+//				paneList.get(i).setVisible(false);
+//			}
+
+			while (rs.next()) {
+
+				/*
+				 * String result = rs.getString("content"); guestBookContent.append(result);
+				 */
+				GuestBookDTO gbd = new GuestBookDTO();
+				
+				gbd.setGb_id(rs.getInt("gb_id"));
+				gbd.setScreat_at(rs.getString("secret_at"));
+				gbd.setCreate_date(rs.getString("create_date"));
+				gbd.setHost_id(rs.getString("host_id"));
+				gbd.setContent(rs.getString("content"));
+				gbd.setMember_id(rs.getString("member_id"));
+				
+				//System.out.println(rs.getString("content"))
+				gbList.add(gbd);
+//				for (int i = 0; i < gbList.size(); i++) {
+//					
+//					JPanel gbPane = new Gbpane(member);
+//					gbPane
+//					
+//					GuestBookDTO gbdto = gbList.get(i);
+//					
+//					//guestBookNo
+//					//guestBookName
+//					//guestBookWriteTime
+//					//guestBookPhoto;
+//					//guestBookContent;
+//					
+//					
+//					
+//					guestBookName.setText(member.getMember_name());
+//					guestBookWriteTime.setText(gbdto.getCreate_date().substring(0, 16));
+//					guestBookPhoto.setText(member.getHome_profile_pic());
+//					guestBookContent.setText(gbdto.getContent());
+//					
+//				}
+				
+			}
+			
+//			
+//			for (int i = 0; i < gbList.size(); i++) {
+//				System.out.println(gbList.get(i).getContent());
+//			}
+			
+			
+			return gbList;
+
+//            System.out.println(gbList.size());
+//            //gbList-5*페이지넘버(-1)
+//            for(int  i = 0 ; i<5;i++) {
+//            	
+//            	guestBookContent.append(gbList.get(i).getContent());
+//            	guestBookName.setText(gbList.get(i).getMember_id());
+//            	//넣었다?
+//            	paneList.get(i).setVisible(true);
+//            	
+//            }
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public void guestbookdelete(int gbId) {
+
+		try {
+			String sql1 = "delete from guestbook_comm where gb_id=?";
+			pstmt = con.prepareStatement(sql1);
+			pstmt.setInt(1, gbId);
+			pstmt.executeUpdate();
+			
+			String sql2 = "delete from guestbook where gb_id=?";
+			pstmt = con.prepareStatement(sql2);
+			pstmt.setInt(1, gbId);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String guestbookmodify(String content, int gbId) {
+		
+		String result = null; 
+		
+		try {
+			String sql = "update guestbook set content = ? where gb_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, content);
+			pstmt.setInt(2, gbId);
+			pstmt.executeUpdate();
+			
+			String sql2 = "select * from guestbook where gb_id = ?";
+			pstmt = con.prepareStatement(sql2);
+			pstmt.setInt(1, gbId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("content");	
+			}
+
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public String guestbookImage(String member_id) {
+			
+			String result = null; 
+			
+			try {
+				String sql =
+						"select HOME_PROFILE_PIC from member where member_id = ?";
+				pstmt = con.prepareStatement(sql);
+				pstmt.setString(1, member_id);
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					result = rs.getString("HOME_PROFILE_PIC");	
+				}
+	
+				return result;
+	
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return result;
+	}
+	//**************************방명록 관련 메소드 종료******************************
 
 }
