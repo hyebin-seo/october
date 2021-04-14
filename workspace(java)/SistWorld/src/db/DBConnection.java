@@ -1148,7 +1148,8 @@ public class DBConnection {
 
 		try {
 
-			String sql = "select * from guestbook where member_id = ?";
+			String sql = "select * from guestbook where member_id = ? "
+					+ "order by gb_id desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, member_id);
 

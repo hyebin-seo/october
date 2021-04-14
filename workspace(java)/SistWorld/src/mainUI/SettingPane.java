@@ -48,6 +48,7 @@ import java.awt.Component;
 public class SettingPane extends JPanel implements ActionListener{
 
 	DBConnection dbc = DBConnection.getInstance();
+	MasterSession ms = MasterSession.getInstance();
 	
 	// 넘겨받은 백 팬(카드레이아웃), 메뉴 팬, 배경스킨 라벨, 멤버객체
 	private Member member;
@@ -616,7 +617,7 @@ public class SettingPane extends JPanel implements ActionListener{
 			int result = dbc.modifyMyMenu(member);
 			
 			if(result > 0) {
-				MasterSession ms = MasterSession.getInstance();
+				
 				menuPane.menuSetting(ms.getMaster_member());
 				JOptionPane.showMessageDialog(null, "메뉴 수정 완료!");
 			} else {

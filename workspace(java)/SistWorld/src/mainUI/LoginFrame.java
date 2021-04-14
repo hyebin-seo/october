@@ -26,6 +26,7 @@ public class LoginFrame extends JFrame{
 
 	// 환영문구
 	private JLabel welcomeLb;
+	private JLabel welcomeLb2;
 
 	// 아이디
 	private JLabel idLb;
@@ -50,54 +51,61 @@ public class LoginFrame extends JFrame{
 
 		login = new JPanel();
 		login.setBackground(Color.WHITE);
-		login.setBounds(387, 95, 500, 500);
+		login.setBounds(-53, 35, 500, 500);
 		login.setLayout(null);
 		getContentPane().add(login);
 		
 		//환영 라벨
-		welcomeLb = new JLabel("Welcome! SistWorld");
-		welcomeLb.setFont(new Font("맑은 고딕", Font.BOLD, 30));
-		welcomeLb.setBounds(18, 100, 463, 80);
+		welcomeLb = new JLabel("Sist");
+		welcomeLb.setFont(new Font("맑은 고딕", Font.BOLD, 60));
+		welcomeLb.setBounds(99, 30, 300, 80);
 		welcomeLb.setForeground(new Color(9,131,178));
 		welcomeLb.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		welcomeLb2 = new JLabel("World");
+		welcomeLb2.setFont(new Font("맑은 고딕", Font.BOLD, 60));
+		welcomeLb2.setBounds(99, 84, 300, 80);
+		welcomeLb2.setForeground(new Color(9,131,178));
+		welcomeLb2.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		//비밀번호 입력
 		pwdLb = new JLabel("PASSWORD : ", SwingConstants.RIGHT);
 		pwdLb.setForeground(new Color(9,131,178));
 		pwdLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		pwdLb.setBounds(128, 229, 90, 30);
+		pwdLb.setBounds(126, 231, 90, 30);
 
 		//아이디 입력
 		idLb = new JLabel("ID : ", SwingConstants.RIGHT);
 		idLb.setForeground(new Color(9,131,178));
 		idLb.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		idLb.setBounds(118, 189, 100, 30);
+		idLb.setBounds(116, 191, 100, 30);
 		
 		//회원가입버튼
 		joinBt = new RoundedButton("회원가입");
 		joinBt.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 		joinBt.setText("SIGN UP");
-		joinBt.setBounds(140, 334, 220, 40);
+		joinBt.setBounds(138, 336, 220, 40);
 		
 		// 아이디 입력
 		idTf = new JTextField(10);
 		idTf.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		idTf.setBounds(230, 191, 130, 30);
-		idTf.setText("nana"); //TODO 임시
+		idTf.setBounds(228, 193, 130, 30);
+		idTf.setText("");
 		
 		// 비밀번호 입력
 		pwdPf = new JPasswordField(10);
 		pwdPf.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		pwdPf.setBounds(230, 231, 130, 30);
-		pwdPf.setText("1111"); //TODO 임시
+		pwdPf.setBounds(228, 233, 130, 30);
+		pwdPf.setText("");
 		
 		//로그인버튼
 		loginBt = new RoundedButton("로그인");
 		loginBt.setText("LOGIN");
 		loginBt.setFont(new Font("맑은 고딕", Font.BOLD, 14));
-		loginBt.setBounds(140, 284, 220, 40);
+		loginBt.setBounds(138, 286, 220, 40);
 		
 		login.add(welcomeLb);
+		login.add(welcomeLb2);
 		login.add(idLb);
 		login.add(idTf);
 		login.add(pwdLb);
@@ -106,7 +114,7 @@ public class LoginFrame extends JFrame{
 		login.add(loginBt);
 		
 		//프레임 설정 - 컴포넌트 생성 문제 있으니 제일 뒤로 뺄것
-		this.setBounds(0, 0, 1280, 720);
+		this.setBounds(0, 0, 400, 550);
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);//창이 가운데 나오게
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

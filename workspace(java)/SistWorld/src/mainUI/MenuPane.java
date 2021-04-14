@@ -53,8 +53,9 @@ public class MenuPane extends JPanel implements ActionListener{
         diaryBt.setHorizontalAlignment(SwingConstants.LEFT);
         diaryBt.addActionListener(this);
         diaryBt.setPreferredSize(new Dimension(80, 50));
-        if(member.isHome_diary()) { //설정값에 따라 메뉴 버튼 표시
-        	this.add(diaryBt);
+        this.add(diaryBt);
+        if(!member.isHome_diary()) { //설정값에 따라 메뉴 버튼 표시
+        	diaryBt.setVisible(false);
         }
         
         
@@ -63,8 +64,9 @@ public class MenuPane extends JPanel implements ActionListener{
         gallaryBt.setHorizontalAlignment(SwingConstants.LEFT);
         gallaryBt.addActionListener(this);
         gallaryBt.setPreferredSize(new Dimension(80, 50));
-        if(member.isHome_gallery()) { //설정값에 따라 메뉴 버튼 표시
-        	this.add(gallaryBt);
+        this.add(gallaryBt);
+        if(!member.isHome_gallery()) { //설정값에 따라 메뉴 버튼 표시
+        	gallaryBt.setVisible(false);
         }
         
         bookBt = new RoundedButton("Visitor");
@@ -72,8 +74,9 @@ public class MenuPane extends JPanel implements ActionListener{
         bookBt.setHorizontalAlignment(SwingConstants.LEFT);
         bookBt.addActionListener(this);
         bookBt.setPreferredSize(new Dimension(80, 50));
-        if(member.isHome_book()) { //설정값에 따라 메뉴 버튼 표시
-        	this.add(bookBt);
+        this.add(bookBt);
+        if(!member.isHome_book()) { //설정값에 따라 메뉴 버튼 표시
+        	bookBt.setVisible(false);
         }
         
         if(ms.getMaster_id().equals(member.getMember_id())) {

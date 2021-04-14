@@ -8,10 +8,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 
 import db.DBConnection;
@@ -20,13 +23,16 @@ import model.GuestBookDTO;
 import model.Member;
 import service.ImageResizeUpload;
 import service.MasterSession;
+import javax.swing.JScrollPane;
 
 public class Gbpane extends JPanel{
 	
+	private Member member;
 	DBConnection dbc = DBConnection.getInstance();
 	MasterSession ms = MasterSession.getInstance();
+	ArrayList<GuestBookDTO> gbList = dbc.guestbookselect(member);
 	
-	private Member member;
+	
 	JLabel guestBookNo;
 	RoundedButton guestBookName;
 	JLabel guestBookWriteTime;
@@ -92,18 +98,12 @@ public class Gbpane extends JPanel{
 		guestBookPhoto.setOpaque(false);
 		guestBookPhoto.setIcon(iru.getResizeIcon());
 		guestBookPhoto.setBounds(35, 66, 134, 134);
-		add(guestBookPhoto);		
+		add(guestBookPhoto);
 
 		guestBookContent = new JTextArea(gbd.getContent());
 		guestBookContent.setEditable(false);
 		guestBookContent.setBounds(189, 66, 387, 134);
 		add(guestBookContent);
-		
-		JPanel guestBookCommentbackPane = new JPanel();
-		guestBookCommentbackPane.setBackground(new Color(245, 245, 245));
-		guestBookCommentbackPane.setBounds(0, 198, 607, 61);
-		add(guestBookCommentbackPane);
-		guestBookCommentbackPane.setLayout(null);
 
 		// 방명록 댓글 패널
 		JPanel guestBookCommentWritePane = new JPanel();
@@ -123,15 +123,33 @@ public class Gbpane extends JPanel{
 		guestBookCommentWriteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		guestBookCommentWritePane.add(guestBookCommentWriteBt);
 		
+		JPanel guestBookCommentbackPane = new JPanel();
+		//gbcommScrollPane.setViewportView(guestBookCommentbackPane);
+		guestBookCommentbackPane.setBackground(new Color(245, 245, 245));
+		guestBookCommentbackPane.setLayout(new BoxLayout(guestBookCommentbackPane, BoxLayout.Y_AXIS));
+		guestBookCommentbackPane.setPreferredSize(new Dimension(611, 200)); // #수정
+		guestBookCommentbackPane.setMinimumSize(new Dimension(611, 200));
+		guestBookCommentbackPane.setMaximumSize
+		(new Dimension(Integer.MAX_VALUE, guestBookCommentbackPane.getMinimumSize().height));
 		
-//				DBConnection dbc = DBConnection.getInstance();
-//				dbc.init();
-//				gbcList = dbc.guestbookcommselect(gbd.getGb_id());
-//				
-//				for (int i = 0; i < gbcList.size(); i++) {
-//					Gbcommpane gbcpane = new Gbcommpane(gbmember, gbcList.get(i));
-//					guestBookCommentbackPane.add(gbcpane);
-//				}
+		JScrollPane gbcommScrollPane = new JScrollPane(guestBookCommentbackPane,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		gbcommScrollPane.setBounds(0, 205, 611, 52);
+		this.add(gbcommScrollPane);
+		
+		
+		ArrayList<GuestBookCommDTO> gbcList = dbc.guestbookcommselect(gbd.getGb_id());
+		
+		try {
+			if (gbcList.size() > 0) {
+				for (int i = 0; i < gbcList.size(); i++) {
+					JPanel gbcpane = new Gbcommpane(gbmember, gbcList.get(i));
+					guestBookCommentbackPane.add(gbcpane);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("[BookPane]: 남겨진 댓글 없음");
+		}
 		
 		// 이벤트 처리
 		
@@ -145,6 +163,10 @@ public class Gbpane extends JPanel{
 			String commContent = guestBookCommentWrite.getText();
 			String memberId = member.getMember_id();
 			
+			
+			if (commContent.equals("")) {
+				JOptionPane.showMessageDialog(null, "내용을 입력해주세요.", "글쓰기", JOptionPane.ERROR_MESSAGE);
+			} else {
 			//#수정
 			dbc.guestbookcommwrite(guestBookNo, commContent, ms.getMaster_id());
 			
@@ -152,9 +174,9 @@ public class Gbpane extends JPanel{
 			
 			ArrayList<GuestBookCommDTO> gbcList = dbc.guestbookcommselect(guestBookNo);
 			
-			for (int i = 0; i < gbcList.size(); i++) {
-				Gbcommpane gbcpane = new Gbcommpane(gbmember, gbcList.get(i));
-				guestBookCommentbackPane.add(gbcpane);
+			JPanel gbcpane = new Gbcommpane(gbmember, gbcList.get((gbcList.size() - 1)));
+			guestBookCommentbackPane.add(gbcpane);
+			
 			}
 			
 			}
