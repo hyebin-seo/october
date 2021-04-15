@@ -804,9 +804,9 @@ public class DBConnection {
 	} // getDiaryDTO end
 
 	// 새로운 글 등록 메서드
-	public boolean diaryInsert(DiaryDTO dto) {
-		boolean ok = false;
+	public int diaryInsert(DiaryDTO dto) {
 
+		int index = 0;
 		try {
 			String sql = "insert into diary values (DIARY_SEQ.NEXTVAL,?,?,sysdate,TO_CHAR(SYSDATE, 'dy'),?,?,?)";
 
@@ -822,20 +822,28 @@ public class DBConnection {
 
 			if (result > 0) {
 				JOptionPane.showMessageDialog(null, "글 작성이 성공하였습니다.");
-				ok = true;
+				String sql2 = "select max(diary_index) as diary_index "
+						+ "from diary where member_id=?";
+				pstmt = con.prepareStatement(sql2);
+				pstmt.setString(1, dto.getMemeber_id());
+
+				rs = pstmt.executeQuery();
+				
+				if (rs.next()) {
+					index = rs.getInt("diary_index");
+					return index;
+				}
 			} else {
 				JOptionPane.showMessageDialog(null, "글 작성이 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ok;
+		return index;
 	}; // diaryInsert end
 
 	// 글 수정 메서드
-	public boolean DiaryUpdate(DiaryDTO updto) {
-
-		boolean ok = false;
+	public int DiaryUpdate(DiaryDTO updto) {
 
 		try {
 			String sql = "update diary set diary_title=?, diary_cont=?, diary_mood=?, diary_weather=? "
@@ -851,14 +859,14 @@ public class DBConnection {
 
 			if (result > 0) {
 				JOptionPane.showMessageDialog(null, "글 수정이 성공하였습니다.");
-				ok = true;
+				return updto.getDiary_index();
 			} else {
 				JOptionPane.showMessageDialog(null, "글 수정이 실패하였습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return ok;
+		return 0;
 	} // DiaryUpdate end
 
 	// 글 삭제 메서드
@@ -874,9 +882,6 @@ public class DBConnection {
 
 			if (result > 0)
 				ok = true;
-			
-			pstmt.close();
-			con.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();

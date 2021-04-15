@@ -5,6 +5,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -32,7 +35,7 @@ import model.DiaryDTO;
 import model.Member;
 import service.MasterSession;
 
-public class DiaryPane extends JPanel implements ActionListener, ListSelectionListener {
+public class DiaryPane extends JPanel implements ActionListener {
 
 	String url = "jdbc:oracle:thin:@localhost:1521:xe";
 	String user = "web";
@@ -128,6 +131,16 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 		listBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		list = new JList<String>(listdata); // 데이터베이스로부터 받아온 정보를 뿌려주기 위한 List 선언
 		list.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		MouseListener mouseListener = new MouseAdapter() {
+		    public void mouseClicked(MouseEvent e) {
+		        if (e.getClickCount() == 1) {
+		        	selectList();
+		         }
+		    }
+		};
+		list.addMouseListener(mouseListener);
+		
+		
 		diaryListPane.add(listBtn, BorderLayout.NORTH);
 		diaryListPane.add(list);
 
@@ -365,8 +378,7 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 		updBtn.addActionListener(this); // 글 수정 완료 버튼 (수정완료)
 		delBtn.addActionListener(this); // 글 삭제 버튼 (삭제)
 		listBtn.addActionListener(this); // 글 목록 버튼(목록열기)
-		list.addListSelectionListener(this); // 글 리스트 선택
-		
+
 		MasterSession ms = MasterSession.getInstance();
 		if(!ms.getMaster_id().equals(member.getMember_id())) {
 		   //로그인한 사람의 홈페이지가 아닐 경우 코딩
@@ -374,10 +386,11 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 			boardBtnSubPane.setVisible(false);
 		}
 		try {
-
+			getDiaryList();
 		} catch (Exception e) {
 			System.out.println("[DiaryPane]: 작성한 다이어리 없음");
 		}
+
 
 	}
 	// --------------------------------------------------------------subPane
@@ -386,6 +399,7 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 	public void actionPerformed(ActionEvent e) {
 		String btName = e.getActionCommand();
 		if (btName.equals("글쓰기")) {
+			titleWrite.setText("이곳에 제목을 입력해주세요.");
 			txtWriteBoard.setText("이곳에 내용을 입력해주세요."); // 글쓰기 창을 초기화함
 			mainDiaryWrap.setVisible(false); // 창이 안보이게
 			subDiaryWrap.setVisible(true); // 창이 보이게
@@ -435,10 +449,10 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 		
 	}
 
-	@Override // 글 목록 클릭시 해당 글 정보를 띄움
-	public void valueChanged(ListSelectionEvent arg0) {
-		int value = Integer.parseInt(list.getSelectedValue());
+	// 글 목록 클릭시 해당 글 정보를 띄움
+	public void selectList() {
 		try {
+			int value = Integer.parseInt(list.getSelectedValue());
 			String sql = "select * from diary where diary_index=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, value);
@@ -496,16 +510,16 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("다이어리 없음");
 		}
 
 	}
 
 	// --------------------------------------------------------------BtnAction
 	// DB에 저장된 정보를 화면에 보여주는 메서드
-	private void viewData() {
+	private void viewData(int index) {
 
-		DiaryDTO dto = dbc.getDiaryDTO(Integer.parseInt(indexCont.getText()));
+		DiaryDTO dto = dbc.getDiaryDTO(index);
 
 		int diary_index = dto.getDiary_index();
 		String diary_title = dto.getDiary_title();
@@ -591,6 +605,12 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 
 		// 백터에 있는 데이터를 리스트에 부착
 		list.setListData(listdata);
+		try {
+			viewData(Integer.parseInt(listdata.get(0)));
+		} catch (Exception e) {
+			System.out.println("다이어리 데이터 없음.");
+		}
+		
 	}
 
 	// 수정할 글의 정보를 화면에 보여주는 메서드
@@ -623,7 +643,9 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 	// 새 글 등록 메서드
 	private void diaryInsert() {
 		DiaryDTO dto = getViewData();
-		boolean ok = dbc.diaryInsert(dto);
+		int index = dbc.diaryInsert(dto);
+		viewData(index);
+		
 	} // diaryInsert end
 
 	// 입력한 정보를 얻는 메서드
@@ -671,10 +693,9 @@ public class DiaryPane extends JPanel implements ActionListener, ListSelectionLi
 	// 글 수정 메서드
 	private void DiaryUpdate() {
 		DiaryDTO dto = getViewUpdateData();
-		boolean ok = dbc.DiaryUpdate(dto);
-		if (ok) {
-			viewData();
-		}
+		int index = dbc.DiaryUpdate(dto);
+		viewData(index);
+
 	} // DiaryUpdate end
 
 	// 글 삭제 메서드
