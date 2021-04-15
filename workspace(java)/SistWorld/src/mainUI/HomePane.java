@@ -143,12 +143,7 @@ public class HomePane extends JPanel{
 
 		// 일촌평 헤더 "friend_id","cmt","nick","name"
 		cmtTb = new CustomJTable(model);
-		cmtTb.getColumnModel().getColumn(1).setPreferredWidth(300); //셀크기 조정
-		cmtTb.getColumnModel().getColumn(2).setPreferredWidth(40); //셀크기 조정
-		cmtTb.getColumnModel().getColumn(3).setPreferredWidth(20); //셀크기 조정
-		cmtTb.getColumnModel().getColumn(0).setWidth(0); //친구아이디 숨김
-		cmtTb.getColumnModel().getColumn(0).setMinWidth(0); //친구아이디 숨김
-		cmtTb.getColumnModel().getColumn(0).setMaxWidth(0); //친구아이디 숨김
+		columnHide();
 		cmtTb.setTableHeader(null);
 		cmtTb.addMouseListener(new tableListener());
 
@@ -180,16 +175,11 @@ public class HomePane extends JPanel{
 			if(result > 0) {
 				friendTf.setText("");
 				friendTf.requestFocus(); //커서이동
-				
 				model.setRowCount(0); //전체 화면 지워줌
+				
 				model = dbc.friendCmt(member.getMember_id());
 				cmtTb.setModel(model);
-				cmtTb.getColumnModel().getColumn(1).setPreferredWidth(300); //셀크기 조정
-				cmtTb.getColumnModel().getColumn(2).setPreferredWidth(40); //셀크기 조정
-				cmtTb.getColumnModel().getColumn(3).setPreferredWidth(20); //셀크기 조정
-				cmtTb.getColumnModel().getColumn(0).setWidth(0); //친구아이디 숨김
-				cmtTb.getColumnModel().getColumn(0).setMinWidth(0); //친구아이디 숨김
-				cmtTb.getColumnModel().getColumn(0).setMaxWidth(0); //친구아이디 숨김
+				columnHide();
 				
 			} else {
 				
@@ -233,8 +223,26 @@ public class HomePane extends JPanel{
 		    	if (e.getClickCount() == 1) {
 			    	int row = cmtTb.getSelectedRow();
 			    	System.out.println("[HomePane-friend]:"+cmtTb.getModel().getValueAt(row,0)); //가로, 세로
-			    	String friend_id = (String) cmtTb.getModel().getValueAt(row,0);
-			    	String friend_name = (String) cmtTb.getModel().getValueAt(row,3);
+			    	int friend_index = (int) cmtTb.getModel().getValueAt(row, 0);
+			    	String friend_id = (String) cmtTb.getModel().getValueAt(row,1);
+			    	String friend_name = (String) cmtTb.getModel().getValueAt(row,4);
+			    	
+			    	if(ms.getMaster_id().equals(friend_id)) {
+			    		int my = JOptionPane.showConfirmDialog
+						(null, "일촌평을 삭제하시겠습니까?","앗...!", JOptionPane.YES_NO_OPTION);
+			    		if(my == JOptionPane.YES_OPTION) {
+			    			int rs = dbc.delFriendCmt(friend_index);
+			    			if(rs>0) {
+			    				JOptionPane.showMessageDialog(null, "삭제되었습니다.");
+			    				model.setRowCount(0); //전체 화면 지워줌
+			    				model = dbc.friendCmt(member.getMember_id());
+			    				cmtTb.setModel(model);
+			    				columnHide();
+			    				return;
+			    			}
+			    		}
+			    		return;
+			    	}
 			    	
 			    	int rs = JOptionPane.showConfirmDialog
 							(null, friend_name+"에게 파도 탈까요?","파도타기",JOptionPane.YES_NO_OPTION);
@@ -253,6 +261,18 @@ public class HomePane extends JPanel{
 				System.out.println("선택된 일촌평 없음");
 			}
 	    }
+	}
+	
+	public void columnHide() {
+		cmtTb.getColumnModel().getColumn(2).setPreferredWidth(300); //셀크기 조정
+		cmtTb.getColumnModel().getColumn(3).setPreferredWidth(40); //셀크기 조정
+		cmtTb.getColumnModel().getColumn(4).setPreferredWidth(20); //셀크기 조정
+		cmtTb.getColumnModel().getColumn(0).setWidth(0); //인덱스 숨김
+		cmtTb.getColumnModel().getColumn(0).setMinWidth(0); //인덱스 숨김
+		cmtTb.getColumnModel().getColumn(0).setMaxWidth(0); //인덱스 숨김
+		cmtTb.getColumnModel().getColumn(1).setWidth(0); //친구아이디 숨김
+		cmtTb.getColumnModel().getColumn(1).setMinWidth(0); //친구아이디 숨김
+		cmtTb.getColumnModel().getColumn(1).setMaxWidth(0); //친구아이디 숨김
 	}
 
 }

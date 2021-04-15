@@ -232,7 +232,7 @@ public class DBConnection {
 	//*************************메인&디테일 홈패널 관련 메소드 시작************************
 	//일촌평 불러오기
 	public DefaultTableModel friendCmt(String member_id) {
-		String[] header = {"friend_id","cmt","nick","name"};
+		String[] header = {"index","friend_id","cmt","nick","name"};
 		DefaultTableModel cmtModel= new DefaultTableModel(header, 0){  //셀 수정 못하게 하는 부분
 			 public boolean isCellEditable(int row, int column){
 			    return false;
@@ -250,11 +250,12 @@ public class DBConnection {
 			rs = pstmt.executeQuery();
 
 			while(rs.next()) {
+				int index = rs.getInt("FRIENDCMT_INDEX");
 				String friend_id = rs.getString("friend_id");
 				String cmt = rs.getString("FRIEND_CMT");
 				String nick = "("+rs.getString("FRIEND_NICK")+")";
 				String name = rs.getString("FRIEND_NAME");
-				Object[] data = {friend_id, cmt, nick, name};
+				Object[] data = {index, friend_id, cmt, nick, name};
 				
 				cmtModel.addRow(data);
 			}
@@ -311,6 +312,27 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 				
+		return result;
+	}
+	
+	//일촌평 삭제
+	public int delFriendCmt(int index) {
+		String sql = 
+				"DELETE FROM friendcmt WHERE FRIENDCMT_INDEX =?";
+		int result = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setInt(1, index); //일촌평 인덱스
+			
+			result = pstmt.executeUpdate();
+
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 		return result;
 	}
 	
@@ -771,49 +793,22 @@ public class DBConnection {
 				dto.setDiary_week(rs.getString("diary_week"));
 				dto.setDiary_mood(rs.getString("diary_mood"));
 				dto.setDiary_weather(rs.getString("diary_weather"));
-				dto.setMemeber_id(rs.getString("member_id")); //#수정
+				dto.setMemeber_id(rs.getString("member_id"));
 			}
-			// return dto;
-
+			rs.close();
+			pstmt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return dto;
 	} // getDiaryDTO end
 
-	// 다이어리 글 목록 조회 메서드
-	public List<DiaryDTO> selectList(String member_id) {
-		List<DiaryDTO> dlist = new ArrayList<DiaryDTO>();
-
-		try {
-			String sql = "select diary_index,diary_title,diary_date "
-					+ "from diary where member_id = ?"; //#수정
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, member_id); //#수정
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				DiaryDTO dto = new DiaryDTO();
-				dto.setDiary_index(rs.getInt("diary_index"));
-				dto.setDiary_title(rs.getString("diary_title"));
-				dto.setDiary_date(rs.getString("diary_date"));
-				dlist.add(dto);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return dlist;
-	} // selectList end
-
 	// 새로운 글 등록 메서드
 	public boolean diaryInsert(DiaryDTO dto) {
 		boolean ok = false;
-		
+
 		try {
-			//#수정
-			String sql =
-					"insert into diary values"
-					+ "(DIARY_SEQ.NEXTVAL,?,?,sysdate,TO_CHAR(SYSDATE, 'dy'),?,?,?)"; //#수정
+			String sql = "insert into diary values (DIARY_SEQ.NEXTVAL,?,?,sysdate,TO_CHAR(SYSDATE, 'dy'),?,?,?)";
 
 			pstmt = con.prepareStatement(sql);
 
@@ -821,7 +816,7 @@ public class DBConnection {
 			pstmt.setString(2, dto.getDiary_cont());
 			pstmt.setString(3, dto.getDiary_mood());
 			pstmt.setString(4, dto.getDiary_weather());
-			pstmt.setString(5, dto.getMemeber_id()); //#수정
+			pstmt.setString(5, dto.getMemeber_id());
 
 			int result = pstmt.executeUpdate();
 
@@ -839,6 +834,7 @@ public class DBConnection {
 
 	// 글 수정 메서드
 	public boolean DiaryUpdate(DiaryDTO updto) {
+
 		boolean ok = false;
 
 		try {
@@ -849,7 +845,7 @@ public class DBConnection {
 			pstmt.setString(2, updto.getDiary_cont());
 			pstmt.setString(3, updto.getDiary_mood());
 			pstmt.setString(4, updto.getDiary_weather());
-			pstmt.setInt(5, 11);
+			pstmt.setInt(5, updto.getDiary_index());
 
 			int result = pstmt.executeUpdate();
 
@@ -876,21 +872,17 @@ public class DBConnection {
 			pstmt.setInt(1, diary_index);
 			int result = pstmt.executeUpdate(); // -> 실행 / 삭제
 
-			String txtDel = JOptionPane.showInputDialog("삭제하시려면 '삭제'라고 입력해주세요.");
-			if (txtDel.equals("삭제")) {
-				if (result > 0) {
-					ok = true;
-					JOptionPane.showMessageDialog(null, "삭제했습니다.");
-				} else {
-					JOptionPane.showMessageDialog(null, "삭제 실패했습니다.");
-				}
-			} else {
-				JOptionPane.showMessageDialog(null, "잘못 입력했습니다.");
-			}
+			if (result > 0)
+				ok = true;
+			
+			pstmt.close();
+			con.close();
+
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return ok;
-	}
+	} // DiaryDelete end
 	//**************************다이어리 관련 메소드 종료******************************
 
 	//**************************사진첩 관련 메소드 시작******************************
@@ -900,6 +892,25 @@ public class DBConnection {
 			String sql = "select count(*) as cnt from gal_menu where member_id = ?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId);
+			rs = pstmt.executeQuery();
+
+			while(rs.next()) {
+				cnt = rs.getInt("cnt");
+				System.out.println(cnt);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cnt;
+	}
+	
+	public int uploadMenuCnt(int menuId) {
+		int cnt = 0;
+		try {
+			String sql = "select count(*) as cnt from gal_1 where menu_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, menuId);
 			rs = pstmt.executeQuery();
 
 			while(rs.next()) {
@@ -1084,6 +1095,43 @@ public class DBConnection {
 		}
 	}
 	
+	public ArrayList<GuestBookDTO> guestbookWriteOpen(String member_id) {
+
+		try {
+
+			String sql = "select * from guestbook where member_id = ? and gb_id = (select max(gb_id) from guestbook)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id);
+
+			rs = pstmt.executeQuery();
+
+			ArrayList<GuestBookDTO> gbList = new ArrayList<>();
+
+			while (rs.next()) {
+
+				GuestBookDTO gbd = new GuestBookDTO();
+				
+				gbd.setGb_id(rs.getInt("gb_id"));
+				gbd.setScreat_at(rs.getString("secret_at"));
+				gbd.setCreate_date(rs.getString("create_date"));
+				gbd.setHost_id(rs.getString("host_id"));
+				gbd.setContent(rs.getString("content"));
+				gbd.setMember_id(rs.getString("member_id"));
+				gbList.add(gbd);
+			}
+			
+			return gbList;
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+	
+	
+	
 	public void guestbookcommwrite(int guestBookNo, String commContent, String hostid) {
 		
 		try {
@@ -1110,10 +1158,50 @@ public class DBConnection {
 		
 	}
 	
+	public ArrayList<GuestBookCommDTO> gbcommwriteopen(int guestBookNo){
+		
+		
+		try {
+			String sql = "select * from guestbook_comm where gb_id = ? and comment_id = (select max(comment_id) from guestbook_comm)";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, guestBookNo);
+			
+			
+			rs = pstmt.executeQuery();
+			
+			ArrayList<GuestBookCommDTO> gbcList = new ArrayList<>();
+			
+			while(rs.next()) {
+				GuestBookCommDTO gbcd = new GuestBookCommDTO();
+				
+				gbcd.setGb_id(rs.getInt("gb_id"));
+				gbcd.setComment_id(rs.getInt("comment_id"));
+				gbcd.setWriter(rs.getString("writer"));
+				gbcd.setContent(rs.getString("content"));
+				gbcd.setCreate_date(rs.getString("create_date"));
+				
+				gbcList.add(gbcd);
+				
+				
+			}
+			
+			return gbcList;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+		
+		
+		
+	}
+	
 	public ArrayList<GuestBookCommDTO> guestbookcommselect(int guestBookNo) {
 		
 		try {
-			String sql = "select * from guestbook_comm where gb_id = ?";
+			String sql = "select * from guestbook_comm where gb_id = ? order by comment_id desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, guestBookNo);
 			rs = pstmt.executeQuery();
@@ -1140,16 +1228,13 @@ public class DBConnection {
 			e.printStackTrace();
 		}
 		return null;
-		
-		
 	}
 	
 	public ArrayList<GuestBookDTO> guestbookOpen(String member_id) {
 
 		try {
 
-			String sql = "select * from guestbook where member_id = ? "
-					+ "order by gb_id desc";
+			String sql = "select * from guestbook where member_id = ? order by gb_id desc";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, member_id);
 
@@ -1298,6 +1383,46 @@ public class DBConnection {
 			String sql2 = "select * from guestbook where gb_id = ?";
 			pstmt = con.prepareStatement(sql2);
 			pstmt.setInt(1, gbId);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				result = rs.getString("content");	
+			}
+
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	public void gbcommDelete(int comment_id) {
+
+		try {
+			String sql1 = "delete from guestbook_comm where comment_id=?";
+			pstmt = con.prepareStatement(sql1);
+			pstmt.setInt(1, comment_id);
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String gbcommModify(String content, int comment_id) {
+		
+		String result = null; 
+		
+		try {
+			String sql = "update guestbook_comm set content = ? where comment_id = ?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, content);
+			pstmt.setInt(2, comment_id);
+			pstmt.executeUpdate();
+			
+			String sql2 = "select * from guestbook_comm where comment_id = ?";
+			pstmt = con.prepareStatement(sql2);
+			pstmt.setInt(1, comment_id);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				result = rs.getString("content");	

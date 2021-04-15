@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import db.DBConnection;
@@ -42,6 +43,7 @@ public class BookPane extends JPanel {
 	RoundedButton guestBookSecretBt;
 	JTextPane guestBookCommentWrite;
 	JTextArea guestBookCommentContent;
+	JScrollPane guestBookScrollPane;
 
 //	JLabel guestBookNo;
 //	RoundedButton guestBookName;
@@ -70,11 +72,13 @@ public class BookPane extends JPanel {
 		guestBookPane.setLayout(new BoxLayout(guestBookPane, BoxLayout.Y_AXIS));
 
 		// 방명록 스크롤 뒷 패널
-		JScrollPane guestBookScrollPane = new JScrollPane(guestBookPane,
-				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // #수정
-		guestBookScrollPane.setBounds(260, 0, 650, 600);
+		guestBookScrollPane = new JScrollPane(guestBookPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // #수정
+		guestBookScrollPane.setBounds(260, 210, 650, 390);
+		guestBookScrollPane.getVerticalScrollBar().setUnitIncrement(16); // 스크롤 속도 조정
 //		frame.getContentPane().add(guestBookScrollPane);
 		this.add(guestBookScrollPane);
+		
 
 		ImageIcon icon = new ImageIcon("images/home3.jpg");
 		Image img = icon.getImage();
@@ -90,11 +94,12 @@ public class BookPane extends JPanel {
 
 		// 방명록 쓰기
 		JPanel panel = new JPanel();
-		panel.setPreferredSize(new Dimension(611, 210)); // #수정
-		panel.setMinimumSize(new Dimension(611, 210));
-		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getMinimumSize().height));
+//		panel.setPreferredSize(new Dimension(611, 210)); // #수정
+//		panel.setMinimumSize(new Dimension(611, 210));
+//		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getMinimumSize().height));
+		panel.setBounds(260, 0, 650, 210);
 		panel.setBackground(SystemColor.control);
-		guestBookPane.add(panel);
+		this.add(panel);
 		panel.setLayout(null);
 
 		// #수정
@@ -107,6 +112,8 @@ public class BookPane extends JPanel {
 		guestBookMyContent.setBounds(181, 17, 387, 134);
 		guestBookMyContent.setLineWrap(true); // #수정
 		panel.add(guestBookMyContent);
+		
+		
 
 		// ArrayList<GuestBookDTO> gbList = dbc.guestbookselect(member);
 		//
@@ -129,6 +136,12 @@ public class BookPane extends JPanel {
 					JPanel gbPane = new Gbpane(member, gblist.get(i));
 					guestBookPane.add(gbPane);
 				}
+				Runnable doScroll = new Runnable() {
+					   public void run() {
+						   guestBookScrollPane.getVerticalScrollBar().setValue(0);
+					   }
+					  };
+					  SwingUtilities.invokeLater(doScroll);
 
 			}
 		} catch (Exception e) {
@@ -141,6 +154,10 @@ public class BookPane extends JPanel {
 		guestBookMyWriteBt.setBounds(534, 161, 65, 34);
 		guestBookMyWriteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		panel.add(guestBookMyWriteBt);
+
+		if (member.getMember_id().equals(ms.getMaster_id())) {
+			guestBookMyWriteBt.setVisible(false);
+		}
 
 		guestBookMyWriteBt.addActionListener(new ActionListener() {
 
@@ -157,10 +174,30 @@ public class BookPane extends JPanel {
 
 					guestBookMyContent.setText(null);
 
-					ArrayList<GuestBookDTO> gblist = dbc.guestbookOpen(member.getMember_id());
+					dbc.guestbookWriteOpen(member.getMember_id());
 
-					JPanel gbPane = new Gbpane(member, gblist.get((gblist.size() - 1)));
-					guestBookPane.add(gbPane);
+					guestBookPane.removeAll();
+					ArrayList<GuestBookDTO> gblist = dbc.guestbookOpen(member.getMember_id());
+					try {
+						if (gblist.size() > 0) {
+							for (int i = 0; i < gblist.size(); i++) {
+								JPanel gbPane = new Gbpane(member, gblist.get(i));
+								guestBookPane.add(gbPane);
+							}
+
+						}
+					} catch (Exception e) {
+						System.out.println("[BookPane]: 남겨진 방명록 없음");
+					}
+
+					Runnable doScroll = new Runnable() {
+						   public void run() {
+							   guestBookScrollPane.getVerticalScrollBar().setValue(0);
+						   }
+						  };
+						  SwingUtilities.invokeLater(doScroll);
+
+						
 
 //					for (int i = 0; i < gbList.size(); i++) {
 //						JPanel gbPane = new Gbpane(member, gbList.get(i));

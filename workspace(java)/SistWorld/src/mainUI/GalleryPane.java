@@ -7,14 +7,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -22,10 +26,12 @@ import db.DBConnection;
 import model.Gal_1;
 import model.Gal_menu;
 import model.Member;
+import service.MasterSession;
 
 public class GalleryPane extends JPanel {
 	
-	DBConnection dbc = DBConnection.getInstance(); //#수정
+	DBConnection dbc = DBConnection.getInstance();
+	MasterSession ms = MasterSession.getInstance();
 
 	Connection con = null;
 	PreparedStatement pstmt = null;
@@ -105,17 +111,39 @@ public class GalleryPane extends JPanel {
 		showText.setBounds(0, 361, 626, 41);
 		showText.setBorder(new LineBorder(Color.gray, 1));
 		showPanel.add(showText);
+		
+		firstBtn = new RoundedButton();
+		SecondBtn = new RoundedButton();
+		ThirdBtn = new RoundedButton();
+		
+		firstBtn.setVisible(false);
+		SecondBtn.setVisible(false);
+		ThirdBtn.setVisible(false);
 
 		uploadBtn = new RoundedButton("업로드");
 		uploadBtn.setBounds(559, 47, 91, 23);
 		uploadBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		photoMain.add(uploadBtn);
+		
+		
 		uploadBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
+			 int menuCnt = dbc.selectMenuCnt(member.getMember_id());
+			 int uploadCnt = dbc.uploadMenuCnt(currentMenu);
+			 
+			 
+			 if(menuCnt == 0 ) {
+				 JOptionPane.showMessageDialog(null, "사진첩을 만들어 주세요!");
+			 }else if(uploadCnt == 1){
+				 JOptionPane.showMessageDialog(null, "더이상 사진을 추가할 수 없습니다!");
+			 }else {
+				 
 				uploadText.setText(null);
 				uploadPanel.setVisible(true);
 				photoMain.setVisible(false);
+			 
+			 }
 			}
 		});
 
@@ -146,13 +174,22 @@ public class GalleryPane extends JPanel {
 		finalUpload.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
+				
+				
+				
+				
+				if(preLabel.getIcon() == null) {
+					JOptionPane.showMessageDialog(null, "사진을 업로드 해주세요!!");
+				}else {
+				
+				
 				// src에 사진데이터 저장
 				
-				File f = chooser.getSelectedFile();
+					File f = chooser.getSelectedFile();
 				double dValue = Math.random(); // 난수발생
 				int ran = (int) (dValue * 100000); //#수정
 				//#수정 경로가 상대경로가 아니어서 파일이 저장되지 않아 수정합니다.
-				oA.fileSave(f, "../SistWorld/data/user/"+member.getMember_id(), f.getName(), ran); // 데이터저장
+				oA.fileSave(f, "../SistWorld/data/user/"+member.getMember_id()+"/"+member.getMember_id()+"img/", f.getName(), ran); // 데이터저장
 				
 				Gal_1 gallery = new Gal_1();
 				Gal_menu gall = new Gal_menu();
@@ -175,7 +212,7 @@ public class GalleryPane extends JPanel {
 				}
 				
 				gallery = dbc.selectGallery(currentMenu);
-				ImageIcon icon = new ImageIcon("../SistWorld/data/user/"+member.getMember_id()+"/" + gallery.getNew_file_name()
+				ImageIcon icon = new ImageIcon("../SistWorld/data/user/"+member.getMember_id()+"/"+member.getMember_id()+"img/" + gallery.getNew_file_name()
 						+ "." + gallery.getFile_ext());
 				Image img = icon.getImage();
 				Image ImgResize = img.getScaledInstance(showLabel.getWidth(), showLabel.getHeight(),
@@ -188,7 +225,7 @@ public class GalleryPane extends JPanel {
 				uploadPanel.setVisible(false);
 				photoMain.setVisible(true);
 				preLabel.setIcon(null);
-
+				}
 			}
 
 		});
@@ -306,10 +343,20 @@ public class GalleryPane extends JPanel {
 		photoSidelist.add(AddBtn);
 		bg = new ButtonGroup();
 
+		if(!ms.getMaster_id().equals(member.getMember_id())) {
+			uploadBtn.setVisible(false);
+			AddBtn.setVisible(false);
+			handleBtn.setVisible(false);
+		}
+
 	}
 
 	public void sideMenuDelete(String menuName, String memberId) {
 		int menuId = dbc.sideMenuDelete(menuName, memberId);
+		
+		firstBtn.setVisible(false);
+		SecondBtn.setVisible(false);
+		ThirdBtn.setVisible(false);
 		
 		if (menuId > 0) {
 	
@@ -327,6 +374,8 @@ public class GalleryPane extends JPanel {
 		} else {
 	
 			JOptionPane.showMessageDialog(null, "입력하신 폴더명은 존재하지 않습니다!!");
+			showGalleryList(currentMenu, memberId);
+			showSideMenu(memberId);
 		}
 	}
 
@@ -340,7 +389,7 @@ public class GalleryPane extends JPanel {
 				for (int i = 0; i < menuList.size(); i++) {
 
 					if (i == 0) {
-						firstBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						firstBtn.setText(menuList.get(i).getMenu_name());
 						firstBtn.setBounds(137, 102, 99, 61);
 						firstBtn.setVisible(true);
 						photoSidelist.add(firstBtn);
@@ -358,7 +407,7 @@ public class GalleryPane extends JPanel {
 						});
 
 					} else if (i == 1) {
-						SecondBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						SecondBtn.setText(menuList.get(i).getMenu_name());
 						SecondBtn.setBounds(12, 193, 99, 61);
 						SecondBtn.setVisible(true);
 						photoSidelist.add(SecondBtn);
@@ -375,7 +424,7 @@ public class GalleryPane extends JPanel {
 							}
 						});
 					} else if (i == 2) {
-						ThirdBtn = new RoundedButton(menuList.get(i).getMenu_name());
+						ThirdBtn.setText(menuList.get(i).getMenu_name());
 						ThirdBtn.setBounds(137, 193, 99, 61);
 						ThirdBtn.setVisible(true);
 						photoSidelist.add(ThirdBtn);
@@ -416,7 +465,7 @@ public class GalleryPane extends JPanel {
 					Gal_1 gal = galList.get(i);
 					String path = "";
 					ImageIcon icon = new ImageIcon(
-							"../SistWorld/data/user/"+memberId+"/" + gal.getNew_file_name() + "." + gal.getFile_ext());
+							"../SistWorld/data/user/"+memberId+"/"+memberId+"img/" + gal.getNew_file_name() + "." + gal.getFile_ext());
 					Image img = icon.getImage();
 					Image ImgResize = img.getScaledInstance(showLabel.getWidth(), showLabel.getHeight(),
 							Image.SCALE_SMOOTH);

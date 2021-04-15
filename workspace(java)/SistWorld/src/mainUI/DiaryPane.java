@@ -1,46 +1,65 @@
 package mainUI;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import db.DBConnection;
 import model.DiaryDTO;
 import model.Member;
+import service.MasterSession;
 
-public class DiaryPane extends JPanel {
-	
-	DBConnection dbc = DBConnection.getInstance(); //#수정
-	Member member; //#수정
-	
+public class DiaryPane extends JPanel implements ActionListener, ListSelectionListener {
+
+	String url = "jdbc:oracle:thin:@localhost:1521:xe";
+	String user = "web";
+	String password = "1234";
+
+	Connection con;
+	PreparedStatement pstmt;
+	ResultSet rs;
+
+	DBConnection dbc = DBConnection.getInstance();
+	Member member;
+	DiaryDTO diarydto;
+
 	// 다이어리 메인 화면
 	private JPanel diaryListPane, diaryContPane;
-	
-	// 다이어리 카테고리
-/*	private JTable diaryTable;
-	private DefaultTableModel model;*/
-	
+
+	// 다이어리 카테고리 - 글 리스트
+	private JList<String> list; // 데이터베이스 내용을 뿌려주기 위한 리스트 선언
+	private Vector<String> listdata = new Vector<>(); // 리스트를 위한 벡터 선언
+
 	// 다이어리 메인화면 - 세부 내용 컨테이너
 	private JPanel mainDiaryWrap;
 
 	// 다이어리 상단 패널
 	private JPanel titlePane;
 	// 상단 패널 - 다이어리 작성 날짜, 제목, 날씨 컴포넌트
-	private JLabel dateCont, titleCont, weatherCont;
+	private JLabel indexCont, titleCont, weatherCont;
 
 	// 다이어리 중앙 패널
 	private JPanel contPane, contSubPane;
@@ -54,23 +73,16 @@ public class DiaryPane extends JPanel {
 	// 게시글 버튼 패널 - 글 추가, 글 수정, 글 삭제 버튼
 	private RoundedButton addBtn, upBtn, delBtn;
 
-	// 다이어리 하단 패널
-	private JPanel commentPane;
-	// 댓글 작성자, 댓글 내용 작성, 댓글 입력 버튼
-	private JLabel commName;
-	private JTextField commBoard;
-	private RoundedButton commBtn;
-
 	// 다이어리 서브화면 - 내용 작성 컨테이너
 	private JPanel subDiaryWrap;
 
 	// 서브 다이어리 상단 패널
 	private JPanel titleSubPane;
-	
+
 	// 서브 상단 패널 - 제목 작성 컴포넌트, 다이어리 작성 날짜
 	private JTextField titleWrite;
 	private JLabel dateSubCont, weatherSubCont;
-	
+
 	// 서브 상단 패널 - 날씨 체크 박스
 	private JComboBox comboBox;
 	private String[] weather = { "맑음", "흐림", "강풍", "비", "번개", "안개", "눈" };
@@ -92,22 +104,33 @@ public class DiaryPane extends JPanel {
 	private JPanel boardBtnSubPane;
 	private RoundedButton entBtn, updBtn;
 	private ButtonGroup groupRd;
-	private List listdeemo;
+	private RoundedButton listBtn;
 
-	public DiaryPane(Member member) { //#수정
-		this.member = member; //#수정
-		
+	int value;
+	private JLabel boardWeek;
+	private JLabel boardDate2;
+
+	public DiaryPane(Member member) {
+		this.member = member;
+
 		this.setBounds(40, 40, 910, 600);
 		this.setBackground(Color.BLACK);
 		setLayout(null);
 
 		diaryListPane = new JPanel();
-		diaryListPane.setLayout(null);
 		diaryListPane.setBorder(new LineBorder(new Color(192, 192, 192)));
 		diaryListPane.setBackground(Color.WHITE);
 		diaryListPane.setBounds(0, 0, 260, 600);
 		add(diaryListPane);
-				
+		diaryListPane.setLayout(new BorderLayout(0, 0));
+
+		listBtn = new RoundedButton("목록열기");
+		listBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		list = new JList<String>(listdata); // 데이터베이스로부터 받아온 정보를 뿌려주기 위한 List 선언
+		list.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		diaryListPane.add(listBtn, BorderLayout.NORTH);
+		diaryListPane.add(list);
+
 		diaryContPane = new JPanel();
 		diaryContPane.setLayout(null);
 		diaryContPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
@@ -135,14 +158,14 @@ public class DiaryPane extends JPanel {
 		weatherCont.setHorizontalAlignment(SwingConstants.CENTER);
 		titlePane.add(weatherCont);
 
-		dateCont = new JLabel("04.01");
-		dateCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		dateCont.setBorder(new LineBorder(new Color(192, 192, 192)));
-		dateCont.setBounds(0, 0, 100, 75);
-		dateCont.setHorizontalAlignment(SwingConstants.CENTER);
-		titlePane.add(dateCont);
+		indexCont = new JLabel("");
+		indexCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		indexCont.setBorder(new LineBorder(new Color(192, 192, 192)));
+		indexCont.setBounds(0, 0, 100, 75);
+		indexCont.setHorizontalAlignment(SwingConstants.CENTER);
+		titlePane.add(indexCont);
 
-		titleCont = new JLabel("글의 제목이 나타나는 곳입니다.");
+		titleCont = new JLabel("");
 		titleCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		titleCont.setBounds(112, 10, 377, 55);
 		titlePane.add(titleCont);
@@ -156,7 +179,7 @@ public class DiaryPane extends JPanel {
 
 		txtBoard = new JTextArea();
 		txtBoard.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		txtBoard.setText("내용이 아직 없어요~");
+		txtBoard.setText("목록에서 글을 선택해주세요!\n글이 없다면 하단의 '글쓰기' 버튼을 이용하여 첫 글을 작성해 보아요 :)");
 		txtBoard.setLineWrap(true);
 		// txtBoard.setEnabled(false); // 비활성화 + 희미하게 처리
 		txtBoard.setEditable(false); // 편집기능만 비활성화(드래그,복사 가능)
@@ -169,19 +192,30 @@ public class DiaryPane extends JPanel {
 		contPane.add(contSubPane);
 		contSubPane.setLayout(null);
 
-		boardDate = new JLabel("2021.04.01 목 12:12");
+		boardDate = new JLabel("");
 		boardDate.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		boardDate.setBounds(12, 8, 120, 15);
+		boardDate.setBounds(12, 8, 67, 15);
 		contSubPane.add(boardDate);
 
-		moodCont = new JLabel("행복");
+		boardWeek = new JLabel("");
+		boardWeek.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		boardWeek.setBounds(85, 8, 25, 15);
+		contSubPane.add(boardWeek);
+
+		moodCont = new JLabel("");
 		moodCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		moodCont.setBounds(144, 8, 39, 15);
+		moodCont.setBounds(158, 8, 49, 15);
 		contSubPane.add(moodCont);
+
+		boardDate2 = new JLabel("");
+		boardDate2.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		boardDate2.setBounds(107, 8, 39, 15);
+		contSubPane.add(boardDate2);
 
 		boardBtnPane = new JPanel();
 		boardBtnPane.setBackground(Color.WHITE);
 		boardBtnPane.setBounds(0, 345, 600, 40);
+		boardBtnPane.setVisible(true);
 		mainDiaryWrap.add(boardBtnPane);
 		boardBtnPane.setLayout(null);
 
@@ -199,30 +233,6 @@ public class DiaryPane extends JPanel {
 		delBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		delBtn.setBounds(528, 10, 60, 25);
 		boardBtnPane.add(delBtn);
-
-		commentPane = new JPanel();
-		commentPane.setBackground(Color.WHITE);
-		commentPane.setBounds(0, 391, 600, 144);
-		mainDiaryWrap.add(commentPane);
-		commentPane.setLayout(null);
-
-		commBoard = new JTextField();
-		commBoard.setBounds(62, 45, 420, 25);
-		commentPane.add(commBoard);
-		commBoard.setColumns(10);
-
-		commBtn = new RoundedButton("입력");
-		commBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		commBtn.setBounds(494, 45, 60, 25);
-		commBtn.setBorderPainted(true); // 버튼 테두리 설정
-		commBtn.setContentAreaFilled(false); // 버튼 영역 배경 표시 설정
-		commentPane.add(commBtn);
-
-		commName = new JLabel("쌍쌍용"); //
-		commName.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		commName.setHorizontalAlignment(JLabel.RIGHT);
-		commName.setBounds(12, 51, 50, 15);
-		commentPane.add(commName);
 
 		// --------------------------------------------------------------mainPane
 
@@ -251,7 +261,7 @@ public class DiaryPane extends JPanel {
 		weatherSubCont.setBounds(500, 0, 100, 75);
 		titleSubPane.add(weatherSubCont);
 
-		dateSubCont = new JLabel("04.01");
+		dateSubCont = new JLabel("");
 		dateSubCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		dateSubCont.setHorizontalAlignment(SwingConstants.CENTER);
 		dateSubCont.setBorder(new LineBorder(new Color(192, 192, 192)));
@@ -335,6 +345,7 @@ public class DiaryPane extends JPanel {
 		boardBtnSubPane.setLayout(null);
 		boardBtnSubPane.setBackground(Color.WHITE);
 		boardBtnSubPane.setBounds(0, 345, 600, 40);
+		boardBtnSubPane.setVisible(true);
 		subDiaryWrap.add(boardBtnSubPane);
 
 		entBtn = new RoundedButton("확인");
@@ -347,97 +358,173 @@ public class DiaryPane extends JPanel {
 		boardBtnSubPane.add(updBtn);
 		updBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		updBtn.setVisible(false);
+
+		addBtn.addActionListener(this); // 새 글 추가 버튼 (글쓰기)
+		entBtn.addActionListener(this); // 새 글 작성 후 완료 버튼 (확인)
+		upBtn.addActionListener(this); // 글 수정 버튼 (수정)
+		updBtn.addActionListener(this); // 글 수정 완료 버튼 (수정완료)
+		delBtn.addActionListener(this); // 글 삭제 버튼 (삭제)
+		listBtn.addActionListener(this); // 글 목록 버튼(목록열기)
+		list.addListSelectionListener(this); // 글 리스트 선택
 		
-		//#수정
+		MasterSession ms = MasterSession.getInstance();
+		if(!ms.getMaster_id().equals(member.getMember_id())) {
+		   //로그인한 사람의 홈페이지가 아닐 경우 코딩
+			boardBtnPane.setVisible(false);
+			boardBtnSubPane.setVisible(false);
+		}
 		try {
-			viewData();
+
 		} catch (Exception e) {
 			System.out.println("[DiaryPane]: 작성한 다이어리 없음");
 		}
+
+	}
+	// --------------------------------------------------------------subPane
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String btName = e.getActionCommand();
+		if (btName.equals("글쓰기")) {
+			txtWriteBoard.setText("이곳에 내용을 입력해주세요."); // 글쓰기 창을 초기화함
+			mainDiaryWrap.setVisible(false); // 창이 안보이게
+			subDiaryWrap.setVisible(true); // 창이 보이게
+		}
+		if (btName.equals("확인")) {
+			mainDiaryWrap.setVisible(true);// 창이 다시 보이게
+			subDiaryWrap.setVisible(false); // 창이 안보이게
+			diaryInsert(); // 새 글 등록
+			getDiaryList(); // 리스트 새로고침
+			// viewData(); // 글의 번호 화면에 표시
+		}
+		if (btName.equals("수정")) {
+			mainDiaryWrap.setVisible(false);
+			subDiaryWrap.setVisible(true);
+			updBtn.setVisible(true); // 수정 확인 버튼 보이게
+			entBtn.setVisible(false); // 확인 버튼 안보이게
+			DiaryDTO updto = dbc.getDiaryDTO(Integer.parseInt(indexCont.getText()));
+			viewUpdateData(updto); // 수정하고자 하는 글의 정보를 불러옴
+
+		}
+		if (btName.equals("수정완료")) {
+			mainDiaryWrap.setVisible(true);// 창이 다시 보이게
+			subDiaryWrap.setVisible(false); // 창이 안보이게
+			updBtn.setVisible(false); // 수정 확인 버튼 다시 안보이게
+			entBtn.setVisible(true); // 확인 버튼 보이게
+			DiaryUpdate(); // 글 수정 및 수정된 정보 띄움
+			getDiaryList(); // 리스트 새로고침
+		}
+		if (btName.equals("삭제")) {
+			int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
+
+			if (result == JOptionPane.CLOSED_OPTION) {
+
+				JOptionPane.showMessageDialog(null, "취소를 클릭하였습니다");
+
+			} else if (result == JOptionPane.YES_OPTION) {
+				DiaryDelete(); // 글 정보 삭제 및 화면 비우기
+				getDiaryList(); // 리스트 새로고침
+
+			}
+
+		}
+		if (btName.equals("목록열기")) {
+			getDiaryList();
+		}
 		
-		diaryList();
-		// --------------------------------------------------------------subPane
+		
+	}
 
-		// 새 글 추가 버튼
-		addBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				txtWriteBoard.setText("이곳에 내용을 입력해주세요."); // 글쓰기 창을 초기화함
-				mainDiaryWrap.setVisible(false); // 창이 안보이게
-				subDiaryWrap.setVisible(true); // 창이 보이게
+	@Override // 글 목록 클릭시 해당 글 정보를 띄움
+	public void valueChanged(ListSelectionEvent arg0) {
+		int value = Integer.parseInt(list.getSelectedValue());
+		try {
+			String sql = "select * from diary where diary_index=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, value);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				String diary_index = Integer.toString(rs.getInt("diary_index"));
+				String diary_title = rs.getString("diary_title");
+				String diary_cont = rs.getString("diary_cont");
+				String diary_date = rs.getString("diary_date").substring(0, 10).replace("-", ".");
+				String diary_date2 = rs.getString("diary_date").substring(11, 16);
+				String diary_week = rs.getString("diary_week");
+				String diary_mood = rs.getString("diary_mood");
+				String diary_weather = rs.getString("diary_weather");
+
+				// 화면에 세팅
+				indexCont.setText(diary_index);
+				titleCont.setText(diary_title);
+				txtBoard.setText(diary_cont);
+				boardDate.setText(diary_date);
+				boardDate2.setText(diary_date2);
+				boardWeek.setText(diary_week);
+				moodCont.setText(diary_mood);
+
+				// 날씨에 맞는 이미지를 찾아 띄우는 조건문, switch/case문으로 작성
+				switch (diary_weather) {
+				case "맑음":
+					int wx = 0;
+					weatherCont.setIcon(weatherIcon[wx]);
+					break;
+				case "흐림":
+					int wx1 = 1;
+					weatherCont.setIcon(weatherIcon[wx1]);
+					break;
+				case "강풍":
+					int wx2 = 2;
+					weatherCont.setIcon(weatherIcon[wx2]);
+					break;
+				case "비":
+					int wx3 = 3;
+					weatherCont.setIcon(weatherIcon[wx3]);
+					break;
+				case "번개":
+					int wx4 = 4;
+					weatherCont.setIcon(weatherIcon[wx4]);
+					break;
+				case "안개":
+					int wx5 = 5;
+					weatherCont.setIcon(weatherIcon[wx5]);
+					break;
+				case "눈":
+					int wx6 = 6;
+					weatherCont.setIcon(weatherIcon[wx6]);
+					break;
+				}
 
 			}
-		});
-
-		// 새 글 작성 후 완료 버튼
-		entBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				mainDiaryWrap.setVisible(true);// 창이 다시 보이게
-				subDiaryWrap.setVisible(false); // 창이 안보이게
-				diaryInsert();
-
-			}
-		});
-
-		// 글 수정 버튼
-		upBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainDiaryWrap.setVisible(false);
-				subDiaryWrap.setVisible(true);
-				updBtn.setVisible(true); // 수정 확인 버튼 보이게
-				entBtn.setVisible(false); // 확인 버튼 안보이게
-				//DiaryDAO dao = new DiaryDAO(); //#수정
-				DiaryDTO updto = dbc.getDiaryDTO(11); //#수정
-				viewUpdateData(updto);
-			}
-		});
-
-		// 글 수정 완료 버튼
-		updBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainDiaryWrap.setVisible(true);// 창이 다시 보이게
-				subDiaryWrap.setVisible(false); // 창이 안보이게
-				updBtn.setVisible(false); // 수정 확인 버튼 다시 안보이게
-				entBtn.setVisible(true); // 확인 버튼 보이게
-				DiaryUpdate();
-			}
-		});
-
-		// 글 삭제 버튼
-		delBtn.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				DiaryDelete();
-			}
-		});
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	// --------------------------------------------------------------BtnAction
-
 	// DB에 저장된 정보를 화면에 보여주는 메서드
 	private void viewData() {
 
-		//DiaryDAO dao = new DiaryDAO(); //#수정
-		DiaryDTO dto = dbc.getDiaryDTO(11); //#수정
+		DiaryDTO dto = dbc.getDiaryDTO(Integer.parseInt(indexCont.getText()));
 
+		int diary_index = dto.getDiary_index();
 		String diary_title = dto.getDiary_title();
 		String diary_cont = dto.getDiary_cont();
+		String diary_date = dto.getDiary_date().substring(0, 10).replace("-", ".");
+		String diary_date2 = dto.getDiary_date().substring(11, 16);
+		String diary_week = dto.getDiary_week();
 		String diary_mood = dto.getDiary_mood();
 		String diary_weather = dto.getDiary_weather();
 
 		// 화면에 세팅
+		indexCont.setText(Integer.toString(diary_index));
 		titleCont.setText(diary_title);
 		txtBoard.setText(diary_cont);
+		boardDate.setText(diary_date);
+		boardDate2.setText(diary_date2);
+		boardWeek.setText(diary_week);
 		moodCont.setText(diary_mood);
-		
+
 		// 날씨에 맞는 이미지를 찾아 띄우는 조건문, switch/case문으로 작성
 		switch (diary_weather) {
 		case "맑음":
@@ -471,6 +558,41 @@ public class DiaryPane extends JPanel {
 		}
 	}// viewData end
 
+	// 글 목록을 가지고 오는 메서드
+	public void getDiaryList() {
+		try {
+			// 리스트의 내용을 모두 지워서 초기화시킴 (중복방지, 새로고침)
+			listdata.removeAllElements();
+
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			System.out.println("드라이버 로딩 성공!!");
+
+			con = DriverManager.getConnection(url, user, password);
+			String sql = "select diary_index from diary where member_id=? order by diary_index desc";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member.getMember_id());
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				String total = "";
+
+				total += rs.getInt("diary_index");
+				// total += rs.getString("diary_title");
+
+				System.out.println("글 목록>" + total);
+
+				listdata.add(total);
+				System.out.println("글 목록2>" + listdata);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// 백터에 있는 데이터를 리스트에 부착
+		list.setListData(listdata);
+	}
+
 	// 수정할 글의 정보를 화면에 보여주는 메서드
 	private void viewUpdateData(DiaryDTO updto) {
 
@@ -483,7 +605,7 @@ public class DiaryPane extends JPanel {
 		titleWrite.setText(diary_title);
 		txtWriteBoard.setText(diary_cont);
 		comboBox.setSelectedItem(diary_weather);
-		
+
 		if (diary_mood.equals("기분")) {
 			happtBtn.setSelected(true);
 		} else if (diary_mood.equals("웃김")) {
@@ -501,8 +623,7 @@ public class DiaryPane extends JPanel {
 	// 새 글 등록 메서드
 	private void diaryInsert() {
 		DiaryDTO dto = getViewData();
-		//DiaryDAO dao = new DiaryDAO(); //#수정
-		boolean ok = dbc.diaryInsert(dto); //#수정
+		boolean ok = dbc.diaryInsert(dto);
 	} // diaryInsert end
 
 	// 입력한 정보를 얻는 메서드
@@ -525,30 +646,63 @@ public class DiaryPane extends JPanel {
 		return dto;
 	} // getViewData end
 
+	// 수정할때 입력한 정보를 얻는 메서드
+	public DiaryDTO getViewUpdateData() {
+
+		// 화면에서 사용자가 입력한 정보를 얻음
+		DiaryDTO dto = new DiaryDTO();
+		String diary_title = titleWrite.getText();
+		String diary_cont = txtWriteBoard.getText();
+		String diary_mood = groupRd.getSelection().getActionCommand();
+		String diary_weather = comboBox.getSelectedItem().toString();
+		int diary_index = Integer.parseInt(indexCont.getText());
+
+		// 입력한 정보를 dto에 담음
+		dto.setDiary_title(diary_title);
+		dto.setDiary_cont(diary_cont);
+		dto.setDiary_mood(diary_mood);
+		dto.setDiary_weather(diary_weather);
+		dto.setDiary_index(diary_index);
+		dto.setMemeber_id(member.getMember_id());
+
+		return dto;
+	} // getViewData end
+
 	// 글 수정 메서드
 	private void DiaryUpdate() {
-		DiaryDTO dto = getViewData();
-		//DiaryDAO dao = new DiaryDAO(); //#수정
-		boolean ok = dbc.DiaryUpdate(dto); //#수정
-		
-		//#수정
-		if(ok) {
+		DiaryDTO dto = getViewUpdateData();
+		boolean ok = dbc.DiaryUpdate(dto);
+		if (ok) {
 			viewData();
 		}
 	} // DiaryUpdate end
 
 	// 글 삭제 메서드
 	private void DiaryDelete() {
-		//DiaryDAO dao = new DiaryDAO(); //#수정
-		boolean ok = dbc.DiaryDelete(11); //#수정 // 3 빼고 diary_index 삽입.
+
+		int diary_index = Integer.parseInt(indexCont.getText());
+		boolean ok = dbc.DiaryDelete(diary_index);
+
+		if (ok) {
+
+			String diary_title = "";
+			String diary_cont = "글을 삭제하였습니다 ! \n다른 글이 보고싶다면 목록에서 리스트를 선택해주세요:)";
+			String diary_date = "";
+			String diary_date2 = "";
+			String diary_week = "";
+			String diary_mood = "";
+			String diary_weather = "";
+			indexCont.setText("");
+			titleCont.setText(diary_title);
+			txtBoard.setText(diary_cont);
+			boardDate.setText(diary_date);
+			boardDate2.setText(diary_date2);
+			boardWeek.setText(diary_week);
+			moodCont.setText(diary_mood);
+			weatherCont.setText(diary_weather);
+
+		}
+
 	}// DiaryDelete end
-	
-	// 다이어리 글 출력 메서드
-	private void diaryList() {
-		DiaryDTO dto = new DiaryDTO();
-		//DiaryDAO dao = new DiaryDAO(); //#수정
-		List<DiaryDTO> dli = new ArrayList<DiaryDTO>();
-		dli= dbc.selectList(member.getMember_id()); //#수정
-	}
-	
+
 }// end

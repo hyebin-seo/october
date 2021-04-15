@@ -236,9 +236,11 @@ public class ProfilePane extends JPanel{
 				String member_id = dbc.surfer(ms.getMaster_id());
 				
 				//현재 접속한 홈페이지와 다른 아이디만 가져오기
-				while(member_id.equals(member.getMember_id())) {
-					member_id = dbc.surfer(ms.getMaster_id());
-				}
+//				while(member_id.equals(member.getMember_id())) {
+//					member_id = dbc.surfer(ms.getMaster_id());
+//					if(!member_id.equals(member.getMember_id()))
+//						break;
+//				}
 				
 				if(member_id.equals("")) {
 					JOptionPane.showMessageDialog(null,

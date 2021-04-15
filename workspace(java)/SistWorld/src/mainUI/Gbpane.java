@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import db.DBConnection;
@@ -41,6 +42,8 @@ public class Gbpane extends JPanel{
 	RoundedButton guestBookModifyBt;
 	
 	JTextPane guestBookCommentWrite;
+	JPanel guestBookCommentbackPane;
+	JScrollPane gbcommScrollPane;
 
 	public Gbpane(Member gbmember, GuestBookDTO gbd) {
 		
@@ -83,12 +86,19 @@ public class Gbpane extends JPanel{
 		guestBookModifyBt = new RoundedButton("수정");
 		guestBookModifyBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		guestBookModifyBt.setBounds(470, 7, 63, 23);
+		guestBookModifyBt.setVisible(false);
 		guestBookInfoMenu_1.add(guestBookModifyBt);
 
 		RoundedButton guestBookDeleteBt = new RoundedButton("삭제");
 		guestBookDeleteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		guestBookDeleteBt.setBounds(534, 7, 57, 23);
+		guestBookDeleteBt.setVisible(false);
 		guestBookInfoMenu_1.add(guestBookDeleteBt);
+		
+		if(ms.getMaster_id().equals(gbd.getHost_id())) {
+			guestBookModifyBt.setVisible(true);
+			guestBookDeleteBt.setVisible(true);
+			}
 		
 		// 방명록 사진 및 내용
 		//#수정 : 방명록 남긴 사람의 사진이 떠야하므로 현재 member값을 가져오면 안됩니다.
@@ -123,19 +133,32 @@ public class Gbpane extends JPanel{
 		guestBookCommentWriteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		guestBookCommentWritePane.add(guestBookCommentWriteBt);
 		
-		JPanel guestBookCommentbackPane = new JPanel();
-		//gbcommScrollPane.setViewportView(guestBookCommentbackPane);
+		guestBookCommentbackPane = new JPanel();
+		
 		guestBookCommentbackPane.setBackground(new Color(245, 245, 245));
 		guestBookCommentbackPane.setLayout(new BoxLayout(guestBookCommentbackPane, BoxLayout.Y_AXIS));
-		guestBookCommentbackPane.setPreferredSize(new Dimension(611, 200)); // #수정
-		guestBookCommentbackPane.setMinimumSize(new Dimension(611, 200));
-		guestBookCommentbackPane.setMaximumSize
-		(new Dimension(Integer.MAX_VALUE, guestBookCommentbackPane.getMinimumSize().height));
 		
-		JScrollPane gbcommScrollPane = new JScrollPane(guestBookCommentbackPane,
+		gbcommScrollPane = new JScrollPane(guestBookCommentbackPane,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		gbcommScrollPane.setBounds(0, 205, 611, 52);
+		gbcommScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		this.add(gbcommScrollPane);
+		
+		
+		
+		
+		Dimension size = new Dimension();
+		
+		size.setSize(611, 60);
+		
+		guestBookCommentbackPane.setPreferredSize(size); // #수정
+		// gbcommScrollPane.setViewportView(guestBookCommentbackPane);
+	      guestBookCommentbackPane.setMinimumSize(new Dimension(611, 70));
+	      
+	      guestBookCommentbackPane.setMaximumSize
+	      (new Dimension(Integer.MAX_VALUE, guestBookCommentbackPane.getMinimumSize().height));
+		
+		
 		
 		
 		ArrayList<GuestBookCommDTO> gbcList = dbc.guestbookcommselect(gbd.getGb_id());
@@ -144,9 +167,21 @@ public class Gbpane extends JPanel{
 			if (gbcList.size() > 0) {
 				for (int i = 0; i < gbcList.size(); i++) {
 					JPanel gbcpane = new Gbcommpane(gbmember, gbcList.get(i));
+					size.setSize(650, 60*gbcList.size());
+					//size.setSize(650, 60+(60*gbcList.size()));
+					guestBookCommentbackPane.setPreferredSize(size);
 					guestBookCommentbackPane.add(gbcpane);
 				}
+				
+				Runnable doScroll = new Runnable() {
+					   public void run() {
+						   gbcommScrollPane.getVerticalScrollBar().setValue(0);
+					   }
+					  };
+					  SwingUtilities.invokeLater(doScroll);
 			}
+			
+			
 		} catch (Exception e) {
 			System.out.println("[BookPane]: 남겨진 댓글 없음");
 		}
@@ -172,10 +207,39 @@ public class Gbpane extends JPanel{
 			
 			guestBookCommentWrite.setText(null);
 			
-			ArrayList<GuestBookCommDTO> gbcList = dbc.guestbookcommselect(guestBookNo);
+			ArrayList<GuestBookCommDTO> gbcList = dbc.gbcommwriteopen(guestBookNo);
+			
+			ArrayList<GuestBookCommDTO> gbcList2 = dbc.guestbookcommselect(gbd.getGb_id());
+			// guestbookno랑 gbcomm_시퀀스현재값-1 두개를 인자로 해서 보낸 다음에 그것을 where로 해서 select로 부른 다음에
+			// 그 rs값에서 content값만 가져와서
+			// 여기서 더해주면?
+			
+			
+			size.setSize(650, 60*gbcList2.size() );
+			guestBookCommentbackPane.setPreferredSize(size);
 			
 			JPanel gbcpane = new Gbcommpane(gbmember, gbcList.get((gbcList.size() - 1)));
 			guestBookCommentbackPane.add(gbcpane);
+			gbcommScrollPane.setViewportView(guestBookCommentbackPane);
+			
+			Runnable doScroll = new Runnable() {
+				   public void run() {
+					   gbcommScrollPane.getVerticalScrollBar().setValue((60*(gbcList2.size()-1)));
+				   }
+				  };
+				  SwingUtilities.invokeLater(doScroll);
+			
+//			for (int i = 0; i < gbcList.size(); i++) {
+//				JPanel gbcpane = new Gbcommpane(gbmember, gbcList.get(i));
+//				size.setSize(650, 60+(60*(gbcList.size())));
+//				guestBookCommentbackPane.setPreferredSize(size);
+//				guestBookCommentbackPane.add(gbcpane);
+//			}
+			
+			
+			//guestBookCommentbackPane.setPreferredSize(new Dimension(611, 60+(70*(gbcList.size()-1)))); // #수정
+			//230+(340*(gbList.size()-1))
+			
 			
 			}
 			
@@ -228,6 +292,19 @@ public class Gbpane extends JPanel{
 				});
 			}
 		});
+		
+		
+		//이동 버튼
+		
+		guestBookName.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new HomeFrame(gbd.getHost_id());
+			}
+		});
+		
+		
 		
 				
 	}

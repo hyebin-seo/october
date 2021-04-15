@@ -55,7 +55,7 @@ public class OpenActionListner implements ActionListener {
 			String splitData[] =name.split("\\.");
 			String fileName = splitData[0];
 			String ext = splitData[1];
-			String filePath = (path+"\\"+fileName + "_" + ran+"."+ext);
+			String filePath = (path+"/"+fileName + "_" + ran+"."+ext);
 			FileInputStream fis = new FileInputStream(file);
 			FileOutputStream fos = new FileOutputStream(filePath);
 			
