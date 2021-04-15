@@ -865,10 +865,10 @@ public class SettingPane extends JPanel implements ActionListener{
 
 		        if(result == 0 ) { //방문하기
 		        	new HomeFrame((String)friendTb.getModel().getValueAt(row,3));
-		        } else if(result == 0 ){ //일촌 끊기
+		        } else if(result == 1 ){ //일촌 끊기
 		        	int num = JOptionPane.showConfirmDialog
 							(null,
-							"정말"+friendTb.getModel().getValueAt(row,4)+"님과 일촌을 끊으시겠습니까?"
+							"정말 "+friendTb.getModel().getValueAt(row,4)+"님과 일촌을 끊으시겠습니까?"
 							,"절교 확인",JOptionPane.YES_NO_OPTION);
 		        	if(num == JOptionPane.YES_OPTION) {
 			        	//일촌 삭제
