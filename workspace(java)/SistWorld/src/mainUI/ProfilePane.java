@@ -65,10 +65,10 @@ public class ProfilePane extends JPanel{
 	public ProfilePane(String master_id, Member memberc) {
 		
 		// 홈 메뉴 - 세부 프로필 패널
-		this.setBorder(new LineBorder(new Color(192, 192, 192)));
-		this.setBounds(0, 0, 260, 600);
-		this.setBackground(Color.WHITE);
-		this.setLayout(null);
+//		this.setBorder(new LineBorder(new Color(192, 192, 192)));
+//		this.setBounds(0, 0, 260, 600);
+//		this.setBackground(Color.WHITE);
+//		this.setLayout(null);
 		this.member = memberc;
 		
 		profileModifyBt = new JButton("");
@@ -162,6 +162,7 @@ public class ProfilePane extends JPanel{
 				profileMsgTa,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		profileMsgJs.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
 		profileMsgJs.setSize(220, 170);
 		profileMsgJs.setLocation(20, 270);
 		profileMsgJs.setForeground(Color.BLACK);

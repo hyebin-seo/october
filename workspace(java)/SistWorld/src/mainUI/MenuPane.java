@@ -29,12 +29,19 @@ public class MenuPane extends JPanel implements ActionListener{
 	RoundedButton bookBt;
 	RoundedButton settingBt;
 	
+	Member member;
+	ProfilePane profilePane;
+	
+	MasterSession ms = MasterSession.getInstance();
+	
 //	public MenuPane() {	}
 	
-	public MenuPane(Member member, JPanel backPane) {
+	public MenuPane(Member member, JPanel backPane, ProfilePane profilePane) {
 		MasterSession ms = MasterSession.getInstance();
 		this.backPane = backPane;
-
+		this.member = member;
+		this.profilePane = profilePane;
+		
 		this.setBounds(970, 50, 80, 250);
 		this.setVisible(true);
         this.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -117,22 +124,32 @@ public class MenuPane extends JPanel implements ActionListener{
 		
 		switch (btName) {
 			case "Home":
+				profilePane.setVisible(true);
+				backPane.setBounds(320, 45, 650, 600);
 				c1.show(backPane,"home");
 				break;
 				
 			case "Diary":
+				profilePane.setVisible(false);
+				backPane.setBounds(60, 45, 910, 600);
 				c1.show(backPane,"diary");		
 				break;
 						
 			case "Gallery":
+				profilePane.setVisible(false);
+				backPane.setBounds(60, 45, 910, 600);
 				c1.show(backPane,"gallery");
 				break;
 				
 			case "Visitor":
+				profilePane.setVisible(true);
+				backPane.setBounds(320, 45, 650, 600);
 				c1.show(backPane,"book");
 				break;
 				
 			case "Setting":
+				profilePane.setVisible(false);
+				backPane.setBounds(60, 45, 910, 600);
 				c1.show(backPane,"setting");
 				break;
 	

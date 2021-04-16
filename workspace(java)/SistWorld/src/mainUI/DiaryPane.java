@@ -128,7 +128,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 		diaryListPane.setLayout(new BorderLayout(0, 0));
 
 		listBtn = new RoundedButton("목록열기");
-		listBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		listBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		list = new JList<String>(listdata); // 데이터베이스로부터 받아온 정보를 뿌려주기 위한 List 선언
 		list.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		MouseListener mouseListener = new MouseAdapter() {
@@ -179,7 +179,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 		titlePane.add(indexCont);
 
 		titleCont = new JLabel("");
-		titleCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		titleCont.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		titleCont.setBounds(112, 10, 377, 55);
 		titlePane.add(titleCont);
 
@@ -191,12 +191,12 @@ public class DiaryPane extends JPanel implements ActionListener {
 		contPane.setLayout(null);
 
 		txtBoard = new JTextArea();
-		txtBoard.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		txtBoard.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		txtBoard.setText("목록에서 글을 선택해주세요!\n글이 없다면 하단의 '글쓰기' 버튼을 이용하여 첫 글을 작성해 보아요 :)");
 		txtBoard.setLineWrap(true);
 		// txtBoard.setEnabled(false); // 비활성화 + 희미하게 처리
 		txtBoard.setEditable(false); // 편집기능만 비활성화(드래그,복사 가능)
-		txtBoard.setBounds(46, 61, 508, 158);
+		txtBoard.setBounds(22, 50, 555, 169);
 		contPane.add(txtBoard);
 
 		contSubPane = new JPanel();
@@ -233,17 +233,17 @@ public class DiaryPane extends JPanel implements ActionListener {
 		boardBtnPane.setLayout(null);
 
 		addBtn = new RoundedButton("글쓰기");
-		addBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		addBtn.setBounds(384, 11, 60, 25);
+		addBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		addBtn.setBounds(384, 10, 60, 25);
 		boardBtnPane.add(addBtn);
 
 		upBtn = new RoundedButton("수정");
-		upBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		upBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		upBtn.setBounds(456, 10, 60, 25);
 		boardBtnPane.add(upBtn);
 
 		delBtn = new RoundedButton("삭제");
-		delBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		delBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		delBtn.setBounds(528, 10, 60, 25);
 		boardBtnPane.add(delBtn);
 
@@ -282,7 +282,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 		titleSubPane.add(dateSubCont);
 
 		titleWrite = new JTextField("제목을 입력하세요.");
-		titleWrite.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		titleWrite.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		titleWrite.setBounds(112, 27, 376, 21);
 		titleSubPane.add(titleWrite);
 		titleWrite.setColumns(10);
@@ -295,9 +295,11 @@ public class DiaryPane extends JPanel implements ActionListener {
 		subDiaryWrap.add(contWritePane);
 
 		txtWriteBoard = new JTextArea();
+		txtWriteBoard.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		txtWriteBoard.setBackground(new Color(251, 251, 251));
 		txtWriteBoard.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
 		txtWriteBoard.setText("내용을 입력하세요.");
-		txtWriteBoard.setBounds(46, 61, 508, 158);
+		txtWriteBoard.setBounds(22, 50, 553, 169);
 		contWritePane.add(txtWriteBoard);
 
 		moodBtnPane = new JPanel();
@@ -362,14 +364,14 @@ public class DiaryPane extends JPanel implements ActionListener {
 		subDiaryWrap.add(boardBtnSubPane);
 
 		entBtn = new RoundedButton("확인");
-		entBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		entBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		entBtn.setBounds(528, 10, 60, 25);
 		boardBtnSubPane.add(entBtn);
 
 		updBtn = new RoundedButton("수정완료");
 		updBtn.setBounds(528, 10, 60, 25);
 		boardBtnSubPane.add(updBtn);
-		updBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		updBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		updBtn.setVisible(false);
 
 		addBtn.addActionListener(this); // 새 글 추가 버튼 (글쓰기)

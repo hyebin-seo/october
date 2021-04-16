@@ -13,6 +13,7 @@ import model.GuestBookCommDTO;
 import model.Member;
 import service.MasterSession;
 import javax.swing.JButton;
+import javax.swing.border.LineBorder;
 
 public class Gbcommpane extends JPanel {
 
@@ -23,32 +24,34 @@ public class Gbcommpane extends JPanel {
 
 	public Gbcommpane(Member gbcmember, GuestBookCommDTO gbcd) {
 
-		this.setBackground(new Color(245, 245, 245));
+		this.setBackground(new Color(255, 255, 255));
 		this.setBounds(12, 10, 587, 52);
 		this.setLayout(null);
 		this.member = gbcmember;
 
 		RoundedButton guestBookCommentWriterBt = new RoundedButton(gbcd.getWriter());
 		guestBookCommentWriterBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		guestBookCommentWriterBt.setBounds(12, 10, 89, 23);
+		guestBookCommentWriterBt.setBounds(12, 13, 89, 23);
 		this.add(guestBookCommentWriterBt);
 
 		guestBookCommentContent = new JTextArea(gbcd.getContent());
+		guestBookCommentContent.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
+		guestBookCommentContent.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		guestBookCommentContent.setEditable(false);
-		guestBookCommentContent.setBackground(new Color(245, 245, 245));
-		guestBookCommentContent.setBounds(107, 10, 423, 49);
+		guestBookCommentContent.setBackground(new Color(251, 251, 251));
+		guestBookCommentContent.setBounds(107, 13, 370, 23);
 		this.add(guestBookCommentContent);
 
 		RoundedButton gbCommModifyBt = new RoundedButton("수정");
 		gbCommModifyBt.setFont(new Font("맑은 고딕", Font.BOLD, 10));
 		gbCommModifyBt.setVisible(false);
-		gbCommModifyBt.setBounds(542, 1, 45, 23);
+		gbCommModifyBt.setBounds(489, 13, 45, 23);
 		add(gbCommModifyBt);
 
 		RoundedButton gbCommDeleteBt = new RoundedButton("삭제");
 		gbCommDeleteBt.setFont(new Font("맑은 고딕", Font.BOLD, 10));
 		gbCommDeleteBt.setVisible(false);
-		gbCommDeleteBt.setBounds(542, 26, 45, 23);
+		gbCommDeleteBt.setBounds(537, 13, 45, 23);
 		add(gbCommDeleteBt);
 		
 		if(ms.getMaster_id().equals(gbcd.getWriter())) {

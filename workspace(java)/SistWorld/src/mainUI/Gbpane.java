@@ -25,6 +25,7 @@ import model.Member;
 import service.ImageResizeUpload;
 import service.MasterSession;
 import javax.swing.JScrollPane;
+import javax.swing.border.MatteBorder;
 
 public class Gbpane extends JPanel{
 	
@@ -50,19 +51,19 @@ public class Gbpane extends JPanel{
 		// 첫번째 방명록 정보 및 메뉴 패널
 		
 //		// 방명록 기본 패널
-		this.setBorder(new LineBorder(new Color(192, 192, 192)));
+		this.setBorder(new MatteBorder(0, 0, 1, 0, (Color) new Color(150, 150, 150)));
 //		this.setBounds(12, 238, 611, 319);
-		this.setPreferredSize(new Dimension(611, 319)); //#수정
-		this.setBackground(Color.WHITE);
+		this.setPreferredSize(new Dimension(630, 319)); //#수정
+		this.setBackground(new Color(255, 255, 255));
 		this.setLayout(null);
 		this.member = gbmember;
 	
 		JPanel guestBookInfoMenu_1 = new JPanel();
-		guestBookInfoMenu_1.setBorder(new LineBorder(Color.gray, 1));
-		guestBookInfoMenu_1.setBackground(SystemColor.control);
+		guestBookInfoMenu_1.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		guestBookInfoMenu_1.setBackground(new Color(255, 255, 255));
 		guestBookInfoMenu_1.setForeground(SystemColor.control);
 
-		guestBookInfoMenu_1.setBounds(3, 19, 604, 37);
+		guestBookInfoMenu_1.setBounds(13, 19, 604, 37);
 		add(guestBookInfoMenu_1);
 		guestBookInfoMenu_1.setLayout(null);
 
@@ -107,40 +108,46 @@ public class Gbpane extends JPanel{
 		guestBookPhoto = new JLabel();
 		guestBookPhoto.setOpaque(false);
 		guestBookPhoto.setIcon(iru.getResizeIcon());
-		guestBookPhoto.setBounds(35, 66, 134, 134);
+		guestBookPhoto.setBounds(35, 63, 134, 134);
 		add(guestBookPhoto);
 
 		guestBookContent = new JTextArea(gbd.getContent());
+		guestBookContent.setBackground(new Color(255, 255, 255));
 		guestBookContent.setEditable(false);
-		guestBookContent.setBounds(189, 66, 387, 134);
+		guestBookContent.setBounds(189, 63, 387, 134);
 		add(guestBookContent);
 
 		// 방명록 댓글 패널
 		JPanel guestBookCommentWritePane = new JPanel();
+		guestBookCommentWritePane.setBorder(null);
 		guestBookCommentWritePane.setBackground(Color.WHITE);
-		guestBookCommentWritePane.setBounds(12, 259, 587, 46);
+		guestBookCommentWritePane.setBounds(13, 259, 604, 46);
 		add(guestBookCommentWritePane);
 		guestBookCommentWritePane.setLayout(null);
 
 		// 방명록 댓글
 		guestBookCommentWrite = new JTextPane();
-		guestBookCommentWrite.setBounds(12, 6, 492, 34);
+		guestBookCommentWrite.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
+		guestBookCommentWrite.setBounds(0, 8, 527, 30);
 		guestBookCommentWritePane.add(guestBookCommentWrite);
 
 		// 방명록 댓글 쓰기 버튼
 		RoundedButton guestBookCommentWriteBt = new RoundedButton("쓰기");
-		guestBookCommentWriteBt.setBounds(516, 6, 65, 34);
+		guestBookCommentWriteBt.setBounds(539, 8, 65, 30);
 		guestBookCommentWriteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		guestBookCommentWritePane.add(guestBookCommentWriteBt);
 		
 		guestBookCommentbackPane = new JPanel();
+		guestBookCommentbackPane.setBorder(null);
 		
-		guestBookCommentbackPane.setBackground(new Color(245, 245, 245));
+		guestBookCommentbackPane.setBackground(new Color(255, 255, 255));
 		guestBookCommentbackPane.setLayout(new BoxLayout(guestBookCommentbackPane, BoxLayout.Y_AXIS));
 		
 		gbcommScrollPane = new JScrollPane(guestBookCommentbackPane,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		gbcommScrollPane.setBounds(0, 205, 611, 52);
+		gbcommScrollPane.setBackground(new Color(255, 255, 255));
+		gbcommScrollPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		gbcommScrollPane.setBounds(13, 205, 604, 52);
 		gbcommScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		this.add(gbcommScrollPane);
 		

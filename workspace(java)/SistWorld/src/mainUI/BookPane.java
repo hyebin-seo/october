@@ -1,16 +1,18 @@
 package mainUI;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,6 +28,7 @@ import model.GuestBookDTO;
 import model.Member;
 import service.ImageResizeUpload;
 import service.MasterSession;
+import javax.swing.border.LineBorder;
 
 public class BookPane extends JPanel {
 
@@ -58,15 +61,17 @@ public class BookPane extends JPanel {
 //		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.getContentPane().setLayout(null);
 
-		JPanel profilePane = new ProfilePane(ms.getMaster_id(), member);
-		this.add(profilePane);
-
-		this.setBounds(40, 40, 910, 600);
+//		JPanel profilePane = new ProfilePane(ms.getMaster_id(), member);
+//		this.add(profilePane);
+		
+//		this.setBounds(40, 40, 910, 600);
+		this.setBounds(0, 0, 650, 600);
 		this.setLayout(null);
 
 		// 방명록 레이아웃 패널
 		JPanel guestBookPane = new JPanel();
-		guestBookPane.setBackground(Color.WHITE);
+		guestBookPane.setBorder(null);
+		guestBookPane.setBackground(new Color(251,251,251));
 		// guestBookScrollPane.setViewportView(guestBookPane);
 		// #수정
 		guestBookPane.setLayout(new BoxLayout(guestBookPane, BoxLayout.Y_AXIS));
@@ -74,7 +79,9 @@ public class BookPane extends JPanel {
 		// 방명록 스크롤 뒷 패널
 		guestBookScrollPane = new JScrollPane(guestBookPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER); // #수정
-		guestBookScrollPane.setBounds(260, 210, 650, 390);
+		guestBookScrollPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		guestBookScrollPane.setBackground(new Color(251,251,251));
+		guestBookScrollPane.setBounds(0, 201, 651, 399);
 		guestBookScrollPane.getVerticalScrollBar().setUnitIncrement(16); // 스크롤 속도 조정
 //		frame.getContentPane().add(guestBookScrollPane);
 		this.add(guestBookScrollPane);
@@ -94,11 +101,12 @@ public class BookPane extends JPanel {
 
 		// 방명록 쓰기
 		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(Color.LIGHT_GRAY));
 //		panel.setPreferredSize(new Dimension(611, 210)); // #수정
 //		panel.setMinimumSize(new Dimension(611, 210));
 //		panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, panel.getMinimumSize().height));
-		panel.setBounds(260, 0, 650, 210);
-		panel.setBackground(SystemColor.control);
+		panel.setBounds(0, 0, 650, 201);
+		panel.setBackground(Color.WHITE);
 		this.add(panel);
 		panel.setLayout(null);
 
@@ -109,24 +117,30 @@ public class BookPane extends JPanel {
 		panel.add(guestBookMyPhoto);
 
 		guestBookMyContent = new JTextArea();
-		guestBookMyContent.setBounds(181, 17, 387, 134);
+		guestBookMyContent.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
+		guestBookMyContent.setBackground(new Color(251, 251, 251));
+		guestBookMyContent.setBounds(181, 17, 446, 134);
 		guestBookMyContent.setLineWrap(true); // #수정
 		panel.add(guestBookMyContent);
 		
-		
-
-		// ArrayList<GuestBookDTO> gbList = dbc.guestbookselect(member);
-		//
-		// for (int i = 0; i < gbList.size(); i++) {
-		// JPanel gbPane = new Gbpane(member, gbList.get(i));
-		// guestBookPane.add(gbPane);
-		// }
-
-		// 이벤트 처리
-		// 눌렀을때 작성한 사람의 방명록 내용이 보이게
-		// 이벤트처리
-
-		//
+		JButton reBt = new JButton("Re");
+		reBt.setOpaque(false);
+		reBt.setForeground(Color.GRAY);
+		reBt.setFont(new Font("맑은 고딕", Font.PLAIN, 11));
+		reBt.setContentAreaFilled(false);
+		reBt.setBorder(null);
+		reBt.setFocusPainted(false);
+		reBt.setBounds(135, 161, 26, 20);
+		panel.add(reBt);
+		reBt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ImageResizeUpload iru = 
+						new ImageResizeUpload(ms.getMaster_member().getHome_profile_pic(), 134, 134);
+						guestBookMyPhoto.setIcon(iru.getResizeIcon());
+				
+			}
+		});
 
 		// #수정 : 저장된 방명록 불러오기
 		ArrayList<GuestBookDTO> gblist = dbc.guestbookOpen(member.getMember_id());
@@ -151,7 +165,7 @@ public class BookPane extends JPanel {
 		// 글쓰기
 
 		RoundedButton guestBookMyWriteBt = new RoundedButton("글쓰기");
-		guestBookMyWriteBt.setBounds(534, 161, 65, 34);
+		guestBookMyWriteBt.setBounds(562, 159, 65, 34);
 		guestBookMyWriteBt.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		panel.add(guestBookMyWriteBt);
 
@@ -211,14 +225,4 @@ public class BookPane extends JPanel {
 		});
 
 	}
-
-//	private void secret(Member member) {
-//		
-////		if (member.getMember_id().equals()) {
-////			
-////		}
-//		
-//		guestBookSecretBt.setVisible(false);
-//		guestBookContent.setText("비밀글입니다");
-//	}
 }

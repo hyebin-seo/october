@@ -73,17 +73,18 @@ public class HomePane extends JPanel{
 		this.member = member;
 		
 		// 세부 메인, 세부 프로필을 담는 패널
-		this.setBounds(40, 40, 910, 600);
+//		this.setBounds(40, 40, 910, 600);
+		this.setBounds(0, 0, 650, 600);
 		this.setLayout(null);
 		this.setBackground(Color.BLACK);
 		
 		// 홈 메뉴 - 세부 프로필 패널
-		this.add(new ProfilePane(ms.getMaster_id(), member));
+//		this.add(new ProfilePane(ms.getMaster_id(), member));
 
 		// 홈 메뉴 - 세부 메인 패널
 		mainDetailPane = new JPanel();
 		mainDetailPane.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		mainDetailPane.setBounds(260, 0, 650, 600);
+		mainDetailPane.setBounds(0, 0, 650, 600);
 		mainDetailPane.setBackground(Color.WHITE);
 		mainDetailPane.setLayout(null);
 

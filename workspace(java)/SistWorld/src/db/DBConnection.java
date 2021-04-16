@@ -336,6 +336,27 @@ public class DBConnection {
 		return result;
 	}
 	
+	public int modifyTitle(String title, String member_id) {
+		String sql = 
+				"update member set home_title = ? where member_id = ?";
+		int result = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, title);
+			pstmt.setString(2, member_id);
+			
+			result = pstmt.executeUpdate();
+
+			return result;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return result;
+	}
+	
 	//일촌평 클릭으로 파도타기 시 존재하는 회원체크
 	public boolean memberCheck(String friend_id) {
 		String sql = 
@@ -1167,7 +1188,8 @@ public class DBConnection {
 		
 		
 		try {
-			String sql = "select * from guestbook_comm where gb_id = ? and comment_id = (select max(comment_id) from guestbook_comm)";
+			String sql = "select * from guestbook_comm where gb_id = ? "
+					+ "and comment_id = (select max(comment_id) from guestbook_comm)";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, guestBookNo);
 			
@@ -1193,7 +1215,6 @@ public class DBConnection {
 			return gbcList;
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

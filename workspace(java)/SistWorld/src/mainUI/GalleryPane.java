@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,6 +28,7 @@ import model.Gal_1;
 import model.Gal_menu;
 import model.Member;
 import service.MasterSession;
+import javax.swing.SwingConstants;
 
 public class GalleryPane extends JPanel {
 	
@@ -51,7 +53,7 @@ public class GalleryPane extends JPanel {
 	private JPanel photoSidelist;
 
 	// 사진첩 목록 버튼
-	private RoundedButton allBtn;
+	private JButton allBtn;
 	private RoundedButton firstBtn = null;
 	private RoundedButton SecondBtn = null;
 	private RoundedButton ThirdBtn = null;
@@ -84,44 +86,50 @@ public class GalleryPane extends JPanel {
 
 		// 사진첩 메인 패널 및 라벨,checkbox
 		photoMain = new JPanel();
-		photoMain.setBorder(new LineBorder(Color.gray, 1));
+		photoMain.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		photoMain.setBounds(260, 0, 650, 600);
 		photoMain.setBackground(Color.WHITE);
 		this.add(photoMain);
 		photoMain.setLayout(null);
 
 		lblNoexist = new JLabel("등록된 게시물이 없습니다!!");
-		lblNoexist.setBounds(197, 226, 265, 65);
-		lblNoexist.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		lblNoexist.setFont(new Font("굴림", Font.PLAIN, 20));
+		lblNoexist.setForeground(Color.GRAY);
+		lblNoexist.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNoexist.setBounds(197, 225, 265, 65);
+		lblNoexist.setFont(new Font("맑은 고딕", Font.BOLD, 17));
 		photoMain.add(lblNoexist);
 
 		showPanel = new JPanel();
+		showPanel.setBackground(Color.WHITE);
 		showPanel.setBounds(12, 81, 626, 401);
 		showPanel.setBorder(new LineBorder(Color.gray, 1));
 		photoMain.add(showPanel);
 		showPanel.setLayout(null);
 
 		showLabel = new JLabel("");
+		showLabel.setBackground(Color.WHITE);
 		showLabel.setBounds(0, 0, 626, 360);
-		showLabel.setBorder(new LineBorder(Color.gray, 1));
+		showLabel.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		showPanel.add(showLabel);
 
 		showText = new JLabel("");
 		showText.setBounds(0, 361, 626, 41);
-		showText.setBorder(new LineBorder(Color.gray, 1));
+		showText.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		showPanel.add(showText);
 		
 		firstBtn = new RoundedButton();
+		firstBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		SecondBtn = new RoundedButton();
+		SecondBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		ThirdBtn = new RoundedButton();
+		ThirdBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		
 		firstBtn.setVisible(false);
 		SecondBtn.setVisible(false);
 		ThirdBtn.setVisible(false);
 
 		uploadBtn = new RoundedButton("업로드");
-		uploadBtn.setBounds(559, 47, 91, 23);
+		uploadBtn.setBounds(547, 48, 91, 23);
 		uploadBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		photoMain.add(uploadBtn);
 		
@@ -282,13 +290,14 @@ public class GalleryPane extends JPanel {
 
 		// 사진첩 패널 및 목록 버튼
 		photoSidelist = new JPanel();
-		photoSidelist.setBounds(0, 0, 259, 600);
-		photoSidelist.setBorder(new LineBorder(Color.gray, 1));
+		photoSidelist.setBounds(0, 0, 260, 600);
+		photoSidelist.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		photoSidelist.setBackground(Color.white);
 		photoSidelist.setForeground(Color.BLACK);
 		this.add(photoSidelist);
 
 		RoundedButton AddBtn = new RoundedButton("Add 앨범");
+		AddBtn.setText("앨범 추가");
 		AddBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 
 		AddBtn.addActionListener(new ActionListener() {
@@ -300,7 +309,7 @@ public class GalleryPane extends JPanel {
 				if (menuCnt >= 3) {
 					JOptionPane.showMessageDialog(null, "더이상 사진첩 메뉴를 만들 수 없습니다.");
 				} else {
-					menuName = JOptionPane.showInputDialog("폴더명을 입력하세요.");
+					menuName = JOptionPane.showInputDialog("앨범명을 입력하세요.");
 
 					if (!"".equals(menuName)) {
 						dbc.insertMenu(menuName, member.getMember_id());
@@ -316,8 +325,9 @@ public class GalleryPane extends JPanel {
 		photoSidelist.setLayout(null);
 
 		handleBtn = new RoundedButton("폴더삭제 >>");
+		handleBtn.setText("앨범 삭제");
 		handleBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		handleBtn.setBounds(0, 575, 259, 25);
+		handleBtn.setBounds(0, 570, 260, 25);
 		photoSidelist.add(handleBtn);
 
 		// sidepanel에서 생성된 버튼을 블러처리하는 이벤트
@@ -329,17 +339,21 @@ public class GalleryPane extends JPanel {
 			}
 		});
 
-		showSideMenu(member.getMember_id());
-
 		// sidepanel 버튼(전체보기, Add앨범, firstBtn, SecondBtn, ThirdBtn 이벤트 및 속성)
-
-		allBtn = new RoundedButton();
+		allBtn = new JButton();
 
 		allBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		allBtn.setBounds(0, 60, 259, 25);
+		allBtn.setOpaque(false);
+		allBtn.setForeground(new Color(9, 131, 178));
+		allBtn.setContentAreaFilled(false);
+		allBtn.setBorder(new LineBorder(Color.LIGHT_GRAY));
+		allBtn.setFocusPainted(false);
+		allBtn.setBounds(0, 0, 260, 67);
 		photoSidelist.add(allBtn);
+		
+		showSideMenu(member.getMember_id());
 
-		AddBtn.setBounds(0, 0, 83, 25);
+		AddBtn.setBounds(0, 540, 260, 25);
 		photoSidelist.add(AddBtn);
 		bg = new ButtonGroup();
 
@@ -390,10 +404,15 @@ public class GalleryPane extends JPanel {
 
 					if (i == 0) {
 						firstBtn.setText(menuList.get(i).getMenu_name());
-						firstBtn.setBounds(137, 102, 99, 61);
+						firstBtn.setBounds(40, 100, 180, 40);
 						firstBtn.setVisible(true);
 						photoSidelist.add(firstBtn);
 						firstVal = menuList.get(i).getMenu_id();
+						
+						if(menuList.get(i).getMenu_name()!=null) {
+							allBtn.setText(menuList.get(i).getMenu_name());
+						}
+						
 						firstBtn.addActionListener(new ActionListener() {
 							@Override
 							public void actionPerformed(ActionEvent e) {
@@ -408,7 +427,7 @@ public class GalleryPane extends JPanel {
 
 					} else if (i == 1) {
 						SecondBtn.setText(menuList.get(i).getMenu_name());
-						SecondBtn.setBounds(12, 193, 99, 61);
+						SecondBtn.setBounds(40, 160, 180, 40);
 						SecondBtn.setVisible(true);
 						photoSidelist.add(SecondBtn);
 						SecondVal = menuList.get(i).getMenu_id();
@@ -425,7 +444,7 @@ public class GalleryPane extends JPanel {
 						});
 					} else if (i == 2) {
 						ThirdBtn.setText(menuList.get(i).getMenu_name());
-						ThirdBtn.setBounds(137, 193, 99, 61);
+						ThirdBtn.setBounds(40, 220, 180, 40);
 						ThirdBtn.setVisible(true);
 						photoSidelist.add(ThirdBtn);
 						ThirdVal = menuList.get(i).getMenu_id();
