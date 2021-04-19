@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -188,7 +189,8 @@ public class DBConnection {
 					"FRIEND_ID VARCHAR2(50) NOT NULL,"+
 					"FRIEND_NAME VARCHAR2(50) NOT NULL,"+ 
 					"FRIEND_NICK VARCHAR2(50) NOT NULL,"+
-					"FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER(MEMBER_ID) ON DELETE CASCADE)";
+					"FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER(MEMBER_ID) ON DELETE CASCADE,"+ 
+					"FOREIGN KEY (FRIEND_ID) REFERENCES MEMBER(MEMBER_ID) ON DELETE CASCADE)";
 
 			Statement stmt = con.createStatement();
 			stmt.execute(cresql);
@@ -816,18 +818,78 @@ public class DBConnection {
 				dto.setDiary_weather(rs.getString("diary_weather"));
 				dto.setMemeber_id(rs.getString("member_id"));
 			}
-			rs.close();
-			pstmt.close();
+			// rs.close();
+			// pstmt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return dto;
 	} // getDiaryDTO end
 
+	// 다이어리 리스트 출력 메서드
+	public DefaultTableModel getDiaryList(String member_id) {
+		String[] header = { "글 번호", "글 제목" };
+		DefaultTableModel diaryModel = new DefaultTableModel(header, 0) {// 셀 수정 못하게 하는 부분
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+
+		String sql = "select diary_index,diary_title from diary where member_id = ? order by diary_index desc";
+
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int diary_index = rs.getInt("diary_index");
+				String diary_title = rs.getString("diary_title");
+
+				Object[] data = { diary_index, diary_title };
+
+				diaryModel.addRow(data);
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return diaryModel;
+	}// getDiaryList()
+
+	// 다이어리 리스트 백터 출력 메서드
+	public Vector<Object> getVectorList(String member_id) {
+
+		Vector<Object> data = new Vector<Object>(); 
+
+		try {
+			String sql = "select diary_index,diary_title from diary where member_id = ? order by diary_index desc";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, member_id);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				int diary_index = rs.getInt("diary_index");
+				String diary_title = rs.getString("diary_title");
+	
+				Vector<Object> row = new Vector<Object>();
+				row.add(diary_index);
+				row.add(diary_title);
+
+
+				data.add(row);
+			} // while
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return data;
+	}// getVectorList()
+
 	// 새로운 글 등록 메서드
 	public int diaryInsert(DiaryDTO dto) {
 
 		int index = 0;
+
 		try {
 			String sql = "insert into diary values (DIARY_SEQ.NEXTVAL,?,?,sysdate,TO_CHAR(SYSDATE, 'dy'),?,?,?)";
 
@@ -843,13 +905,11 @@ public class DBConnection {
 
 			if (result > 0) {
 				JOptionPane.showMessageDialog(null, "글 작성이 성공하였습니다.");
-				String sql2 = "select max(diary_index) as diary_index "
-						+ "from diary where member_id=?";
+				String sql2 = "select max(diary_index) as diary_index " + "from diary where member_id=?";
 				pstmt = con.prepareStatement(sql2);
 				pstmt.setString(1, dto.getMemeber_id());
 
 				rs = pstmt.executeQuery();
-				
 				if (rs.next()) {
 					index = rs.getInt("diary_index");
 					return index;

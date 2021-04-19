@@ -1,18 +1,14 @@
 package mainUI;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Vector;
 
 import javax.swing.ButtonGroup;
@@ -23,27 +19,21 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 import db.DBConnection;
 import model.DiaryDTO;
 import model.Member;
 import service.MasterSession;
 
-public class DiaryPane extends JPanel implements ActionListener {
-
-	String url = "jdbc:oracle:thin:@localhost:1521:xe";
-	String user = "web";
-	String password = "1234";
-
-	Connection con;
-	PreparedStatement pstmt;
-	ResultSet rs;
+public class DiaryPane extends JPanel implements ActionListener, MouseListener {
 
 	DBConnection dbc = DBConnection.getInstance();
 	Member member;
@@ -53,8 +43,8 @@ public class DiaryPane extends JPanel implements ActionListener {
 	private JPanel diaryListPane, diaryContPane;
 
 	// 다이어리 카테고리 - 글 리스트
-	private JList<String> list; // 데이터베이스 내용을 뿌려주기 위한 리스트 선언
-	private Vector<String> listdata = new Vector<>(); // 리스트를 위한 벡터 선언
+	private DefaultTableModel model;
+	private JTable jTable;
 
 	// 다이어리 메인화면 - 세부 내용 컨테이너
 	private JPanel mainDiaryWrap;
@@ -69,7 +59,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 	// 중앙 패널 - 다이어리 작성 내용
 	private JTextArea txtBoard;
 	// 중앙 패널 - 다이어리 작성 날짜, 기분 컴포넌트
-	private JLabel boardDate, moodCont;
+	private JLabel boardDate, boardDate2, moodCont, boardWeek;
 
 	// 다이어리 게시글 상호작용 버튼
 	private JPanel boardBtnPane;
@@ -105,13 +95,12 @@ public class DiaryPane extends JPanel implements ActionListener {
 
 	// 서브 다이어리 하단 - 글 작성 확인 버튼
 	private JPanel boardBtnSubPane;
-	private RoundedButton entBtn, updBtn;
+	private RoundedButton entBtn, updBtn, cnlBtn;
 	private ButtonGroup groupRd;
-	private RoundedButton listBtn;
 
-	int value;
-	private JLabel boardWeek;
-	private JLabel boardDate2;
+	// 사용 설명 버튼
+	private JLabel manuPane;
+	private RoundedButton manuBtn, manuBtn2;
 
 	public DiaryPane(Member member) {
 		this.member = member;
@@ -125,24 +114,16 @@ public class DiaryPane extends JPanel implements ActionListener {
 		diaryListPane.setBackground(Color.WHITE);
 		diaryListPane.setBounds(0, 0, 260, 600);
 		add(diaryListPane);
-		diaryListPane.setLayout(new BorderLayout(0, 0));
+		diaryListPane.setLayout(null);
 
-		listBtn = new RoundedButton("목록열기");
-		listBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		list = new JList<String>(listdata); // 데이터베이스로부터 받아온 정보를 뿌려주기 위한 List 선언
-		list.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		MouseListener mouseListener = new MouseAdapter() {
-		    public void mouseClicked(MouseEvent e) {
-		        if (e.getClickCount() == 1) {
-		        	selectList();
-		         }
-		    }
-		};
-		list.addMouseListener(mouseListener);
-		
-		
-		diaryListPane.add(listBtn, BorderLayout.NORTH);
-		diaryListPane.add(list);
+		model = dbc.getDiaryList(member.getMember_id());
+		jTable = new CustomJTable(model);
+		JScrollPane jsp = new CustomJsp(jTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		jsp.setSize(260, 600);
+		jsp.setLocation(0, 0);
+		diaryListPane.add(jsp);
+		jTable.addMouseListener(this); // 리스너 등록
 
 		diaryContPane = new JPanel();
 		diaryContPane.setLayout(null);
@@ -157,6 +138,12 @@ public class DiaryPane extends JPanel implements ActionListener {
 		diaryContPane.add(mainDiaryWrap);
 		mainDiaryWrap.setLayout(null);
 		mainDiaryWrap.setVisible(true);
+
+		manuPane = new JLabel();
+		manuPane.setBounds(0, 0, 600, 436);
+		mainDiaryWrap.add(manuPane);
+		manuPane.setVisible(false);
+		manuPane.setIcon(new ImageIcon("data/images/diary_img.jpg"));
 
 		titlePane = new JPanel();
 		titlePane.setBorder(new LineBorder(new Color(192, 192, 192)));
@@ -179,7 +166,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 		titlePane.add(indexCont);
 
 		titleCont = new JLabel("");
-		titleCont.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		titleCont.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		titleCont.setBounds(112, 10, 377, 55);
 		titlePane.add(titleCont);
 
@@ -191,12 +178,12 @@ public class DiaryPane extends JPanel implements ActionListener {
 		contPane.setLayout(null);
 
 		txtBoard = new JTextArea();
-		txtBoard.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		txtBoard.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		txtBoard.setText("목록에서 글을 선택해주세요!\n글이 없다면 하단의 '글쓰기' 버튼을 이용하여 첫 글을 작성해 보아요 :)");
 		txtBoard.setLineWrap(true);
 		// txtBoard.setEnabled(false); // 비활성화 + 희미하게 처리
 		txtBoard.setEditable(false); // 편집기능만 비활성화(드래그,복사 가능)
-		txtBoard.setBounds(22, 50, 555, 169);
+		txtBoard.setBounds(46, 61, 508, 158);
 		contPane.add(txtBoard);
 
 		contSubPane = new JPanel();
@@ -233,19 +220,32 @@ public class DiaryPane extends JPanel implements ActionListener {
 		boardBtnPane.setLayout(null);
 
 		addBtn = new RoundedButton("글쓰기");
-		addBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
-		addBtn.setBounds(384, 10, 60, 25);
+		addBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		addBtn.setBounds(384, 11, 60, 25);
 		boardBtnPane.add(addBtn);
 
 		upBtn = new RoundedButton("수정");
-		upBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		upBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		upBtn.setBounds(456, 10, 60, 25);
+		upBtn.setEnabled(false); // 버튼 비활성화
 		boardBtnPane.add(upBtn);
 
 		delBtn = new RoundedButton("삭제");
-		delBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		delBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		delBtn.setBounds(528, 10, 60, 25);
+		delBtn.setEnabled(false); // 버튼 비활성화
 		boardBtnPane.add(delBtn);
+
+		manuBtn = new RoundedButton("다이어리 사용법");
+		manuBtn.setBounds(488, 515, 100, 20);
+		mainDiaryWrap.add(manuBtn);
+		manuBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+
+		manuBtn2 = new RoundedButton("사용법 끄기");
+		manuBtn2.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		manuBtn2.setBounds(488, 515, 100, 20);
+		manuBtn2.setVisible(false);
+		mainDiaryWrap.add(manuBtn2);
 
 		// --------------------------------------------------------------mainPane
 
@@ -281,8 +281,8 @@ public class DiaryPane extends JPanel implements ActionListener {
 		dateSubCont.setBounds(0, 0, 100, 75);
 		titleSubPane.add(dateSubCont);
 
-		titleWrite = new JTextField("제목을 입력하세요.");
-		titleWrite.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		titleWrite = new JTextField("제목을 입력해주세요.");
+		titleWrite.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		titleWrite.setBounds(112, 27, 376, 21);
 		titleSubPane.add(titleWrite);
 		titleWrite.setColumns(10);
@@ -295,11 +295,9 @@ public class DiaryPane extends JPanel implements ActionListener {
 		subDiaryWrap.add(contWritePane);
 
 		txtWriteBoard = new JTextArea();
-		txtWriteBoard.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		txtWriteBoard.setBackground(new Color(251, 251, 251));
 		txtWriteBoard.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
-		txtWriteBoard.setText("내용을 입력하세요.");
-		txtWriteBoard.setBounds(22, 50, 553, 169);
+		txtWriteBoard.setText("내용을 입력해주세요.");
+		txtWriteBoard.setBounds(46, 61, 508, 158);
 		contWritePane.add(txtWriteBoard);
 
 		moodBtnPane = new JPanel();
@@ -364,14 +362,19 @@ public class DiaryPane extends JPanel implements ActionListener {
 		subDiaryWrap.add(boardBtnSubPane);
 
 		entBtn = new RoundedButton("확인");
-		entBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		entBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		entBtn.setBounds(528, 10, 60, 25);
 		boardBtnSubPane.add(entBtn);
 
 		updBtn = new RoundedButton("수정완료");
 		updBtn.setBounds(528, 10, 60, 25);
 		boardBtnSubPane.add(updBtn);
-		updBtn.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		updBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+
+		cnlBtn = new RoundedButton("취소");
+		cnlBtn.setBounds(456, 10, 60, 25);
+		boardBtnSubPane.add(cnlBtn);
+		cnlBtn.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		updBtn.setVisible(false);
 
 		addBtn.addActionListener(this); // 새 글 추가 버튼 (글쓰기)
@@ -379,20 +382,29 @@ public class DiaryPane extends JPanel implements ActionListener {
 		upBtn.addActionListener(this); // 글 수정 버튼 (수정)
 		updBtn.addActionListener(this); // 글 수정 완료 버튼 (수정완료)
 		delBtn.addActionListener(this); // 글 삭제 버튼 (삭제)
-		listBtn.addActionListener(this); // 글 목록 버튼(목록열기)
+		cnlBtn.addActionListener(this); // 뒤로가기 버튼 (취소)
+		manuBtn.addActionListener(this); // 다이어리 설명 (다이어리 사용법)
+		manuBtn2.addActionListener(this); // 다이어리 설명  (사용법 끄기)
+
+	/*	if (indexCont.getText()) == null) {
+			upBtn.setEnabled(false); // 수정 버튼 비활성화
+			delBtn.setEnabled(false);// 삭제 버튼 비활성화
+		} else {
+			upBtn.setEnabled(true); // 수정 버튼 활성화
+			delBtn.setEnabled(true);// 삭제 버튼 활성화
+		}*/
 
 		MasterSession ms = MasterSession.getInstance();
-		if(!ms.getMaster_id().equals(member.getMember_id())) {
-		   //로그인한 사람의 홈페이지가 아닐 경우 코딩
+		if (!ms.getMaster_id().equals(member.getMember_id())) {
+			// 로그인한 사람의 홈페이지가 아닐 경우 코딩
 			boardBtnPane.setVisible(false);
 			boardBtnSubPane.setVisible(false);
 		}
 		try {
-			getDiaryList();
+
 		} catch (Exception e) {
 			System.out.println("[DiaryPane]: 작성한 다이어리 없음");
 		}
-
 
 	}
 	// --------------------------------------------------------------subPane
@@ -401,24 +413,26 @@ public class DiaryPane extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String btName = e.getActionCommand();
 		if (btName.equals("글쓰기")) {
-			titleWrite.setText("이곳에 제목을 입력해주세요.");
-			txtWriteBoard.setText("이곳에 내용을 입력해주세요."); // 글쓰기 창을 초기화함
+			titleWrite.setText("제목을 입력해주세요."); // 제목 창을 초기화함
+			txtWriteBoard.setText("내용을 입력해주세요."); // 글쓰기 창을 초기화함
 			mainDiaryWrap.setVisible(false); // 창이 안보이게
 			subDiaryWrap.setVisible(true); // 창이 보이게
+			entBtn.setVisible(true); // 확인 버튼 보이게
+			updBtn.setVisible(false); // 수정 확인 버튼 안보이게
 		}
 		if (btName.equals("확인")) {
 			mainDiaryWrap.setVisible(true);// 창이 다시 보이게
 			subDiaryWrap.setVisible(false); // 창이 안보이게
 			diaryInsert(); // 새 글 등록
-			getDiaryList(); // 리스트 새로고침
-			// viewData(); // 글의 번호 화면에 표시
+			diarySelect(); // 리스트 새로고침
 		}
 		if (btName.equals("수정")) {
+
 			mainDiaryWrap.setVisible(false);
 			subDiaryWrap.setVisible(true);
 			updBtn.setVisible(true); // 수정 확인 버튼 보이게
 			entBtn.setVisible(false); // 확인 버튼 안보이게
-			DiaryDTO updto = dbc.getDiaryDTO(Integer.parseInt(indexCont.getText()));
+			DiaryDTO updto = dbc.getDiaryDTO(Integer.valueOf(indexCont.getText()));
 			viewUpdateData(updto); // 수정하고자 하는 글의 정보를 불러옴
 
 		}
@@ -428,7 +442,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 			updBtn.setVisible(false); // 수정 확인 버튼 다시 안보이게
 			entBtn.setVisible(true); // 확인 버튼 보이게
 			DiaryUpdate(); // 글 수정 및 수정된 정보 띄움
-			getDiaryList(); // 리스트 새로고침
+			diarySelect(); // 리스트 새로고침
 		}
 		if (btName.equals("삭제")) {
 			int result = JOptionPane.showConfirmDialog(null, "삭제하시겠습니까?", "확인", JOptionPane.YES_NO_OPTION);
@@ -439,85 +453,60 @@ public class DiaryPane extends JPanel implements ActionListener {
 
 			} else if (result == JOptionPane.YES_OPTION) {
 				DiaryDelete(); // 글 정보 삭제 및 화면 비우기
-				getDiaryList(); // 리스트 새로고침
-
+				diarySelect(); // 리스트 새로고침
 			}
+		}
 
+		if (btName.equals("취소")) {
+			mainDiaryWrap.setVisible(true);// 창이 다시 보이게
+			subDiaryWrap.setVisible(false); // 창이 안보이게
 		}
-		if (btName.equals("목록열기")) {
-			getDiaryList();
+		if (btName.equals("다이어리 사용법")) {
+			manuPane.setVisible(true);
+			manuBtn.setVisible(false);
+			manuBtn2.setVisible(true);
 		}
-		
-		
+		if (btName.equals("사용법 끄기")) {
+			manuPane.setVisible(false);
+			manuBtn.setVisible(true);
+			manuBtn2.setVisible(false);
+		}
 	}
 
-	// 글 목록 클릭시 해당 글 정보를 띄움
-	public void selectList() {
-		try {
-			int value = Integer.parseInt(list.getSelectedValue());
-			String sql = "select * from diary where diary_index=?";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setInt(1, value);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				String diary_index = Integer.toString(rs.getInt("diary_index"));
-				String diary_title = rs.getString("diary_title");
-				String diary_cont = rs.getString("diary_cont");
-				String diary_date = rs.getString("diary_date").substring(0, 10).replace("-", ".");
-				String diary_date2 = rs.getString("diary_date").substring(11, 16);
-				String diary_week = rs.getString("diary_week");
-				String diary_mood = rs.getString("diary_mood");
-				String diary_weather = rs.getString("diary_weather");
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// mouseClicked 만 사용
+		mainDiaryWrap.setVisible(true);// 창이 다시 보이게
+		subDiaryWrap.setVisible(false); // 창이 안보이게
+		upBtn.setEnabled(true); // 버튼 활성화
+		delBtn.setEnabled(true); // 버튼 활성화
+		int r = jTable.getSelectedRow();
+		int index = (int) jTable.getValueAt(r, 0); // 테이블의 r,0 는 diary_index = 글번호
+		viewData(index); // 현재 번호에 맞는 글 보여주기
+	}
 
-				// 화면에 세팅
-				indexCont.setText(diary_index);
-				titleCont.setText(diary_title);
-				txtBoard.setText(diary_cont);
-				boardDate.setText(diary_date);
-				boardDate2.setText(diary_date2);
-				boardWeek.setText(diary_week);
-				moodCont.setText(diary_mood);
+	@Override
+	public void mouseEntered(MouseEvent e) {
 
-				// 날씨에 맞는 이미지를 찾아 띄우는 조건문, switch/case문으로 작성
-				switch (diary_weather) {
-				case "맑음":
-					int wx = 0;
-					weatherCont.setIcon(weatherIcon[wx]);
-					break;
-				case "흐림":
-					int wx1 = 1;
-					weatherCont.setIcon(weatherIcon[wx1]);
-					break;
-				case "강풍":
-					int wx2 = 2;
-					weatherCont.setIcon(weatherIcon[wx2]);
-					break;
-				case "비":
-					int wx3 = 3;
-					weatherCont.setIcon(weatherIcon[wx3]);
-					break;
-				case "번개":
-					int wx4 = 4;
-					weatherCont.setIcon(weatherIcon[wx4]);
-					break;
-				case "안개":
-					int wx5 = 5;
-					weatherCont.setIcon(weatherIcon[wx5]);
-					break;
-				case "눈":
-					int wx6 = 6;
-					weatherCont.setIcon(weatherIcon[wx6]);
-					break;
-				}
+	}
 
-			}
-		} catch (SQLException e) {
-			System.out.println("다이어리 없음");
-		}
+	@Override
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 
 	}
 
 	// --------------------------------------------------------------BtnAction
+
 	// DB에 저장된 정보를 화면에 보여주는 메서드
 	private void viewData(int index) {
 
@@ -533,7 +522,7 @@ public class DiaryPane extends JPanel implements ActionListener {
 		String diary_weather = dto.getDiary_weather();
 
 		// 화면에 세팅
-		indexCont.setText(Integer.toString(diary_index));
+		indexCont.setText(String.valueOf(diary_index));
 		titleCont.setText(diary_title);
 		txtBoard.setText(diary_cont);
 		boardDate.setText(diary_date);
@@ -574,45 +563,19 @@ public class DiaryPane extends JPanel implements ActionListener {
 		}
 	}// viewData end
 
-	// 글 목록을 가지고 오는 메서드
-	public void getDiaryList() {
-		try {
-			// 리스트의 내용을 모두 지워서 초기화시킴 (중복방지, 새로고침)
-			listdata.removeAllElements();
+	// JTable의 컬럼
+	public Vector<Object> getColumn() {
+		Vector<Object> col = new Vector<Object>();
+		col.add("글 번호");
+		col.add("글 제목");
 
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			System.out.println("드라이버 로딩 성공!!");
+		return col;
+	}// getColumn
 
-			con = DriverManager.getConnection(url, user, password);
-			String sql = "select diary_index from diary where member_id=? order by diary_index desc";
-			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, member.getMember_id());
-			rs = pstmt.executeQuery();
-
-			while (rs.next()) {
-				String total = "";
-
-				total += rs.getInt("diary_index");
-				// total += rs.getString("diary_title");
-
-				System.out.println("글 목록>" + total);
-
-				listdata.add(total);
-				System.out.println("글 목록2>" + listdata);
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		// 백터에 있는 데이터를 리스트에 부착
-		list.setListData(listdata);
-		try {
-			viewData(Integer.parseInt(listdata.get(0)));
-		} catch (Exception e) {
-			System.out.println("다이어리 데이터 없음.");
-		}
-		
+	// Jtable 새로고침 메서드
+	public void diarySelect() {
+		model = new DefaultTableModel(dbc.getVectorList(member.getMember_id()), getColumn());
+		jTable.setModel(model);
 	}
 
 	// 수정할 글의 정보를 화면에 보여주는 메서드
@@ -647,7 +610,6 @@ public class DiaryPane extends JPanel implements ActionListener {
 		DiaryDTO dto = getViewData();
 		int index = dbc.diaryInsert(dto);
 		viewData(index);
-		
 	} // diaryInsert end
 
 	// 입력한 정보를 얻는 메서드
@@ -697,7 +659,6 @@ public class DiaryPane extends JPanel implements ActionListener {
 		DiaryDTO dto = getViewUpdateData();
 		int index = dbc.DiaryUpdate(dto);
 		viewData(index);
-
 	} // DiaryUpdate end
 
 	// 글 삭제 메서드
@@ -708,24 +669,17 @@ public class DiaryPane extends JPanel implements ActionListener {
 
 		if (ok) {
 
-			String diary_title = "";
-			String diary_cont = "글을 삭제하였습니다 ! \n다른 글이 보고싶다면 목록에서 리스트를 선택해주세요:)";
-			String diary_date = "";
-			String diary_date2 = "";
-			String diary_week = "";
-			String diary_mood = "";
-			String diary_weather = "";
+			String diary_cont = diary_index + "번 글을 삭제하였습니다 ! \n다른 글이 보고싶다면 목록에서 리스트를 선택해주세요:)";
 			indexCont.setText("");
-			titleCont.setText(diary_title);
+			titleCont.setText(null);
 			txtBoard.setText(diary_cont);
-			boardDate.setText(diary_date);
-			boardDate2.setText(diary_date2);
-			boardWeek.setText(diary_week);
-			moodCont.setText(diary_mood);
-			weatherCont.setText(diary_weather);
+			boardDate.setText(null);
+			boardDate2.setText(null);
+			boardWeek.setText(null);
+			moodCont.setText(null);
+			weatherCont.setIcon(new ImageIcon("data/images/null.png"));
 
 		}
 
 	}// DiaryDelete end
-
 }// end

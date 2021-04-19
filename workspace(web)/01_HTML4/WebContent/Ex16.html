@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<!-- 
+table 태그에서 행 또는 열 병합.
+- rowspan 속성 : 테이블에서 행을 병합하는 속성.
+- colspan 속성 : 테이블에서 열을 병합하는 속성. -->
+
+<table border="1" cellspacing="0" align="center">
+	<tr>
+		<td colspan="4">4열 병합</td>
+<!-- 		<td>1행2열</td>
+		<td>1행3열</td>
+		<td>1행4열</td> -->
+	</tr>
+	<tr>
+		<td>2행1열</td>
+		<td>2행2열</td>
+		<td>2행3열</td>
+		<td>2행4열</td>
+	</tr>
+	<tr>
+		<td rowspan="2">2행 병합</td>
+		<td>3행2열</td>
+		<td>3행3열</td>
+		<td>3행4열</td>
+	</tr>
+	<tr>
+<!-- 		<td>4행1열</td> -->
+		<td>4행2열</td>
+		<td>4행3열</td>
+		<td>4행4열</td>
+	</tr>
+</table>
+</body>
+</html>
