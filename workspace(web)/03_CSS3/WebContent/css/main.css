@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+/* Css에서의 주석 */
+
+/* Ex02.html에 적용되는 디자인*/
+
+p {
+	color: blue; /* 글자 색상 */
+	font-size: 20px; /* 글자 크기 */
+	font-family: 궁서체; /* 글꼴(글자체) */
+	font-weight: bold; /* 글자 굵기 */
+	text-align: center; /* 글자 위치 */
+}
+
+body {
+	background-color: pink; /* 문서 전체 배경 색상 변경 */
+	/* 배경 이미지를 지정하는 속성 */
+	background-image: url("../images/beauty.jpg");
+	
+	/* 배경 이미지를 한 번만 표시하는 속성*/
+	background-repeat: no-repeat;
+	
+	/* 배경 이미지를 웹 브라우저의 가운데 배치하는 속성*/
+	background-position: center;
+}
