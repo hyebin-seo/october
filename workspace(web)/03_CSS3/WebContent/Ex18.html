@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+	
+	.photo {
+		position:absolute;
+		left: 50px;
+		top: 20px;
+	}
+	
+	.shadow {
+		position:absolute;
+		left: 450px;
+		top: 20px;
+		
+		border-radius: 100px;
+		box-shadow: 50px 50px 50px orange;
+	}
+	
+	
+</style>
+</head>
+<body>
+<!-- box-shadow : 그림자를 만드는 속성
+	형식) box-shadow: <수평거리> <수직거리> <흐림정도> <번짐정도> <색상>
+	* 수평거리 : 그림자의 수평거리(얼마나 떨어져 있는지).
+			   양수값은 오른쪽, 음수값은 왼쪽에 그림자를 만듬.
+	* 수직거리 : 그림자의 수직거리(얼마나 떨어져 있는지).
+			   양수값은 아랫쪽, 음수값은 위쪽에 그림자를 만듬.
+	* 흐림정도 : 그림자의 흐림 정도를 표현함. 기본 값은 해가 진 그림자를 표시. 값이 커질 수록 부드러운 그림자. 음수 사용 불가
+	* 번짐정도 : 그림자가 번지는 정도를 나타냄. 양수 값은 그림자가 모든 방향으로 퍼짐. 음수 값은 그림자가 모든 방향으로 축소됨.
+ -->
+	<img class="photo" src="images/img.jpg" alt="튤립 이미지">
+	<img class="shadow" src="images/img.jpg" alt="튤립 이미지">
+</body>
+</html>

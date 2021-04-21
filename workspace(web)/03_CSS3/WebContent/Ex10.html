@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+
+	.block img {
+		display: block;
+	}
+	
+	ul li {
+		display: inline;
+	}
+
+</style>
+
+<!-- display 속성은 웹페이지 상에서 요소들이 어떻게 보여지고 다른 요소와 어떻게 상호 배치 되는지를 결정하는 속성.
+-display 속성이 inline으로 지정된 요소는 전후 줄바꿈 없이 한 줄에 다른 요소들과 나란히 배치됨.
+예) <span> 태그, <a> 태그
+-display 속성이 block으로 지정된 요소는 전후 줄바꿈이 들어가 다른 요소들을 다른 줄로 밀어내고 혼자 한 줄을 차지함.
+예) <div> 태그, <p> 태그, <hn> 태그
+-display 속성이 inline-block으로 지정된 요소는 한 줄에 다른 요소들과 나란히 배치됨.
+ inline에선 사용이 불가능한 width, height, margin, padding 속성의 상하 간격 지정이 가능해짐.-->
+</head>
+<body>
+	<div>
+		<img src="images/car1.git" width="250">
+		<img src="images/car2.git" width="250">
+		<img src="images/car3.git" width="250">
+	</div>
+	
+	<div class="block">
+		<img src="images/car1.git">
+		<img src="images/car2.git">
+		<img src="images/car3.git">
+	</div>
+	
+	<hr>
+	
+	<ul>
+		<li><a href="#">회사소개</a>
+		<li><a href="#">사업영역</a>
+		<li><a href="#">제품문의</a>
+		<li><a href="#">고객센터</a>
+	</ul>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style type="text/css">
+
+	#first ul li {
+		line-height: 200%;
+	}
+	
+	#second ul li {
+		line-height: 200%;
+		list-style: square;
+	}
+	
+	#third ul li {
+		line-height: 200%;
+		list-style: circle;
+	}
+	
+	#first {
+		float: left;
+	}
+	
+	#second {
+		float: left;
+		margin-left: 150px;
+	}
+
+	#third {
+		float: left;
+		margin-left: 150px;
+	}
+	
+	address {
+		clear: both;  /* float 속성을 해제시키는 방법 */
+	}
+
+</style>
+</head>
+<body>
+
+	<!-- 
+		float 속성
+		- 웹 문서의 요소를 떠 있게 하는 방법.
+		- 수직적인 요소를 수평적인 요소로 바꾸어 주는 속성.
+		- 왼쪽 구석이나 오른쪽 구석에 배치한다는 의미.
+		- 문서의 레이아웃을 구성하기 위해서 많이 사용되는 속성.
+		- float 속성의 종류
+		  * right : 오른쪽부터 차례로 왼쪽 방향으로 떠 있게 하는 속성.
+		  * left : 왼쪽부터 차례로 오른쪽 방향으로 떠 있게 하는 속성.
+		  * both : 양쪽에서 어느 쪽으로도 떠 있지 않게 하는 속성 - 해제하는 속성.
+		- float 속성을 사용한 후에는 반드시 해제(clear=both)해 주어야 함.
+	 -->
+	 
+	<div id="first">
+		<h2>회사소개</h2>
+		<ul>
+			<li>대표인사말</li>
+			<li>조직도</li>
+			<li>비 전</li>
+			<li>오시는 길</li>
+		</ul>
+	</div>
+	
+	<div id="second">
+		<h2>사업영역</h2>
+		<ul>
+			<li>포탈사이트</li>
+			<li>시스템 통합</li>
+			<li>마케팅</li>
+			<li>웹디자인</li>
+		</ul>
+	</div>
+	
+	<div id="third">
+		<h2>고객센터</h2>
+		<ul>
+			<li>다운로드</li>
+			<li>질의/응답</li>
+			<li>자유게시판</li>
+			<li>1:1게시판</li>
+		</ul>
+	</div>
+	
+	<address>서울시 마포구 월드컵북로 21 풍성빌딩 2층</address>
+</body>
+</html>

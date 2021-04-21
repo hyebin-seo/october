@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>데카르트 홈페이지</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<div id="container">
+		<header id="head"> <!-- 웹 문서의 상단 영역 -->
+			<div id="login">
+				<a href="./index.html">홈</a>
+				<a href="#" onclick="login_window()">로그인</a>
+				<a href="#" onclick="join_window()">회원가입</a>
+			</div> <!-- id="login" end -->
+			
+			<hgroup> <!-- 제목과 부제목을 그룹으로 묶어주는 역할 -->
+				<h1>데카르트, 서양 근대 철학의 창시자</h1>
+				<h2>Rene Decartes, 1596~1650</h2>
+			</hgroup>
+		</header>
+		
+		<!-- 웹 문서의 네비게이션 영역 - 메뉴가 설정되는 영역 -->
+		<nav id="navi">
+			<ul>
+				<li><a href="./birth/birth.html">탄 생</a><li>
+				<li><a href="./write/writing.html">저 서</a><li>
+				<li><a href="./philosophy/philosophy.html">철 학</a><li>
+				<li><a href="./saying/saying.html">명 언</a><li>
+			</ul>
+		</nav>
+		
+		<!-- 웹 문서의 영역 설정 태그 - section 태그는 여러번 사용 가능. -->
+		<section id="content">
+			<h2>데카르트 소개</h2>
+			<!-- 문서의 본문 영역 -->
+			<article>
+				<h3>"나는 생각한다, 고로 존재한다." "그러나 나의 존재적 근거는 신."</h3>
+				<p>"화이트 헤드가 말한 것처럼 유럽 철학이 플라톤에 대한 각주라면, 근대 유럽 철학은 데카르트에 대한 각주다."</p>
+				<p>근대는 무엇에서든 확실하고 단단한 토대를 요구하는 시대다.</p>
+				<p>내가 알고 있다고 여기는 것, 내가 믿고 있는 것 등 그 어떤 것에서든 분명하고 확실한 근거를 요구한다.</p>
+				<p>이러 한요구가 바로 근대적 합리정신이며, 데카르트는 근대의 철학적 출발점이었다.</p>
+				<p>요컨대, "나는 생각한다, 고로 존재한다."</p>
+				<p>데카르트는 이 명제야말로 다른 모든 것의 근거가 되는 가장 기초적인 명제라고 보았다.</p>
+				<p>데카르트는 이 명제를 "신은 존재한다."는 명제와 결합시킨다.</p>
+				
+				<div class="picture">
+					<img src="images/bg2.png" width="710" height="195"
+					alt="오른쪽 탁자에 있는 왕의 오른쪽 인물이 데카르트">
+				</div>
+				
+			</article>
+		</section>
+		
+		<!-- 문서의 보조 내용(알림, 광고) -->
+		<aside id="sidebar">
+			<h3>◐저서 구입◑</h3>
+			<p>저서 구입을 원하시는 분들은 전화 010-1111-1234로 연락주시기 바랍니다.</p>
+			<img src="images/book1.png" width="130" height="160">
+			<img src="images/book2.png" width="130" height="160">
+		</aside>
+		
+		<!-- 문서의 하단 내용 -->
+		<footer id="foot">
+			<p>글 : 임 정 훈 / 저술가, 번역가</p>
+			<address>E-mail : jhehun@empas.com</address>
+			<p>Copyright &copy All right reserved</p>
+		</footer>
+	</div> <!-- id="container" end -->
+</body>
+</html>
