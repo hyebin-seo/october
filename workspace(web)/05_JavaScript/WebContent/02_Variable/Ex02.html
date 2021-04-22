@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+/*
+ * 자바 스크립트에서의 입출력 대화 상자(3가지)
+ * 1. 알림(경고) 창(alert) : 특정 정보를 사용자에게 메시지 창으로 알려주기 위해 주로 사용
+ 			window.alert("알림 내용 또는 경고 내용");
+ 			alert("알림 내용 또는 경고 내용");
+   2. 확인 창(confirm : window.confirm("문자열"));
+   					confirm("문자열");
+   3. 입력 창(prompt) : window.prompt("문자열", 초기값);
+   					prompt("문자열", 초기값);
+ */
+ 
+ //3. 입력 창(prompt) : window.prompt("문자열", 초기값);
+  let height = prompt("당신의 키를 입력하세요.");
+  console.log(typeof height);
+  
+  // 적정 표준 몸무게를 알아보자.
+  // 적정 표준 몸무게 : (키 - 100) * 0.9
+  let standWeight = (parseInt(height) - 100) * 0.9;
+  document.write("당신의 적정 몸무게는"+standWeight+"kg 입니다.<br>");
+  
+  // 2.확인 창(confirm) : [확인] - true / [취소] - false 반환
+  let type = confirm("현재는 오전인가요?");
+  console.log(type);
+</script>
+</head>
+<body>
+
+</body>
+</html>

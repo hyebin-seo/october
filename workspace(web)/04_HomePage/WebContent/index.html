@@ -4,12 +4,26 @@
 <meta charset="UTF-8">
 <title>데카르트 홈페이지</title>
 <link rel="stylesheet" href="css/style.css">
+<script type="text/javascript">
+	
+	function login_window() {
+		//window.open("파일경로명","창이름", "가로폭/세로높이")
+		open("login/login.html","로그인",
+				"width=380px, height=250px");
+	}
+	
+	function join_window() {
+		open("join/join.html","회원가입",
+				"width=300px, height=500px");
+	}
+
+</script>
 </head>
 <body>
 	<div id="container">
 		<header id="head"> <!-- 웹 문서의 상단 영역 -->
 			<div id="login">
-				<a href="./index.html">홈</a>
+				<a href="index.html">홈</a>
 				<a href="#" onclick="login_window()">로그인</a>
 				<a href="#" onclick="join_window()">회원가입</a>
 			</div> <!-- id="login" end -->
@@ -23,10 +37,10 @@
 		<!-- 웹 문서의 네비게이션 영역 - 메뉴가 설정되는 영역 -->
 		<nav id="navi">
 			<ul>
-				<li><a href="./birth/birth.html">탄 생</a><li>
-				<li><a href="./write/writing.html">저 서</a><li>
-				<li><a href="./philosophy/philosophy.html">철 학</a><li>
-				<li><a href="./saying/saying.html">명 언</a><li>
+				<li><a href="birth/birth.html">탄 생</a><li>
+				<li><a href="write/writing.html">저 서</a><li>
+				<li><a href="philosophy/philosophy.html">철 학</a><li>
+				<li><a href="saying/saying.html">명 언</a><li>
 			</ul>
 		</nav>
 		
@@ -45,7 +59,7 @@
 				<p>데카르트는 이 명제를 "신은 존재한다."는 명제와 결합시킨다.</p>
 				
 				<div class="picture">
-					<img src="images/bg2.png" width="710" height="195"
+					<img src="images/bg2.png" width="710" height="200"
 					alt="오른쪽 탁자에 있는 왕의 오른쪽 인물이 데카르트">
 				</div>
 				

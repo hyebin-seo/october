@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+// 관계(비교) 연산자
+// >=, >, <=, <, ==, !=, ===
+// 관계 연산자의 결과는 항상 boolean 형으로 나온다.
+let su1 = 10;
+let su2 = 4;
+
+document.write(su1+" >= "+su2+">>> "+(su1 >= su2)+"<br>");
+document.write(su1+" > "+su2+">>> "+(su1 > su2)+"<br>");
+document.write(su1+" <= "+su2+">>> "+(su1 <= su2)+"<br>");
+document.write(su1+" < "+su2+">>> "+(su1 < su2)+"<br>");
+document.write(su1+" == "+su2+">>> "+(su1 == su2)+"<br>");
+document.write(su1+" != "+su2+">>> "+(su1 != su2)+"<br>");
+
+document.write("<hr>");
+
+let su3 = "1000";
+let su4 = 1000;
+
+// == : 동등 연산자로 비교 대상 값의 자료형이 다른 경우 강제로 형을 바꾼 뒤에 비교를 함.
+// 좌항과 우항을 비교하여 값의 자료형과 상관없이 내용이 같으면 true, 다르면 false 반환.
+document.write(su3+"=="+su4+">>> "+(su3==su4)+"<br>");
+
+// === : 일치 연산자로 좌항의 값, 좌항의 자료형과 우항의 값, 우항의 자료형이 일치할 때 true 값을 반환.
+// 내용뿐만아니라 자료형까지 비교해서 일치시에는 true, 아니면 false 반환.
+document.write(su3+"==="+su4+">>> "+(su3===su4)+"<br>");
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

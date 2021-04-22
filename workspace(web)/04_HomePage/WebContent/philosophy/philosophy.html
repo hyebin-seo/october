@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>데카르트 홈페이지</title>
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript">
+	
+	function login_window() {
+		//window.open("파일경로명","창이름", "가로폭/세로높이")
+		open("../login/login.html","로그인",
+				"width=380px, height=250px");
+	}
+	
+	function join_window() {
+		open("../join/join.html","회원가입",
+				"width=500px, height=700px");
+	}
+
+</script>
+</head>
+<body>
+	<div id="container">
+		<header id="head"> <!-- 웹 문서의 상단 영역 -->
+			<div id="login">
+				<a href="../index.html">홈</a>
+				<a href="#" onclick="login_window()">로그인</a>
+				<a href="#" onclick="join_window()">회원가입</a>
+			</div> <!-- id="login" end -->
+			
+			<hgroup> <!-- 제목과 부제목을 그룹으로 묶어주는 역할 -->
+				<h1>데카르트, 서양 근대 철학의 창시자</h1>
+				<h2>Rene Decartes, 1596~1650</h2>
+			</hgroup>
+		</header>
+		
+		<!-- 웹 문서의 네비게이션 영역 - 메뉴가 설정되는 영역 -->
+		<nav id="navi">
+			<ul>
+				<li><a href="../birth/birth.html">탄 생</a><li>
+				<li><a href="../write/writing.html">저 서</a><li>
+				<li><a href="../philosophy/philosophy.html">철 학</a><li>
+				<li><a href="../saying/saying.html">명 언</a><li>
+			</ul>
+		</nav>
+		
+		<!-- 웹 문서의 영역 설정 태그 - section 태그는 여러번 사용 가능. -->
+		<section id="content">
+			<h2>데카르트 철학</h2>
+			<!-- 문서의 본문 영역 -->
+			<article>
+				<p>어느 날 데카르트는 문득 자신에게 이상한 성향이 있음을 자각한다.</p>
+				<p>사시(斜視: 사팔뜨기)라는 신체적 결함을 가진 사람만 보면 왠지 더 친근감을 느끼고</p>
+				<p>이유 없이 호의를 베푼다는 사실을 발견한 것이다.</p>
+				<p>그 이유를 찾으려고 애쓰던 데카르트는 결국 어린 시절에 한 소녀를 사랑한 적이 있었고,</p>
+				<p>그녀의 눈이 사시였음을 기억해 낸다.</p>
+				<p>사랑에 빠진 데카르트에게 소녀의 신체적 결함은 전혀 문제되지 않았다.</p>
+				<p>사랑의 감정이 그녀의 신체적 결점을 압도하여,</p>
+				<p>사시라는 결점은 훗날 무의식적으로 좋은 감정을 촉발하는 계기가 되었던 것이다.</p>
+				<p>경험의 지배를 받는 인간은 어떤 선택의 순간에 부닥쳤을 때,</p>
+				<p>자신도 모르는 사이에 과거에 받은 감정적 충격이나 상처 때문에 종종 객관적인 판단을 내리지 못한다.</p>
+				<p>근대철학의 아버지, ‘철학의 왕자’로 군림했던 데카르트는 이 사소한 일화를 통해,</p>
+				<p>감정이 어떻게 이성의 판단을 방해하는지 깨닫는다.</p>
+			</article>
+		</section>
+		
+		<!-- 문서의 보조 내용(알림, 광고) -->
+		<aside id="sidebar">
+			<h3>◐저서 구입◑</h3>
+			<p>저서 구입을 원하시는 분들은 전화 010-1111-1234로 연락주시기 바랍니다.</p>
+			<img src="../images/book1.png" width="130" height="160">
+			<img src="../images/book2.png" width="130" height="160">
+		</aside>
+		
+		<!-- 문서의 하단 내용 -->
+		<footer id="foot">
+			<p>글 : 임 정 훈 / 저술가, 번역가</p>
+			<address>E-mail : jhehun@empas.com</address>
+			<p>Copyright &copy All right reserved</p>
+		</footer>
+	</div> <!-- id="container" end -->
+</body>
+</html>
