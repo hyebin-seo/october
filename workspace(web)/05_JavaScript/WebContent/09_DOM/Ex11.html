@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+
+	onload = function() {
+		document.getElementById("btnChannel1").onclick = function() {
+			let myDiv = document.getElementById("myDiv");
+			myDiv.style.backgroundColor = "yellow";
+			myDiv.style.width = "100px";
+			
+			document.getElementById("str").style.color = "red";
+		}
+	}
+
+	function go_change() {
+		alert("이벤트 예제입니다");
+	}
+
+
+</script>
+</head>
+<body>
+
+	<div id="myDiv" style="height: 100px;">
+		<span id="str">안녕</span>하세요!!!
+	</div>
+	
+	<input type="button" id="btnChannel1" value="스타일변경">
+	<input type="button" id="btnChannel2" 
+			value="스타일변경" onclick="go_change()">
+</body>
+</html>

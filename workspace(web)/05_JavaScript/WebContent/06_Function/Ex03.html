@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// 함수 외부에서 함수 내부로 값을 전달하는 방법이 바로 매개변수를 이용.
+	// 매개변수는 일종의 외부 데이터를 함수 내부로 전달하는 매개체 역할을 하는 변수.
+	// 매개변수는 변수의 종류임.
+	
+	function gugudan(dan) {
+		for(let i=1; i<=9; i++) {
+			document.write(dan+" * "+i+" = "+(dan * i)+"<br>");
+		}
+	}
+
+	let dan = parseInt(prompt("구구단의 단을 입력하세요."));
+	
+	gugudan(dan);
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

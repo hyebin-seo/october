@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	onload = function() {
+		
+		// 이미지 태그를 만들어 보자.
+		let imgNode = document.createElement("img");
+		
+		// 이미지 태그에 이미지를 넣으려면  src 속성이 지정이 되어야 함.
+		imgNode.src = "../images/mango.jpg";
+		imgNode.width = "200";
+		imgNode.height = "200";
+		
+		// 해당 이미지 노드를 문서의 본문에 추가시키자.
+		document.body.appendChild(imgNode);
+	}
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

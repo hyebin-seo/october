@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	onload = function() {
+		
+		let textNode = document.getElementById("class");
+		
+		textNode.onclick = function() {
+			textNode.innerHTML = "페이지가 변경 되었습니다.";
+			textNode.style.color = "red";
+		}
+		
+	}
+
+</script>
+</head>
+<body>
+	
+	<!-- [문제] 해당 글자를 클릭하면 "페이지가 변경 되었습니다." 라는
+	           글자로 변경되도록 하고 글자의 색상도 빨간색으로 변경되게 해 주세요. -->
+
+	<div id="class">이것이 div 요소입니다.</div>
+	
+</body>
+</html>

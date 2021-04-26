@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	/*
+	BOM(Browser Object Model) : 브라우저 객체 모델
+	- 브라우저 내에 내장된 객체.
+	- BOM 객체의 최상위 내장 객체는 window 객체임.
+	
+	* window 객체의 주요 메서드
+	  - open() : 새로운 창을 띄우고자 할 때 사용하는 메서드.
+	  - alert() : 경고 창을 띄울 때 사용하는 메서드.
+	  - prompt() : 질의/응답 창을 띄울 때 사용하는 메서드.
+	  - confirm() : 확인/취소 창을 띄울 때 사용하는 메서드.
+	  - moveTo() : 창의 위치를 이동시킬 때 사용하는 메서드.
+	  - resizeTo() : 창의 크기를 변경시킬 때 사용하는 메서드.
+	  - setInterval() : 일정 간격으로 지속적으로 실행문을 실행시킬 때 사용하는 메서드.
+	  - setTimeout() : 일정 간격으로 한번만 실행문을 실행시킬 때 사용하는 메서드.
+	 	 
+	* screen 객체 : 사용자의 모니터 정보(속성)를 제공해 주는 객체.
+	  screen 객체의 주요 속성  
+	  - screen.width : 화면의 너비값을 반환하는 속성.
+	  - screen.height : 화면의 높이값을 반환하는 속성.
+	  - screen.availWidth : 작업표시줄을 제외한 화면의 너비값을 반환하는 속성.
+	  - screen.availHeight : 작업표시줄을 제외한 화면의 높이값을 반환하는 속성.
+	  - screen.colorDepth : 사용자 모니터가 표현 가능한 컬러 bit를 반환하는 속성.
+	*/
+
+	document.write("화면 너비 >>> " + screen.width + "<br>");
+	document.write("화면 높이 >>> " + screen.height + "<br>");
+	document.write("작업표시줄을 제외한 화면 너비 >>> " +
+			screen.availWidth + "<br>");
+	document.write("작업표시줄을 제외한 화면 높이 >>> " +
+			screen.availHeight + "<br>");
+	document.write("표현 가능한 컬러 >>> " + screen.colorDepth + "<br>");
+	
+</script>
+</head>
+<body>
+
+</body>
+</html>

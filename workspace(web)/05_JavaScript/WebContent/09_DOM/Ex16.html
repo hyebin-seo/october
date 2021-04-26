@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	/*
+		자바스크립트 내장 함수
+		- 자바스크립트에서 자체적으로 제공해 주는 함수.
+		- setInterval() : 일정한 시간마다 주기적으로 특정한 함수를 호출.
+		                 반드시 개발자가 종료(clearInterval())를 시켜주어야 함.
+	        형식) setInterval(호출할 함수 이름, 시간(ms));
+	*/
+	
+	let id;   // 전역 변수
+	
+	function change_go() {
+		id = setInterval(flashText, 1000);
+	}
+
+	function flashText() {
+		let target = document.getElementById("target");
+		
+		target.style.color = 
+		(target.style.color == "red") ? "blue" : "red";
+	}
+
+	function stop_go() {
+		clearInterval(id);
+	}
+
+
+</script>
+</head>
+<body>
+
+	<div id="target">
+		<p>여기는 텍스트 영역입니다........</p>
+	</div>
+	
+	<button onclick="change_go()">시작</button>
+	<button onclick="stop_go()">종료</button>
+	
+</body>
+</html>

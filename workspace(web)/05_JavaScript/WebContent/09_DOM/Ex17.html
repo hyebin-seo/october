@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>유효성 검사</title>
+<script type="text/javascript">
+
+	function check() {
+		// 아이디 입력창 입력 여부
+		/* if(document.getElementById("id").value == "") {
+			alert("아이디를 입력하세요...");
+			document.getElementById("id").focus();
+			return false;  // 데이터 전송이 차단됨.
+		} */
+		if(f.id.value == "") {
+			alert("아이디를 입력하세요...");
+			f.id.focus();
+			return false;
+		}
+		
+		// 비밀번호 입력창 입력 여부
+		if(document.getElementById("pwd").value == "") {
+			alert("비밀번호를 입력하세요...");
+			document.getElementById("pwd").focus();
+			return false;  // 데이터 전송이 차단됨.
+		}
+		
+		// 이름 입력창 입력 여부
+		if(document.getElementById("name").value == "") {
+			alert("이름을 입력하세요...");
+			document.getElementById("name").focus();
+			return false;  // 데이터 전송이 차단됨.
+		}
+		
+		// 주소 입력창 입력 여부
+		if(document.getElementById("addr").value == "") {
+			alert("주소를 입력하세요...");
+			document.getElementById("addr").focus();
+			return false;  // 데이터 전송이 차단됨.
+		}
+	}
+
+</script>
+</head>
+<body>
+
+	<div align="center">
+	   <form name="f" action="http://www.google.com"
+	         onsubmit="return check()">
+	      <table border="1" cellspacing="0">
+	         <tr>
+	            <th>아이디</th>
+	         	<td> <input type="text" name="id" id="id"> </td>
+	         </tr>
+	         
+	         <tr>
+	         	<th>비밀번호</th>
+	         	<td> <input type="password" name="pwd" id="pwd"> </td>
+	         </tr>
+	         
+	         <tr>
+	         	<th>이  름</th>
+	         	<td> <input type="text" name="name" id="name"> </td>
+	         </tr>
+	         
+	         <tr>
+	         	<th>주  소</th>
+	         	<td> <input type="text" name="addr" id="addr"> </td>
+	         </tr>
+	         
+	         <tr>
+	         	<td colspan="2" align="center">
+	         	   <input type="submit" value="가입">
+	         	          &nbsp;&nbsp;&nbsp;
+	         	   <input type="reset" value="취소">
+	         	</td>
+	         </tr>
+	      </table>
+	   </form>
+	</div>
+	
+</body>
+</html>

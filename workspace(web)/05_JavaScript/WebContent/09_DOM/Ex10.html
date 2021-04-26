@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	onload = function() {
+		let header = document.getElementById("header");
+		
+		// 이벤트 처리 작업
+		header.onclick = function() {
+			alert("글자를 클릭 하셨군요!!!");
+			header.innerHTML = "글자 변경";
+		}
+	}
+
+
+</script>
+</head>
+<body>
+
+	<h1 id="header">Header</h1>
+	
+</body>
+</html>

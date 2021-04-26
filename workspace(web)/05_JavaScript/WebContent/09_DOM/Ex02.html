@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// 현재 문서의 body 태그를 읽고 난 후에 자바스크립트를 실행하라는 의미.
+	onload = function() {
+		
+		// 요소(태그)를 생성하는 방법
+		// 형식) createElement(tagName);
+		// 형식) createTextNode(text) : 텍스트 노드를 생성하는 메서드.
+		let h1_element = 
+				document.createElement("h1");
+		
+		let textNode = 
+				document.createTextNode("Hello.. DOM");
+		
+		// 텍스트노드를 h1태그에 자식으로 추가
+		h1_element.appendChild(textNode);
+		
+		// 실제로 문서의 body에 h1 요소를 추가해 주면 된다.
+		document.body.appendChild(h1_element);
+	}
+
+
+</script>
+</head>
+<body>
+	
+</body>
+</html>

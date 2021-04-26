@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// 객체 생성 방법
+	// 객체 생성
+	// let product = {name: 'Galaxy S21', type: '핸드폰', company: '삼성'};
+	
+	
+	// 객체 생성 두번째 방법
+	// let product = {};
+	// product[name] = 'Galaxy S21';
+	// product[type] = '핸드폰';
+	// product[company] = '삼성';
+	
+	
+	document.write("제품 이름 >>> " + product['name'] + "<br>");
+	document.write("제품 type >>> " + product['type'] + "<br>");
+	document.write("제품 제조사 >>> " + product['company'] + "<br>");
+
+	document.write("<hr>");
+	
+	for(let k in product) {
+		document.write(k+"의 value >>> "+ product[k] + "<br>");
+	}
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

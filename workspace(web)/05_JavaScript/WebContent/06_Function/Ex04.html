@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	/*
+		리턴값(return)?
+		함수 내부에는 포장이 되어 있기 때문에 한번 실행이 되면 외부에서 접근이 불가능함.
+		이 때 매개변수를 활용을 하면 함수 내부로 데이터 전달이 가능하다고 하였음.
+		리턴 값은 매개변수와는 반대되는 개념임. 매개변수 값이 함수 외부에서 함수 내부로
+		들어오는 값이라면, 리턴값은 함수 내분에서 처리된 결과값을 함수 외부로 전달하기
+		위해 사용되는 일종의 출력값을 의미함. 이 때 사용되는 키워드가 return임.
+	*/
+	
+	function sum(a1, a2) {
+		return a1 + a2;
+	}
+	
+	function sub(a1, a2) {
+		return a1 - a2;
+	}
+	
+	function mul(a1, a2) {
+		return a1 * a2;
+	}
+	
+	function divide(a1, a2) {
+		return a1 / a2;
+	}
+	
+	function mod(a1, a2) {
+		return a1 % a2;
+	}
+	
+	let su1 = parseInt(prompt("첫번째 숫자 입력"));
+	let su2 = parseInt(prompt("두번째 숫자 입력"));
+	let op = prompt("연산자 입력");
+	
+	switch(op) {
+		case "+" :
+			document.write(su1+" + "+su2+" = "+sum(su1, su2)+"<br>");
+			break;
+		case "-" :
+			document.write(su1+" - "+su2+" = "+sub(su1, su2)+"<br>");
+			break;
+		case "*" :
+			document.write(su1+" * "+su2+" = "+mul(su1, su2)+"<br>");
+			break;
+		case "/" :
+			document.write(su1+" / "+su2+" = "+divide(su1, su2)+"<br>");
+			break;
+		case "%" :
+			document.write(su1+" % "+su2+" = "+mod(su1, su2)+"<br>");
+			break;
+	}
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

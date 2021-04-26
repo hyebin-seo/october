@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	onload = function() {
+		// 문서의 요소를 가져오는 방법 - 3번째
+		// 3. querySelector(선택자) 를 이용하는 방법
+		// querySelector(선택자)
+		// ==> 선택자로 가장 처음 선택되는 문서의 요소를 가져오는 메서드.
+		// querySelectorAll(선택자)
+		// ==> 선택자로 선택된 문서의 요소 전체를 배열로 가져오는 메서드.
+		
+		let header1 = document.querySelector("#header_1");
+		let header2 = document.querySelector("#header_2");
+		
+		header1.innerHTML = "header_1 id를 가진 요소";
+		header2.innerHTML = "header_2 id를 가진 요소";
+	}
+
+</script>
+</head>
+<body>
+
+	<h1 id="header_1">Header1</h1>
+	<h1 id="header_2">Header2</h1>
+	
+</body>
+</html>
