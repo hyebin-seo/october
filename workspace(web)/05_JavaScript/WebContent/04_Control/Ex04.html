@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// [문제] 키보드를 이용하여 사용자 아아디와 사용자 비밀번호를 입력받아서
+	//       입력 받은 사용자 아이디가 "hong"이고 입력받은 비밀번호가 "1234"
+	//       이면 "환영합니다." 라는 메세지를 화면에 출력해 보세요.
+
+	let userId = prompt("사용자 아이디를 입력하세요.");
+	let userPwd = prompt("사용자 비밀번호를 입력하세요.");
+	
+	// 첫번째 방법
+	// if(userId == "hong" && userPwd == "1234") {
+	// 	document.write("환영합니다.<br>");
+	// }
+	
+	// 두번째 방법
+	if(userId == "hong") {
+		if(userPwd == "1234") {
+			document.write("환영합니다.<br>");
+		}else {
+			document.write("비밀번호가 틀립니다. 확인해 주세요..<br>");
+		}
+	}else {  // 아이디가 "hong" 이 아니거나 회원이 아닌 경우
+		document.write("아이디를 확인하거나 회원가입을 해 주세요..");
+	}
+	
+	
+</script>
+</head>
+<body>
+
+</body>
+</html>

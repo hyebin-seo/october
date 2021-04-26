@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// 다중 if~else문
+	
+	// 키보드로 이름, 국어, 영어, 수학 점수를 입력을 받자.
+	let name = prompt("이름을 입력하세요.");
+	let kor = parseInt(prompt("국어점수를 입력하세요."));
+	let eng = parseInt(prompt("영어점수를 입력하세요."));
+	let mat = parseInt(prompt("수학점수를 입력하세요."));
+	
+	// 총점을 구하자.
+	let sum = kor + eng + mat;
+	
+	// 평균을 구하자.
+	let avg = sum / 3.0;
+	
+	// 학점을 구하자.
+	let grade;
+	
+	if(avg >= 90) {
+		grade = "A학점";
+	}else if(avg >= 80) {
+		grade = "B학점";
+	}else if(avg >= 70) {
+		grade = "C학점";
+	}else if(avg >= 60) {
+		grade = "D학점";
+	}else {
+		grade = "F학점";
+	}
+	
+	// 성적을 화면에 출력해 보자.
+	// toFixed() : 숫자에서 원하는 소숫점 길이만큼만 반올림까지 해서 출력해 주는 함수.
+	document.write("이  름 : "+name+"<br>");
+	document.write("국어점수 : "+kor+"점<br>");
+	document.write("영어점수 : "+eng+"점<br>");
+	document.write("수학점수 : "+mat+"점<br>");
+	document.write("총  점 : "+sum+"점<br>");
+	document.write("평  균 : "+avg.toFixed(2)+"점<br>");
+	document.write("학  점 : "+ grade+"<br>");
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

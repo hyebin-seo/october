@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// 반복문 : 특정 구문을 여러 번 반복해서 실행하고자 할 때 사용하는 제어문.
+	// 반복문의 종류
+	// while문, for문
+	// - while문은 주로 무한 반복하거나 반복 횟수가 정해지지 않은 경우에 사용.
+	// - for문은 반복 횟수가 정해진 경우에 사용.
+	
+	// while문
+	let su = 1;
+	while(su <= 10) {
+		document.write("su >>> " + su + "<br>");
+		su++;
+	}
+	
+	document.write("<hr>");
+	
+	// [문제1] 1~100사이의 숫자 중에서 숫자가
+	//        4의 배수이면서 동시에 6의 배수인 숫자를 화면에 보여주세요.
+	let num = 1;
+	
+	while(num <= 100) {
+		if(num%4 == 0 && num%6 == 0) {
+			document.write(num + "&nbsp;&nbsp;&nbsp;");
+		}
+		num++;
+	}
+	
+	document.write("<br>");
+
+	document.write("<hr>");
+	
+	// [문제2] 1~100사이의 숫자 중에서 짝수인 경우는 글자색을 파란색으로
+	//        출력을 하고, 홀수인 경우에는 빨간색으로 화면에 출력해 보세요.
+	let number = 1;
+	
+	while(number <= 100) {
+		if(number%2 == 1) {
+			document.write("<font color='red'>"+
+					number+"</font>&nbsp;&nbsp;&nbsp;");
+		}else {
+			document.write("<font color='blue'>"+
+					number+"</font>&nbsp;&nbsp;&nbsp;");
+		}
+		number++;
+	}
+	document.write("<br>");
+
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

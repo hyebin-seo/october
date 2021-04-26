@@ -3,8 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script type="text/javascript">
+	//논리 연산자(&&,||, !)
+	let bol1 = true;
+	let bol2 = false;
+	let bol3 = true;
+	let bol4 = false;
+	
+	document.write(bol1+ " && " +bol2+ " >>> "+ (bol1 && bol2)+"<br>");
+	document.write(bol1+ " && " +bol3+ " >>> "+ (bol1 && bol3)+"<br>");
+	document.write(bol3+ " || " +bol4+ " >>> "+ (bol3 || bol4)+"<br>");
+	
+	document.write("<hr>");
+	
+	let a = "A";
+	let b = "B";
+	
+	let c = !2 || 3 && 0; //false || true && true ==> true
+	document.write(c+"<br>");
+	
+	c = a < b && a == b; //(65 < 66) true && false ==> false
+	document.write(c+"<br>");
+	
+	c = a < b || a == b; // true || false ==> true
+	document.write(c+"<br>");
+	
+	// 단항(증감) 연산자(++,--)
+	let num1 = 10;
+	let num2 = 20;
+	
+	document.write(++num1 + "<br>"); // 11
+	document.write(num2++ + "<br>"); // 20
+	
+	document.write("<hr>");
+	
+	let d = 10;
+	let e = 20;
+	let f = 3;
+	
+	document.write(++d + "<br>"); // 11
+	
+	document.write(d++ + "<br>"); // 11
+	
+	document.write(f++ + "<br>"); // 3
+	
+	document.write(++d + e++ + "<br>"); // 13 + 20(21) = 33
+	
+	document.write(++d + ++e + "<br>"); // 14 + 22 = 36
+	
+	document.write("<hr>");
+	
+	// 삼항 연산자
+	// 형식) (조건) ? 참 실행문 : 거짓 실행문
+	let num = 27;
+	let res = (num > 20) ? "참" : "거짓";
+	// res = (num > 20) ? "참" : false; ==> 자바 스크립트에서는 변수를 어떤 자료형으로도 사용할 수 있기에 가능함.
+	
+	document.write(res + "<br>");
+	
+	document.write("<hr>");
+	
+	// 복합대입연산자
+	// 복합대입연산자는 대입연산자(=)와 다른 연산자를 하나로 묶어 간단하게 표현할 때 주로 사용함.
+	// +=, -=, *=, /=, %=
+		
+	let bok = 10;
+	document.write("bok = bok + 10 >>> " + ( bok += 10) + "<br>");
+	document.write("bok = bok - 10 >>> " + ( bok -= 10) + "<br>");
+	document.write("bok = bok * 10 >>> " + ( bok *= 10) + "<br>");
+	document.write("bok = bok / 10 >>> " + ( bok /= 10) + "<br>");
+	document.write("bok = bok % 10 >>> " + ( bok %= 10) + "<br>");
+	
+</script>
 </head>
 <body>
-
+	
 </body>
 </html>

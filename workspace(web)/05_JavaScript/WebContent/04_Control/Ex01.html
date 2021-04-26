@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+	// 자바스크립트에서의 제어문 종류
+	// 1. 조건문 : if문, if~else문, 다중 if~else문, switch~case문
+	// 2. 반복문 : while문, do~while문, for문
+	
+	let walk = Number(prompt("내가 하루에 걷는 걸음은 몇 걸음인가요?")); 
+	
+	if(walk >= 10000) {
+		document.write(typeof walk+"<br>");
+		document.write("당신은 매우 좋은 습관을 가지고 있습니다.");
+	}
+	
+	document.write("<hr>");
+	
+	let name = prompt("방문자의이름은???");
+	
+	// 조건식에 0, null, "" ==> false
+	if(name) {
+		document.write(name + "님 환영합니다.");
+	}
+</script>
+</head>
+<body>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// for문
+	// 반복 횟수가 정해진 경우 많이 사용함.
+	for(let i=1; i<=10; i++) {
+		document.write("i >>> " + i + "<br>");
+	}
+	
+	document.write("<hr>");
+	
+	// [문제1] 1~100 사이의 숫자 중에서 5의 배수인 경우는 빨간색으로,
+	//        7의 배수인 경우는 초록색으로, 6의 배수인 경우에는
+	//        아쿠라(aqua) 색으로 화면에 출력해 보세요.
+	for(let i=1; i<=100; i++) {
+		if(i%5 == 0) {
+		   document.write
+			("<font color='red'>"+i+"</font>&nbsp;&nbsp;&nbsp;");
+		}else if(i%7 == 0) {
+		   document.write
+			("<font color='green'>"+i+"</font>&nbsp;&nbsp;&nbsp;");
+		}else if(i%6 == 0) {
+		   document.write
+			("<font color='aqua'>"+i+"</font>&nbsp;&nbsp;&nbsp;");
+		}else {
+			document.write
+			(i+"</font>&nbsp;&nbsp;&nbsp;");
+		}
+	}
+	
+	
+	document.write("<hr>");
+	
+	// [문제2] 숫자를 키보드로부터 입력을 받아 입력받은 수까지의
+	//        홀수의 합과 짝수의 합을 구하여 화면에 보여주세요.
+	let su = prompt("임의의 숫자를 입력하세요.");
+	let oddSum = 0, evenSum = 0;
+	
+	for(let i=1; i<=su; i++) {
+		if(i%2 == 1) {
+			oddSum += i;
+		}else {
+			evenSum += i;
+		}
+	}
+	
+	document.write("홀수의 합 >>> " + oddSum + "<br>");
+	document.write("짝수의 합 >>> " + evenSum + "<br>");
+	
+	document.write("<hr>");
+	
+	// [문제3] 1~100 까지의 숫자를 출력하는데 3의 배수가 아니고,
+	//        2의 배수가 아닌 나머지 숫자를 화면에 보여주세요.
+	
+	for(let i=1; i<=100; i++) {
+		if((i%2 != 0) && (i%3 != 0)) {
+			document.write(i + "&nbsp;&nbsp;&nbsp;");
+		}
+	}
+
+</script>
+</head>
+<body>
+
+</body>
+</html>

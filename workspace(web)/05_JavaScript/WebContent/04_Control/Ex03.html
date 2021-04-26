@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+	// if~else 조건문
+	// 형식) if(조건식) {
+	//			참인 경우 실행문;
+	//      }else {
+	//          거짓인 경우 실행문;	
+	//      }
+	
+	let walk = parseInt(prompt("당신이 하루에 걷는 걸음은 몇 걸음인가요?"));
+	
+	if(walk >= 10000) {
+		document.write("좋은 습관을 가지고 있습니다.<br>");
+	}else {
+		document.write("운동을 하셔야 겠군요...<br>");
+	}
+
+	let result = confirm("정말 탈퇴하시겠습니까?");
+	
+	if(result) {
+		document.write("탈퇴 처리하였습니다.");
+	}else {
+		document.write("탈퇴 취소 처리하였습니다.");
+	}
+	
+</script>
+</head>
+<body>
+
+</body>
+</html>
