@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+		alert($("h2").html());
+		$("h2").html("<a href='#'>HTML 메서드</a>");
+		
+		alert($("h1").html());
+		$("h3").text("텍스트 메서드입니다.");
+	});
+	
+</script>
+</head>
+<body>
+
+	<!-- 
+		요소 조작 메서드 : 요소를 생성, 복사, 삭제, 속성 변환과 관련된 메서드를 제공.
+		1. 속성 조작 메서드
+		- html() : 선택한 요소에 포함되는 하위 요소를 불러오거나 새 요소로 바꿀 때 사용.
+		- text() : 선택한 요소 내의 텍스트를 불러오거나 텍스트를 바꿀 때 사용.
+		2. 수치 조작 메서드
+		3. 요소 편집 메서드
+
+	 -->
+
+	<p><strong>객체 조작 및 생성1</strong></p>
+	<h2><i>html()</i></h2>
+	
+	<h1>객체 조작 및 생성2</h1>
+	<h3>text()</h3>
+</body>
+</html>

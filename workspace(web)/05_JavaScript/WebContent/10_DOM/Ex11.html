@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript">
+
+	// 문서에서 노드를 삭제하기
+	onload = function() {
+		// 지우려고 하는 노드가 포함된 부모 노드를 찾기.
+		let page = document.getElementById("sample_page");
+		
+		// 지우려는 노드를 찾자.
+		let content = document.getElementById("content");
+		
+		// 부모 노드의 removeChild() 메서드를 이용하면 됨.
+		page.removeChild(content);
+	}
+	
+</script>
+</head>
+<body>
+
+	<div id="sample_page" class="page">
+		샘플 페이지(div, id=sample_page class=page)
+		<div id="header">
+			헤더 영역(div, id=header)
+		</div> <!-- id="header" end -->
+		
+		<div id="content" class="sample_content">
+			콘텐트 영역(div, id=content class=sample_content)
+			<div>
+				JavaScript란?(div)
+				<p id="data_1">자바스크립트 Core(p, id=data_1)</p>
+				<p id="data_2">자바스크립트 BOM(p, id=data_2)</p>
+				<p id="data_3">자바스크립트 DOM(p, id=data_3)</p>
+			        을 배운다는 것.
+			</div>
+			
+			<div class="content_data">
+				JavaScript에서 배울 내용(div, class=content_data)
+				<p>1. JavaScript DOM(p)</p>
+				<p>2. JavaScript Ajax(p)</p>
+			</div> <!-- class="content_data" end -->
+			
+			<div class="content_data">
+				JQuery에서 배울 내용(div, class=content_data)
+				<p>1. JQuery DOM(p)</p>
+				<p>2. JQuery Ajax(p)</p>
+			</div>
+		</div> <!-- id="content" class="sample_content" end -->
+		
+		<div id="footer">
+			푸터 영역(div, id=footer)
+		</div> <!-- id="footer" end -->
+	</div> <!-- id="sample_page" class="page" end -->
+	
+</body>
+</html>

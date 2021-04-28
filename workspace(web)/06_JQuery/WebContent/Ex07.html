@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// 첫번째 요소 선택 방법1
+		//$(".menu li:first").css("color","red");
+		// 첫번째 요소 선택 방법2
+		$(".menu li").first().css("color","orange");
+		// 마지막 요소 선택 방법1
+		//$(".menu li:last").css("color","blue");
+		// 마지막 요소 선택 방법2
+		$(".menu li").last().css("color","tomato");
+		
+		// 홀수 번째 요소 선택
+		$(".menu li:even").css("background-color","pink");
+		// 짝수 번째 요소 선택
+		$(".menu li:odd").css("background-color","lightgray");
+		
+		// 전체 요소 중 특정 숫자 번째 요소만 선택
+		$("li:nth-child(2)").css("color","purple");
+		// 전체 요소 중 특정 배수의 요소만 선택
+		$("li:nth-child(3n)").css("border","3px solid skyblue");
+		// 3으로 나눠준 나머지 값이 1이 되는 경우
+		$("li:nth-child(3n+1)").css("fontStyle","italic");
+		// 3으로 나눠준 나머지 값이 2가 되는 경우
+		$("li:nth-child(3n+2)").css("background-color","white");
+	});
+	
+</script>
+</head>
+<body>
+	<!-- 
+		* 제이쿼리 탐색 선택자
+		  - 제이쿼리 탐색 선택자를 이용하면 직접 선택자를 이용해 선택한 요소 중 원하는 요소를 한 번 더 탐색해서 정확히 선택할 수 있음
+		* 탐색 선택자의 종류
+		  - 위치 탐색자 : 선택한 요소 중 위치를 기준으로 선택
+		  - 속성 탐색 선택자 : 요소의 지정된 속성을 기준으로 선택
+		  - 콘텐츠 탐색 선택자 : 요소 내에서 콘텐츠의 포함 여부를 따져서 선택
+		  - 필터링 선택자 : 선택한 요소를 한 번 더 필터링하여 선택
+		  
+		 1. 위치 탐색자
+		  1) 첫번째 요소 선택 : 전체 요소 중에서 첫번째 요소만 선택
+		  	 형식) $("요소선택:first"), $("요소선택").first()
+		  2) 마지막 요소 선택 : 전체 요소 중에서 마지막 요소만 선택
+		  	 형식) $("요소선택:last"), $("요소선택").last()
+		  3) 짝수 번째(홀수 인덱스) 요소 선택 : 전체 요소 중에서 짝수번째(홀수 인덱스) 요소만 선택
+		  	 형식) $("요소선택:odd")
+		  4) 홀수 번째(짝수 인덱스) 요소 선택 : 전체 요소 중에서 홀수번째(짝수 인덱스) 요소만 선택
+		  	  형식) $("요소선택:even")
+		  5) 전체 요소 중 특정 숫자 번째 요소만 선택
+		  	  형식) $("요소선택:nth-child(숫자)")
+		  6) 전체 요소 중 특정 배수의 요소만 선택
+		  	  형식) $("요소선택:nth-child(숫자n)")
+	 -->
+	 
+	 <h2>탐색 선택자 - 위치 탐색자</h2>
+	 <ul class="menu">
+	 	<li>내용1</li>
+	 	<li>내용2</li>
+	 	<li>내용3</li>
+	 	<li>내용4</li>
+	 	<li>내용5</li>
+	 	<li>내용6</li>
+	 	<li>내용7</li>
+	 	<li>내용8</li>
+	 	<li>내용9</li>
+	 	<li>내용10</li>
+	 	<li>내용11</li>
+	 	<li>내용12</li>
+	 	<li>내용13</li>
+	 	<li>내용14</li>
+	 	<li>내용15</li>
+	 	<li>내용16</li>
+	 	<li>내용17</li>
+	 	<li>내용18</li>
+	 	<li>내용19</li>
+	 	<li>내용20</li>
+	 </ul>
+</body>
+</html>

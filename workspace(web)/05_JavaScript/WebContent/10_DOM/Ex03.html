@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript">
+
+	// 특정 노드의 자식 노드에서 특정 태그 이름을 지닌 노드 찾기
+	onload = function() {
+		let divs = document.getElementsByTagName("div");
+		
+		// 찾은 노드 가운데 3번째(2번째 인덱스) 노드를 찾아 보자.
+		let div2 = divs[2];
+		
+		let div2Child = div2.getElementsByTagName("div");
+		
+		for(let i=0; i<div2Child.length; i++) {
+			div2Child[i].style.border = "3px solid red";
+		}
+		
+	}
+
+
+</script>
+</head>
+<body>
+
+	<div id="sample_page" class="page">
+		샘플 페이지(div, id=sample_page class=page)
+		<div id="header">
+			헤더 영역(div, id=header)
+		</div> <!-- id="header" end -->
+		
+		<div id="content" class="sample_content">
+			콘텐트 영역(div, id=content class=sample_content)
+			<div>
+				JavaScript란?(div)
+				<p id="data_1">자바스크립트 Core(p, id=data_1)</p>
+				<p id="data_2">자바스크립트 BOM(p, id=data_2)</p>
+				<p id="data_3">자바스크립트 DOM(p, id=data_3)</p>
+			        을 배운다는 것.
+			</div>
+			
+			<div class="content_data">
+				JavaScript에서 배울 내용(div, class=content_data)
+				<p>1. JavaScript DOM(p)</p>
+				<p>2. JavaScript Ajax(p)</p>
+			</div> <!-- class="content_data" end -->
+			
+			<div class="content_data">
+				JQuery에서 배울 내용(div, class=content_data)
+				<p>1. JQuery DOM(p)</p>
+				<p>2. JQuery Ajax(p)</p>
+			</div>
+		</div> <!-- id="content" class="sample_content" end -->
+		
+		<div id="footer">
+			푸터 영역(div, id=footer)
+		</div> <!-- id="footer" end -->
+	</div> <!-- id="sample_page" class="page" end -->
+	
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// 지정한 인덱스가 참조하는 요소만 선택
+		$("li:eq(3)").css("background-color", "pink");
+		// 지정한 인덱스보다 작은(less then) 요소만 선택
+		$("li:lt(3)").css("background-color", "orange");
+		// 지정한 인덱스보다 큰(greater then) 요소만 선택
+		$("li:gt(3)").css("background-color", "tomato");
+	});
+	
+</script>
+</head>
+<body>
+	<!-- 
+		탐색 선택자
+		1. eq(index) 선택자 : 지정한 인덱스가 참조하는 요소만 선택
+		2. lt(index) 선택자 : 지정한 인덱스보다 작은(less then) 요소만 선택
+		3. gt(index) 선택자 : 지정한 인덱스보다 큰(greater then) 요소만 선택
+	
+	 -->
+
+	<h2>탐색 선택자</h2>
+	 <ul>
+	 	<li>내용1</li>
+	 	<li>내용2</li>
+	 	<li>내용3</li>
+	 	<li>내용4</li>
+	 	<li>내용5</li>
+	 	<li>내용6</li>
+	 	<li>내용7</li>
+	 	<li>내용8</li>
+	 	<li>내용9</li>
+	 	<li>내용10</li>
+	 </ul>
+</body>
+</html>

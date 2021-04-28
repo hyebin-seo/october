@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+
+	$(function () {
+		// - addClass() : 선택한 요소에 클래스 선택자를 생성할 때 사용.
+		$("#p1").addClass("aqua");
+		
+		// - removeClass() : 선택한 요소에 지정된 클래스 선택자를 삭제할 때 사용.
+		$("#p2").removeClass("red");
+	});
+	
+</script>
+<style type="text/css">
+
+
+	.red { background-color: red; }
+	.aqua { background-color: aqua; }
+	
+</style>
+</head>
+<body>
+	<p id="p1">내용1</p>
+	<p id="p2" class="red">내용2</p>
+</body>
+</html>

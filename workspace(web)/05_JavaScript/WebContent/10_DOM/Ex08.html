@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript">
+
+	// 문서에서 형제 노드를 찾기
+	onload = function() {
+		let content = document.getElementById("content");
+		
+		// 내 위치에서 이전 형제 노드를 찾는 방법
+		let pre = content.previousSibling.previousSibling;
+		
+		pre.style.border = "3px solid red";
+		
+		// 내 위치에서 이후 형제 노드를 찾는 방법
+		let next = content.nextSibling.nextSibling;
+		
+		next.style.border = "3px solid blue";
+	}
+
+
+</script>
+</head>
+<body>
+
+	<div id="sample_page" class="page">
+		샘플 페이지(div, id=sample_page class=page)
+		<div id="header">
+			헤더 영역(div, id=header)
+		</div>
+		
+		<div id="content" class="sample_content">
+			콘텐트 영역(div, id=content class=sample_content)
+			<div>
+				JavaScript란?(div)
+				<p id="data_1">자바스크립트 Core(p, id=data_1)</p>
+				<p id="data_2">자바스크립트 BOM(p, id=data_2)</p>
+				<p id="data_3">자바스크립트 DOM(p, id=data_3)</p>
+			        을 배운다는 것.
+			</div>
+			
+			<div class="content_data">
+				JavaScript에서 배울 내용(div, class=content_data)
+				<p>1. JavaScript DOM(p)</p>
+				<p>2. JavaScript Ajax(p)</p>
+			</div>
+			
+			<div class="content_data">
+				JQuery에서 배울 내용(div, class=content_data)
+				<p>1. JQuery DOM(p)</p>
+				<p>2. JQuery Ajax(p)</p>
+			</div>
+		</div>
+		<div id="footer">
+			푸터 영역(div, id=footer)
+		</div>
+	</div>
+	
+</body>
+</html>

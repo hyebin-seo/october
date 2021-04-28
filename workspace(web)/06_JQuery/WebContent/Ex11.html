@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+
+		$(".text").text($(".wrap img").attr("src")); // 이미지 경로
+		$(".wrap img").attr("width","200"); // 사이즈 조절
+		$(".box img").removeAttr("border"); // 테두리 삭제
+	});
+	
+</script>
+</head>
+<body>
+
+	<!-- 
+		1. 속성 조작 메서드
+		- html() : 선택한 요소에 포함되는 하위 요소를 불러오거나 새 요소로 바꿀 때 사용.
+		- text() : 선택한 요소 내의 텍스트를 불러오거나 텍스트를 바꿀 때 사용.
+		- removeAttr("속성") : 선택한 요소에서 기존의 속성을 삭제할 때 사용.
+		- attr("속성") / attr("속성","값) : 선택한 요소에 새 속성을 추가하거나, 기존의 속성을 변경할 때 사용
+
+	 -->
+
+	<h4>객체 조작 및 생성3</h4>
+	<p class="wrap">
+		<img src="images/apple.jpg" alt="사과 이미지" width="100">
+	</p>
+	
+	<p class="text"></p>
+	
+	<p class="box">
+		<img src="images/cherry.jpg" alt="체리 이미지" width="100" border="2">
+	</p>
+</body>
+</html>

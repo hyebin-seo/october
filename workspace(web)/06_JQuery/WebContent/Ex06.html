@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+		// 형제(이전) 선택자 : $("요소선택").prev() -> 이전 요소 1개
+		$(".content").prev().css("color","tomato");
+		
+		// 형제(다음) 요소 선택자 : $("요소선택").next() -> 이후 요소 1개
+		$(".content").next().css("border","5px solid blue");
+		
+		// 형제(다음) 요소들 선택자 : $("요소선택").nextAll() -> 이후 모든 요소들
+		$(".content").nextAll().css("color","orange");
+		
+		// 모든 형제 요소 선택자 : $("요소선택").siblings() -> 모든 형제 요소들
+		$(".content").siblings().css("background-color","gray");
+	});
+	
+	
+</script>
+</head>
+<body>
+	<h2>인접 관계 선택자</h2>
+	<ul>
+		<li>내용1</li>
+		<li class="content">내용2</li>
+		<li>내용3</li>
+		<li>내용4</li>
+	</ul>
+</body>
+</html>

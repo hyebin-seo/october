@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="../css/style.css">
+<script type="text/javascript">
+
+	// Document.createElement() 메서드를 이용하여 노드 생성 및 추가하기
+	onload = function() {
+		// 1. 추가(p태그 추가)
+		let page = document.getElementById("sample_page");
+		
+		// 기준  노드를 찾아 보자.
+		let firstChild = page.firstChild;
+		
+		// <p> 태그를 동적으로 생성.
+		let pNode = document.createElement("p");
+		
+		// 텍스트 노드도 동적으로 생성.
+		let textNode = document.createTextNode("추가내용1");
+		
+		// p태그의 자식노드로 텍스트 노드를 추가.
+		pNode.appendChild(textNode);
+		
+		pNode.style.border = "3px solid red";
+		
+		page.insertBefore(pNode, firstChild);
+		
+		
+		
+		// 2. 추가(div 태그 추가)
+		let content = document.getElementById("content");
+		
+		let div1 = document.createElement("div");
+		
+		let textNode1 = 
+			document.createTextNode("생성할 노드가 많은 경우, ");
+		
+		let span1 = document.createElement("span");
+		
+		let textNode2 = document.createTextNode("어떤 방법을? ");
+		
+		span1.appendChild(textNode2);
+		
+		let textNode3  = document.createTextNode("사용해야 할까요?");
+		
+		// div 태그에 자식노드로 텍스트 노드와 span태그를 추가해 주어야 한다.
+		div1.appendChild(textNode1);
+		div1.appendChild(span1);
+		div1.appendChild(textNode3);
+		
+		div1.style.border = "3px solid blue";
+		
+		// 생성된 div 태그를 content id의 윗쪽에 추가
+		page.insertBefore(div1, content);
+		
+		// 3. 추가(p태그 추가)
+		let p2Node = document.createElement("p");
+		
+		let textNode4 = document.createTextNode("추가내용2");
+		
+		p2Node.appendChild(textNode4);
+		
+		p2Node.style.border = "3px solid red";
+		
+		page.appendChild(p2Node);
+		
+	}
+	
+</script>
+</head>
+<body>
+
+	<div id="sample_page" class="page">
+		<!-- 1. <p>추가내용1</p> 요소 추가 -->
+		샘플 페이지(div, id=sample_page class=page)
+		<div id="header">
+			헤더 영역(div, id=header)
+		</div> <!-- id="header" end -->
+		<!-- 2. <div>
+			           생성할 노드가 많은 경우,
+			     <span>어떤 방법을?</span> 사용해야 할까요?
+		        </div> -->
+		<div id="content" class="sample_content">
+			콘텐트 영역(div, id=content class=sample_content)
+			<div>
+				JavaScript란?(div)
+				<p id="data_1">자바스크립트 Core(p, id=data_1)</p>
+				<p id="data_2">자바스크립트 BOM(p, id=data_2)</p>
+				<p id="data_3">자바스크립트 DOM(p, id=data_3)</p>
+			        을 배운다는 것.
+			</div>
+			
+			<div class="content_data">
+				JavaScript에서 배울 내용(div, class=content_data)
+				<p>1. JavaScript DOM(p)</p>
+				<p>2. JavaScript Ajax(p)</p>
+			</div> <!-- class="content_data" end -->
+			
+			<div class="content_data">
+				JQuery에서 배울 내용(div, class=content_data)
+				<p>1. JQuery DOM(p)</p>
+				<p>2. JQuery Ajax(p)</p>
+			</div>
+		</div> <!-- id="content" class="sample_content" end -->
+		
+		<div id="footer">
+			푸터 영역(div, id=footer)
+		</div> <!-- id="footer" end -->
+		<!-- 3. <p>추가내용2</p> -->
+	</div> <!-- id="sample_page" class="page" end -->
+	
+</body>
+</html>

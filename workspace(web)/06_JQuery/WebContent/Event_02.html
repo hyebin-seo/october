@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 마우스 관련 이벤트 
+	   - mouseout()
+	       형식) $("요소선택").mouseout(function() {.....});
+	   - mouseover()
+	       형식) $("요소선택").mouseover(function() {.....});
+	   - hover()
+	     형식) $("요소선택").hover(
+	    		 function() {.....}), ==> 마우스가 올라갔을 때 실행
+	    		 function() {.....}); ==> 마우스가 벗어났을 때 실행
+	*/
+	$(function() {
+		$(".btn1").on("mouseover", function() {
+			$("p").css("background-color", "pink");
+		});
+		$(".btn1").on("mouseout", function() {
+			$("p").css("background-color", "lightgray");
+		});
+		
+		$(".btn2").hover(
+			function() { //마우스가 올라갔을 때
+				$("p").css("border","2px solid red");
+			},
+			function() { //마우스가 벗어났을 때
+				$("p").css("background-color","yellow");
+			});
+		
+	});
+
+</script>
+</head>
+<body>
+	<button class="btn1">mouseover/out</button>
+	<button class="btn2">hover</button>
+	<br><br><br>
+	
+	<p>내용</p>
+</body>
+</html>

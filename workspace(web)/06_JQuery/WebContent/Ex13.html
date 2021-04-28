@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	
+	// val() / val(값)
+	// 입력 요소에 있는 value 값을 가져오거나 변경할 때 사용.
+	
+	$(function () {
+		alert($("#user_name").val()); //id가 user_name인 요소의 value값을 가져오기
+		$("#my_name").val($("#user_name").val()); // id가 user_name인 요소의 value값을 my_name에 셋팅
+	});
+	
+</script>
+</head>
+<body>
+	<p>
+		<input type="text" name="user_name" id="user_name" value="홍길동">
+	</p>
+	
+	<p>
+		<input type="text" name="my_name" id="my_name">
+	</p>
+
+</body>
+</html>
