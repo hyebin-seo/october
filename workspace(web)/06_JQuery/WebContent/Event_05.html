@@ -11,7 +11,9 @@
 
 	*/
 	$(function() {
-		$("")
+		$(".site").on("change", function() {
+			$(".txt").text($(this).val());
+		});
 	});
 
 </script>
