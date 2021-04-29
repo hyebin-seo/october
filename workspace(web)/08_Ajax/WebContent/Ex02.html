@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	$(function () {
+		$("#btn").click(function() {
+			// key : value
+			let data = {name: $("#name").val(), msg: $("#msg").val()};
+			$("#display").load(
+					"sample.jsp",  // 서버 요청 문서
+					data,          // 요청시 전송 될 데이터
+					function(a) {  // 요청 완료 후 응답 결과를 받을 콜백함수
+						alert("요청이 완료 되었습니다.");
+					}
+			);
+		});
+	});
+</script>
+<style type="text/css">
+	div {
+		width: 300px;
+		height: 300px;
+		background-color: yellow;
+	}
+</style>
+</head>
+<body>
+	<h2>load() 함수를 이용한 예제</h2>
+	<p>아이디: <input type="text" id="name"></p>
+	<p>메세지: <input type="text" id="msg"></p>
+	<input type="button" id="btn" value="load() 함수 요청"> <br>
+	<div id="display">결과 출력 영역</div>
+</body>
+</html>

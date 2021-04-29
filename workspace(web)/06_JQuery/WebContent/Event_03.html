@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 
+	
+		- mouseenter() : 선택한 요소의 경계 범위 내에 마우스가 올라갔을 때 이벤트 발생.
+		 형식) $("요소선택").mouseenter(function() {	.....});
+		- mouseleave() : 선택한 요소의 경계 범위 내에서 마우스가 떠났을 때 이벤트 발생.
+		형식) $("요소선택").mouseleave(function() {	.....});
+		- mousemove() : 선택한 요소의 영역에서 마우스를 움직일 때마다 이벤트 발생.
+		형식) $("요소선택").mousemove(function() {	.....});
+	
+	*/
+	$(function() {
+		$(".wrap").mouseenter(function() {
+			$("p").css("background-color", "blue");
+		});
+		
+		$(".wrap").on("mouseleave", function() {
+			$("p").css("background-color", "yellow");
+		});
+		
+		$(document).on("mousemove", function(e) {
+			let x = e.pageX; //마우스의 x좌표값
+			let y = e.pageY; //마우스의 y좌표값
+			$("h2").text("x: "+x+", y : "+y);
+		});
+	});
+
+</script>
+<style type="text/css">
+	 * {
+		margin : 0px;
+		padding : 0px;
+	 }
+	 
+	 body {
+	 	margin : 20px;
+	 	
+	 }
+	 
+	 .wrap {
+	 	background-color: #ccc;
+	 	padding: 10px;
+	 }
+</style>
+</head>
+<body>
+	<div class="wrap">
+		<p>내용</p>
+	</div>
+	
+	<h2></h2>
+</body>
+</html>

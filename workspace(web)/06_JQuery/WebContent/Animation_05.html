@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 
+		- animate(): 선택한 요소에 대한 다양한 동작(motion) 효과를 적용하는 메서드.
+		형식) $("요소선택").animate({애니메이션 속성},"효과속도", 콜백함수);
+		==> 애니메이션 속성에는 모션으로 적용할 속성을 css(스타일)을 이용해서 입력.
+		==> 효과속도는 ms(1/1000) 또는 "slow","normal", "fast"로도 가능.
+	*/
+	
+	$(function() {
+		$("h1").animate({marginLeft: "250px"}, 5000, function() {
+			alert("도착 완료.");
+		});
+		
+		$("h2").animate({marginLeft: "250px", width: "100px", opacity: 0.25}, 5000);
+		
+		$("h3").animate({marginLeft: "250px"}, 3000, function () {
+			$("h3").animate({marginLeft: "100px"}, 2000);
+		});
+	});
+
+</script>
+<style type="text/css">
+	h1 {
+		width : 50px;
+		height : 30px;
+		background-color: red;
+		font-size: 120%;
+	}
+	
+	h2 {
+		width : 50px;
+		height : 30px;
+		background-color: blue;
+		font-size: 120%;
+		color: #fff;
+	}
+	
+	h3 {
+		width : 50px;
+		height : 30px;
+		background-color: yellow;
+		font-size: 120%;
+		color: #fff;
+	}
+</style>
+</head>
+<body>
+	<h1>내용1</h1>
+	<h2>내용2</h2>
+	<h3>내용3</h3>
+</body>
+</html>

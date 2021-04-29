@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 
+		 효과 관련 메서드
+		- hide() : 요소를 숨기는 기능.
+		형식) $("요소선택").show("효과속도(ms)", 콜백함수)
+			 * 콜백함수 : 효과가 완료되면 실행되는 함수. 생략 가능.
+		- show() : 숨겨져있던 요소를 노출시키는 기능.
+		 형식) $("요소선택").show("효과속도(ms)", 콜백함수)
+		- toggle() : 선택한 요소가 보이면 숨기고, 숨겨져 있으면 보이게 하는 기능.
+		형식) $("요소선택").toggle("효과속도(ms)", 콜백함수)
+	*/
+	$(function() {
+		$(".btn1").click(function() {
+			$("h2").hide(1000, function () {
+				alert("숨김이 완료 되었습니다.");
+			});
+		});
+		
+		$(".btn2").click(function() {
+			$("h2").show(1000, function () {
+				alert("노출이 완료되었습니다.");
+			});
+		});
+		
+		$(".btn").click(function() {
+			$("img").toggle(1000);
+		});
+	});
+
+</script>
+</head>
+<body>
+	<button class="btn1">hide</button>
+	<button class="btn2">show</button>
+	<h2>효과 관련 내용</h2>
+	
+	<button class="btn">toggle</button>
+	<br>
+	<img src="images/beauty.jpg">
+</body>
+</html>

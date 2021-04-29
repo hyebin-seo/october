@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>고정 그리드 레이아웃</title>
+<style type="text/css">
+	/* div 영역 */
+	#wrapper {
+		width: 960px;
+		margin: 0 auto;
+	}
+	
+	header{
+		width: 960px;
+		height: 120px;
+		background-color: #066cfa;
+		border-bottom: 1px solid black;
+	}
+	
+	/* h1 태그 영역 디자인*/
+	.header_text {
+		font-size : 40px;
+		color: #fff;
+		text-align: center;
+		line-height: 120px;
+	}
+	
+	.content {
+		float: left;
+		width: 600px;
+		height: 400px;
+		padding: 15px;
+		background-color: #ooff90;
+	}
+	
+	.right_side {
+		float: right;
+		width: 300px;
+		height: 400px;
+		padding: 15px;
+		background-color: #C4B73B;
+	}
+	
+	footer {
+		clear:both;
+		height: 120px;
+		background-color: #C35;
+	}
+</style>
+</head>
+<body>
+
+	<!-- 
+		고정 그리드 레이아웃은 단위가 픽셀(px)이기 때문에 브라우저의 크기가 확대/축소될 때 글자 및 웹 요소가 안 보이는 경우가 발생.
+		레이아웃을 잡기는 수월하기 때문에 특정한 기기에만 사용한다.
+	 -->
+	<div id ="wrapper">
+		<header>
+			<h1 class="header_text">고정 그리드 레이아웃</h1>
+		</header>
+		
+		<section class="content">
+			<h4>여기는 본문 영역입니다.</h4>
+		</section>
+		
+		<aside class="right_side">
+			<h4>사이드 바</h4>
+		</aside>
+		
+		<footer>
+			<h4>푸터</h4>
+		</footer>
+	</div>
+</body>
+</html>

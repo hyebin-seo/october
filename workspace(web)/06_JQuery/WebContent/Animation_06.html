@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 
+		- stop() : 선택한 요소에 효과 또는 애니메이션이 적용된 효과를 정지시키는 메서드.
+		형식) $("요소선택").stop()
+		- delay() : 선택한 요소에 효과 또는 애니메이션이 적용된 효과를 지연시키는 메서드.
+		형식) $("요소선택").delay(지연시간).애니메이션 효과 메서드();
+	*/
+	
+	$(function() {
+		$("h1").animate({marginLeft:"250px"}, 5000);
+		
+		$("h2").delay(2000).animate({marginLeft:"250px"}, 3000);
+		
+		$(".stop").click(function() {
+			$("h1").stop(); // h1 태그 동작 정지
+			$("h2").stop(); // h2 태그 동작 정지
+		})
+	});
+
+</script>
+</head>
+<body>
+	<button class="stop">stop</button>
+	<h1>내용1</h1>
+	<h2>내용2</h2>
+</body>
+</html>

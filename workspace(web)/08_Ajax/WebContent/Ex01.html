@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	
+	$(function () {
+		$("#btn").click(function() {
+			// load():인수로 입력된 파일의 결과를 현재 요소에 삽입
+			$("#display").load("Ex01_01.html");
+		});
+	});
+	
+</script>
+</head>
+<body>
+	<h3>load() 함수</h3>
+	<input type="button" id="btn" value="load() 함수 요청">
+	<div id="display">요청 결과 출력 영역</div>
+</body>
+</html>

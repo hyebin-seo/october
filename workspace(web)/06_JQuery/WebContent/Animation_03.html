@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+	/* 
+		- fadeTo() : 선택한 요소를 지정한 투명도의 값까지만 숨기는 기능. 투명도는 0부터 1사이의 값까지만 입력할 수 있음.
+		형식) $("요소선택").fadeTo("효과속도", 투명도, 콜백함수);
+	*/
+	
+	$(function() {
+		$(".btn1").click(function() {
+			$("img").fadeTo(1000, 0.75);
+		});
+		
+		$(".btn2").click(function() {
+			$("img").fadeTo(1000, 0.5);
+		});
+		
+		$(".btn3").click(function() {
+			$("img").fadeTo(1000, 0.25);
+		});
+		
+		$(".btn4").click(function() {
+			$("img").fadeTo(1000, 0.0);
+		});
+	});
+
+</script>
+</head>
+<body>
+	<button class="btn1">투명도(25%)</button>
+	<button class="btn2">투명도(50%)</button>
+	<button class="btn3">투명도(75%)</button>
+	<button class="btn3">투명도(100%)</button>
+	<br><br><br>
+	
+	<img src="images/beauty.jpg">
+</body>
+</html>
