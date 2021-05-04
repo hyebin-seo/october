@@ -1,0 +1,36 @@
+# 자바 빈(Java Bean)
+  - 정보의 덩어리. 즉, 데이터 저장소(데이터 객체).
+  - 데이터를 저장하기 위한 필드와 데이터를 컨트롤하는 setter / getter 
+        메서드를 하나의 쌍으로 가지고 있는 클래스.
+  - getter / setter 메서드는 자바빈의 필드에 데이터를 저장하고 조회하는
+        작업을 한다.
+    
+# 자바 빈(클래스) 만드는 방법
+  - 패키지 선언
+    com.sist.model.클래스이름(빈 클래스명)
+  - 필드 선언
+    * private 를 이용하여 멤버 선언.
+    * getter / setter 메서드 만들기. - 프로퍼티 방식
+    * 프로퍼티 : private 필드를 외부에서 접근하기 위해서 공개형 접근제어자
+              public으로 메서드를 정의해 놓고 이를 통해서 간접적으로 필드에
+                            접근하는 방식.
+                            
+# 자바 빈과 관련된 액션 태그 - 3가지
+  - <jsp:useBean>        ==> 자바 빈을 생성.
+  - <jsp:setProperty>    ==> 자바 빈에 정보를 저장하는 개념.
+  - <jsp:getProperty>    ==> 자바 빈에서 정보를 얻어오는 개념.
+  
+  - <jsp:useBean> 기본 형식
+        형식) <jsp:useBean class="클래스 풀네임" id="빈이름" [scope="범위"] />
+  
+  - <jsp:setProperty> 기본 형식
+        형식) <jsp:setProperty name="빈 이름" property="프로퍼티 이름" value="값" />
+
+  - <jsp:getProperty> 기본 형식
+        형식) <jsp:getProperty name="빈 이름" property="프로퍼티 이름" />
+         : 회원의 이름을 얻기 위해서 getName() 메서드를 호출하는 것과 같음.
+           id의 빈이름과 name의 빈 이름은 반드시 같아야 함.
+
+
+
+
