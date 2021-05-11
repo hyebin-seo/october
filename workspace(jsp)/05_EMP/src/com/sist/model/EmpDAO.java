@@ -9,21 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * DAO(Data Access Object) : µ¥ÀÌÅÍ Á¢±Ù °´Ã¼ ==> DB¿¡ Á¢¼Ó(¿¬µ¿)ÇÏ´Â °´Ã¼.
- * - DAO¶õ µ¥ÀÌÅÍº£ÀÌ½º¿¡ Á¢¼ÓÇØ¼­ µ¥ÀÌÅÍ Ãß°¡, ¼öÁ¤, »èÁ¦, Á¶È¸ µîÀÇ ÀÛ¾÷À» ÇÏ´Â Å¬·¡½º.
- * - ÀÏ¹İÀûÀ¸·Î JSP ¶Ç´Â Servlet¿¡¼­ À§ÀÇ ÀÛ¾÷µéÀ» °°ÀÌ »ç¿ëÇÒ ¼ö ÀÖÁö¸¸
- *   À¯Áöº¸¼ö, ÄÚµåÀÇ ¸ğµâÈ­¸¦ À§ÇØ¼­ DAO Å¬·¡½º¸¦ µû·Î ¸¸µé¾î¼­ »ç¿ëÀ» ÇÔ.
+ * DAO(Data Access Object) : ë°ì´í„° ì ‘ê·¼ ê°ì²´ ==> DBì— ì ‘ì†(ì—°ë™)í•˜ëŠ” ê°ì²´.
+ * - DAOë€ ë°ì´í„°ë² ì´ìŠ¤ì— ì ‘ì†í•´ì„œ ë°ì´í„° ì¶”ê°€, ìˆ˜ì •, ì‚­ì œ, ì¡°íšŒ ë“±ì˜ ì‘ì—…ì„ í•˜ëŠ” í´ë˜ìŠ¤.
+ * - ì¼ë°˜ì ìœ¼ë¡œ JSP ë˜ëŠ” Servletì—ì„œ ìœ„ì˜ ì‘ì—…ë“¤ì„ ê°™ì´ ì‚¬ìš©í•  ìˆ˜ ìˆì§€ë§Œ
+ *   ìœ ì§€ë³´ìˆ˜, ì½”ë“œì˜ ëª¨ë“ˆí™”ë¥¼ ìœ„í•´ì„œ DAO í´ë˜ìŠ¤ë¥¼ ë”°ë¡œ ë§Œë“¤ì–´ì„œ ì‚¬ìš©ì„ í•¨.
  */
 
 public class EmpDAO {
 
-	Connection con = null;            // DB¿Í ¿¬°áÇÏ´Â °´Ã¼.
-	PreparedStatement pstmt = null;   // DB¿¡ SQL¹®À» Àü¼ÛÇÏ´Â °´Ã¼.
-	ResultSet rs = null;              // SQL¹®À» ½ÇÇà ÈÄ °á°ú °ªÀ» °¡Áö°í ÀÖ´Â °´Ã¼.
-	String sql = null;                // Äõ¸®¹®À» ÀúÀåÇÒ °´Ã¼.
+	Connection con = null;            // DBì™€ ì—°ê²°í•˜ëŠ” ê°ì²´.
+	PreparedStatement pstmt = null;   // DBì— SQLë¬¸ì„ ì „ì†¡í•˜ëŠ” ê°ì²´.
+	ResultSet rs = null;              // SQLë¬¸ì„ ì‹¤í–‰ í›„ ê²°ê³¼ ê°’ì„ ê°€ì§€ê³  ìˆëŠ” ê°ì²´.
+	String sql = null;                // ì¿¼ë¦¬ë¬¸ì„ ì €ì¥í•  ê°ì²´.
 	
 	
-	public EmpDAO() {   // ±âº» »ı¼ºÀÚ
+	public EmpDAO() {   // ê¸°ë³¸ ìƒì„±ì
 		
 		String driver = "oracle.jdbc.driver.OracleDriver";
 		String url = "jdbc:oracle:thin:@localhost:1521:XE";
@@ -32,24 +32,24 @@ public class EmpDAO {
 		
 		
 		try {
-			// 1´Ü°è : ¿À¶óÅ¬ µå¶óÀÌ¹ö ·Îµù
+			// 1ë‹¨ê³„ : ì˜¤ë¼í´ ë“œë¼ì´ë²„ ë¡œë”©
 			Class.forName(driver);
 			
-			// 2´Ü°è : DB(¿À¶óÅ¬)¿Í ¿¬°á
+			// 2ë‹¨ê³„ : DB(ì˜¤ë¼í´)ì™€ ì—°ê²°
 			con = DriverManager.getConnection(url, user, password);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-	}  // ±âº» »ı¼ºÀÚ end
+	}  // ê¸°ë³¸ ìƒì„±ì end
 	
 	
-	// EMP Å×ÀÌºí¿¡¼­ ÀüÃ¼ ¸®½ºÆ®¸¦ Á¶È¸ÇÏ´Â ¸Ş¼­µå
+	// EMP í…Œì´ë¸”ì—ì„œ ì „ì²´ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì„œë“œ
 	public List<EmpDTO> selectList() {
-		List<EmpDTO> list = new ArrayList<EmpDTO>();  // ´ÙÇü¼º
+		List<EmpDTO> list = new ArrayList<EmpDTO>();  // ë‹¤í˜•ì„±
 		
-		System.out.println("selectList() ¸Ş¼­µå¿¡¼­ list >>> " + list);
+		// System.out.println("selectList() ë©”ì„œë“œì—ì„œ list >>> " + list);
 		
 		
 		try {
@@ -74,18 +74,75 @@ public class EmpDAO {
 				list.add(dto);
 			}
 			
-			// open °´Ã¼ ´İ±â
+			// open ê°ì²´ ë‹«ê¸°
 			rs.close(); pstmt.close(); con.close();
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("µ¥ÀÌÅÍ ¿Ï·á ÈÄ >>> " + list);
+		// System.out.println("ë°ì´í„° ì™„ë£Œ í›„ >>> " + list);
 		return list;
-	}  // selectList() ¸Ş¼­µå end
+	}  // selectList() ë©”ì„œë“œ end
 	
-	// dept Å×ÀÌºíÀÇ ÀüÃ¼ ¸®½ºÆ®¸¦ Á¶È¸ÇÏ´Â ¸Ş¼­µå
+	// EMP í…Œì´ë¸”ì—ì„œ ë‹´ë‹¹ì—…ë¬´ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì„œë“œ
+	public List<String> jobList() {
+		List<String> jobList = new ArrayList<String>();
+		
+		try {
+			sql = "select distinct(job) from emp order by job";
+			
+			pstmt = con.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				String job = rs.getString("job");
+				
+				jobList.add(job);
+			}
+			
+			// open ê°ì²´ ë‹«ê¸°
+			rs.close(); pstmt.close(); // con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return jobList;
+	}  // jobList() ë©”ì„œë“œ end
+	
+	// EMP í…Œì´ë¸”ì—ì„œ ë‹´ë‹¹ì—…ë¬´ê°€ "MANAGER" ì¸ ì‚¬ì›ì„ ì¡°íšŒí•˜ëŠ” ë©”ì„œë“œ
+	public List<EmpDTO> mgrList() {
+		List<EmpDTO> mgrList = new ArrayList<EmpDTO>();
+		
+		try {
+			sql = "select * from emp where job = ? order by empno";
+			
+			pstmt = con.prepareStatement(sql);
+			
+			pstmt.setString(1, "MANAGER");
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				EmpDTO dto = new EmpDTO();
+				dto.setEmpno(rs.getInt("empno"));
+				dto.setEname(rs.getString("ename"));
+				
+				mgrList.add(dto);
+			}
+			
+			// open ê°ì²´ ë‹«ê¸°
+			rs.close(); pstmt.close(); // con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mgrList;
+	}  // mgrList() ë©”ì„œë“œ end
+	
+	
+	// dept í…Œì´ë¸”ì˜ ì „ì²´ ë¦¬ìŠ¤íŠ¸ë¥¼ ì¡°íšŒí•˜ëŠ” ë©”ì„œë“œ
 	public List<DeptDTO> deptList() {
 		List<DeptDTO> deptList = new ArrayList<DeptDTO>();
 		
@@ -105,7 +162,7 @@ public class EmpDAO {
 				deptList.add(dto);
 			}
 			
-			// open °´Ã¼ ´İ±â
+			// open ê°ì²´ ë‹«ê¸°
 			rs.close(); pstmt.close(); con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -113,9 +170,9 @@ public class EmpDAO {
 		}
 		
 		return deptList;
-	}  // deptList() ¸Ş¼­µå end
+	}  // deptList() ë©”ì„œë“œ end
 	
-	// EMP Å×ÀÌºí¿¡ »ç¿øÀ» µî·Ï(Ãß°¡)ÇÏ´Â ¸Ş¼­µå
+	// EMP í…Œì´ë¸”ì— ì‚¬ì›ì„ ë“±ë¡(ì¶”ê°€)í•˜ëŠ” ë©”ì„œë“œ
 	public int insertEmp(EmpDTO dto) {
 		int result = 0;
 		
@@ -134,16 +191,16 @@ public class EmpDAO {
 			
 			result = pstmt.executeUpdate();
 			
-			// open °´Ã¼ ´İ±â
+			// open ê°ì²´ ë‹«ê¸°
 			pstmt.close(); con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return result;
-	}  // insertEmp() ¸Ş¼­µå end
+	}  // insertEmp() ë©”ì„œë“œ end
 	
-	// EMP Å×ÀÌºí¿¡¼­ »ç¿ø¹øÈ£¿¡ ÇØ´çÇÏ´Â »ç¿øÀ» »èÁ¦ÇÏ´Â ¸Ş¼­µå
+	// EMP í…Œì´ë¸”ì—ì„œ ì‚¬ì›ë²ˆí˜¸ì— í•´ë‹¹í•˜ëŠ” ì‚¬ì›ì„ ì‚­ì œí•˜ëŠ” ë©”ì„œë“œ
 	public int deleteEmp(int num) {
 		int result = 0;
 		
@@ -156,14 +213,14 @@ public class EmpDAO {
 			
 			result = pstmt.executeUpdate();
 			
-			// open °´Ã¼ ´İ±â
+			// open ê°ì²´ ë‹«ê¸°
 			pstmt.close(); con.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return result;
-	}  // deleteEmp() ¸Ş¼­µå end
+	}  // deleteEmp() ë©”ì„œë“œ end
 	
 }
 

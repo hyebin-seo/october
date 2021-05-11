@@ -14,6 +14,7 @@
 	String addr = request.getParameter("addr");
 	
 	MemberDTO dto = new MemberDTO();
+	dto.setMemid(memid);
 %>
 <!DOCTYPE html>
 <html>

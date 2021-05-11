@@ -32,7 +32,7 @@ public class SelectServlet extends HttpServlet {
 		
 		// DB EMP 테이블에서 전체 리스트를 조회하는 작업
 		List<EmpDTO> allList = dao.selectList();
-		System.out.println("allList >>> " + allList);
+		
 		
 		// 페이지 이동 시 데이터를 같이 이동시키자.
 		request.setAttribute("List", allList);

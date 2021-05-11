@@ -1,17 +1,19 @@
 package com.sist.model;
 
-// DTO(Data Transfer Object) : µ¥ÀÌÅÍ Àü¼Û °´Ã¼
-// ±âº»ÀûÀ¸·Î DB »óÀÇ Å×ÀÌºíÀÇ ÄÃ·³°ú µ¿ÀÏÇÏ°Ô ¸â¹öº¯¼ö ±¸¼º.
+// DTO(Data Transfer Object) : ë°ì´í„° ì „ì†¡ ê°ì²´
+// ê¸°ë³¸ì ìœ¼ë¡œ DB ìƒì˜ í…Œì´ë¸”ì˜ ì»¬ëŸ¼ê³¼ ë™ì¼í•˜ê²Œ ë©¤ë²„ë³€ìˆ˜ êµ¬ì„±.
 
 public class EmpDTO {
-	private int empno; 			//»ç¿ø ¹øÈ£
-	private String ename; 		//»ç¿ø¸í
-	private String job; 		//´ã´ç¾÷¹«
-	private int mgr; 			//°ü¸®ÀÚ »ç¿ø ¹øÈ£
-	private String hiredate; 	//ÀÔ»ç ÀÏÀÚ
-	private int sal; 			//»ç¿ø ±Ş¿©
-	private int comm; 			//»ç¿ø º¸³Ê½º
-	private int deptno; 		//»ç¿ø ºÎ¼­ ¹øÈ£
+
+	private int empno;           // ì‚¬ì› ë²ˆí˜¸
+	private String ename;        // ì‚¬ì›ëª…
+	private String job;          // ë‹´ë‹¹ ì—…ë¬´
+	private int mgr;             // ê´€ë¦¬ì ì‚¬ì›ë²ˆí˜¸
+	private String hiredate;     // ì…ì‚¬ ì¼ì
+	private int sal;             // ì‚¬ì› ê¸‰ì—¬
+	private int comm;            // ì‚¬ì› ë³´ë„ˆìŠ¤
+	private int deptno;          // ì‚¬ì› ë¶€ì„œë²ˆí˜¸
+	
 	
 	public int getEmpno() {
 		return empno;
