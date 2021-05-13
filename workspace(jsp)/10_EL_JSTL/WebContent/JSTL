@@ -1,0 +1,8 @@
+JSTL(JSP Standard Tah Library)
+
+- JSP 페이지에서 스크립트릿과 HTML코드가 뒤섞이게 되는 현상 발생하여 가독성이 낮아짐.
+- JSP 페이지에서 스크립트릿에 들어가는 자바 코드 중에 논리적인 판단, 반복 처리,
+포맷 처리 등을 HTML 태그처럼 사용할 수 있도록 표준으로 만들어서 정의한 것이 JSTL 라이브러리임
+- JSTL을 사용하기 위해서는 라이브러리 파일이 필요함. *jstl.jar, standard.jar
+- JSTL 라이브러리 파일을 받는 사이트 주소
+http://tomcat.apache.org/taglibs/standard/
