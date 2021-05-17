@@ -23,11 +23,11 @@
 	   <br> <br>
 	   
 	   <table border="1" cellspacing="0" width="400">
-	      <%
+	       <%
 	         if(cont != null) {
 	        	 // 검색된 레코드가 있는 경우
 	        	 // 검색된 레코드를 웹 브라우저에 출력
-	      %>
+	       %>
 	      	 <tr>
 	      	    <th>회원 번호</th>
 	      	 	<td> <%=cont.getNum() %> </td>

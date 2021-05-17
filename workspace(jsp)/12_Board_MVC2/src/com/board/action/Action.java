@@ -1,4 +1,4 @@
-package com.member.action;
+package com.board.action;
 
 import java.io.IOException;
 
@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface Action {
-	// √ﬂªÛ∏ﬁº≠µÂ
-	String execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+	// Ï∂îÏÉÅ Î©îÏÑúÎìú
+	String execute(HttpServletRequest request,
+			HttpServletResponse response) throws IOException;
 }

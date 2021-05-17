@@ -11,38 +11,59 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.member.action.*;
 
-public class FrontController extends HttpServlet{
-	
+
+public class FrontController extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
-	protected void service(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException, IOException {
-		
+	
+	protected void service(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+	
 		// 한글 인코딩 처리
-		req.setCharacterEncoding("UTF-8");
-		res.setContentType("text/html; charset=UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		
-		// getRequestURI() : "/프로젝트명/파일명(*.do)"라는 문자열을 반환해주는 메서드
-		String uri = req.getRequestURI();
-		System.out.println("URI >>> " + uri);
+		// getRequestURI() : "/프로젝트명/파일명(*.do)" 라는 문자열을
+		//                   반환해 주는 메서드.
+		String uri = request.getRequestURI();
+		System.out.println("uri >>> " + uri);
 		
-		// getContextPath() : 프로젝트 경로 반환
-		String path = req.getContextPath();
-		System.out.println("PATH >>> " + path);
+		// getContextPath() : 현재 프로젝트명을 문자열로 반환해 주는 메서드
+		String path = request.getContextPath();
+		System.out.println("path >>> " + path);
 		
-		// 프로젝트 경로의 글자수를 반환 받아(/를 포함하기 위해 +1) uri에서 프로젝트 경로를 잘라내고 서블릿 이름을 얻는다.
-		String command = uri.substring(path.length()+1);
+		String command = uri.substring(path.length() + 1);
 		System.out.println("command >>> " + command);
+		
 		
 		Action action = null;
 		
+		
 		if(command.equals("select.do")) {
 			action = new MemberListAction();
+		}else if(command.equals("insert.do")) {
+			action = new MemberJoinAction();
+		}else if(command.equals("insertOk.do")) {
+			action = new MemberJoinOkAction();
+		}else if(command.equals("content.do")) {
+			action = new MemberContentAction();
+		}else if(command.equals("update.do")) {
+			action = new MemberUpdateAction();
+		}else if(command.equals("updateOk.do")) {
+			action = new MemberUpdateOkAction();
+		}else if(command.equals("delete.do")) {
+			action = new MemberDeleteAction();
+		}else if(command.equals("deleteOk.do")) {
+			action = new MemberDeleteOkAction();
 		}
 		
-		//액션에서 리턴 받은 페이지로 이동
-		String path1 = action.execute(req, res);
-		RequestDispatcher rd = req.getRequestDispatcher(path1);
-		rd.forward(req, res);
+		String path1 = action.execute(request, response);
+		
+		RequestDispatcher rd =
+			request.getRequestDispatcher(path1);
+		
+		rd.forward(request, response);
+		
 	}
 }

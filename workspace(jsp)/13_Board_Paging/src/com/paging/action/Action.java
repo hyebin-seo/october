@@ -1,4 +1,4 @@
-package com.member.action;
+package com.paging.action;
 
 import java.io.IOException;
 
@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface Action {
-	// Ãß»ó¸Ş¼­µå
-	String execute(HttpServletRequest request, HttpServletResponse response) throws IOException;
+
+	// ì¶”ìƒ ë©”ì„œë“œ
+	public void execute(HttpServletRequest request,
+			HttpServletResponse response) throws IOException;
 }
