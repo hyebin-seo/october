@@ -1,17 +1,20 @@
 package com.reply.model;
 
+// jsp_bbs 테이블의 컬럼과 동일하게 멤버 구성
+
 public class BbsDTO {
-	
-	private int board_no;              
-	private String board_writer;        
-	private String board_title;        
-	private String board_cont;          
-	private String board_pwd;           
-	private int board_hit;              
-	private String board_date;       
+
+	private int board_no;
+	private String board_writer;
+	private String board_title;
+	private String board_cont;
+	private String board_pwd;
+	private int board_hit;
+	private String board_date;
 	private int board_group;
 	private int board_step;
 	private int board_indent;
+	
 	
 	public int getBoard_no() {
 		return board_no;
@@ -73,6 +76,7 @@ public class BbsDTO {
 	public void setBoard_indent(int board_indent) {
 		this.board_indent = board_indent;
 	}
+	
 	
 	
 }

@@ -13,7 +13,7 @@ public class BbsWriteOkAction implements Action {
 
 	@Override
 	public ActionForward execute(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		// 게시글 작성폼에서 넘어온 데이터들을 DB에 저장하는 클래스.
+		// 게시글 작성 폼에서 넘어온 데이터들을 DB에 저장하는 클래스.
 		
 		String bbs_writer = request.getParameter("writer").trim();
 		String bbs_title = request.getParameter("title").trim();
@@ -32,17 +32,16 @@ public class BbsWriteOkAction implements Action {
 		PrintWriter out = response.getWriter();
 		
 		ActionForward forward = new ActionForward();
-
-		if (res > 0) {
+		
+		if(res > 0) {
 			out.println("<script>");
 			out.println("alert('게시물 추가 성공!!!')");
 			out.println("</script>");
 			forward.setRedirect(true);
 			forward.setPath("bbs_list.do");
-			
-		} else {
+		}else {
 			out.println("<script>");
-			out.println("alert('게시물 추가 실패')");
+			out.println("alert('게시물 추가 실패~~~')");
 			out.println("</script>");
 			forward.setRedirect(false);
 			forward.setPath("view/bbs_write.jsp");

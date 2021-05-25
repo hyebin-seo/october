@@ -11,13 +11,14 @@
   </welcome-file-list>
   
   <!-- 서블릿 매핑(n:1) -->
-	<servlet>
-		<servlet-name>FrontController</servlet-name>
-		<servlet-class>com.reply.controller.FrontController</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>FrontController</servlet-name>
-		<url-pattern>*.do</url-pattern>
-	</servlet-mapping>
+  <servlet>
+  	<servlet-name>FrontController</servlet-name>
+  	<servlet-class>com.reply.controller.FrontController</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>FrontController</servlet-name>
+  	<url-pattern>*.do</url-pattern>
+  </servlet-mapping>
+  
 </web-app>
