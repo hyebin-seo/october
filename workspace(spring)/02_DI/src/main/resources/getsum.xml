@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- GetSum getsum = new GetSum(); 과 똑같은 개념임. -->
+	<bean id="getsum" class="com.sist.di01.GetSum" />
+	
+	<!-- Setter Method로 주입하는 방법
+			 MyGetSum mySum = new MyGetSum();
+			 mySum.setNum1(200);
+			 mySum.setNum2(100);
+	-->
+	<bean id="mySum" class="com.sist.di01.MyGetSum">
+		<property name="num1" value="200" />
+		<property name="num2" value="100" />
+		<property name="getSum"> 
+			<ref bean="getsum" />
+		</property>
+	</bean>
+
+</beans>
