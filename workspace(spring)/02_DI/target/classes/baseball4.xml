@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- <context:annotation-config /> 태그는 특정 패키지 안에 있는 클래스 중에서
+			@Configuration, @Bean, @Autowired, @Resource 애노테이션이 존재하면
+			해당 애노테이션을 인식할 수 있도록 만들어주는 태그		
+	 -->
+	 
+	<context:annotation-config />
+
+	<bean class="com.sist.di10.Config"></bean>
+	
+	<bean id="player3" class="com.sist.di10.Player">
+		<constructor-arg value="김현수"/>
+		<constructor-arg value="33"/>
+		<constructor-arg>
+			<list>
+				<value>3번타자</value>
+				<value>외야수</value>
+			</list>
+		</constructor-arg>
+		<property name="weight" value="95" />
+		<property name="height" value="185" />
+		
+	
+	</bean>
+
+</beans>

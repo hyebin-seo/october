@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="person1" class="com.sist.di05.Person">
+		<constructor-arg value="홍길동"/>
+		<constructor-arg>
+			<value>남자</value>
+		</constructor-arg>
+		<constructor-arg value="27" />
+		<constructor-arg value="941212-1234567"/>
+	</bean>
+	
+	<bean id="person2" class="com.sist.di05.Person">
+		<constructor-arg value="홍길순"/>
+		<constructor-arg>
+			<value>여자</value>
+		</constructor-arg>
+		<constructor-arg value="25" />
+		<constructor-arg value="961212-1234567"/>
+	</bean>
+	
+	<bean id="person3" class="com.sist.di05.Person">
+		<property name="name" value="김유신" />
+		<property name="gender" value="남자" />
+		<property name="age" value="42" />
+		<property name="juminNo" value="750211-1234566" />
+	</bean>
+	
+	<bean id="info" class="com.sist.di05.Personinfo">
+		<constructor-arg>
+			<ref bean="person2"/>
+		</constructor-arg>
+	</bean>
+
+</beans>
