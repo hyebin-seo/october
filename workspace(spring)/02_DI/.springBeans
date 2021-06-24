@@ -8,8 +8,19 @@
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/main/resources/getsum.xml</config>
+		<config>src/main/resources/exam.xml</config>
+		<config>src/main/java/com/sist/di03/mydao.xml</config>
+		<config>src/main/resources/exam1.xml</config>
+		<config>src/main/resources/person.xml</config>
+		<config>src/main/resources/car.xml</config>
+		<config>src/main/resources/baseball.xml</config>
+		<config>src/main/resources/baseball2.xml</config>
+		<config>src/main/resources/map.xml</config>
+		<config>src/main/resources/baseball3.xml</config>
 	</configs>
 	<autoconfigs>
+		<config>src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/root-context.xml</config>
 	</autoconfigs>
 	<configSets>
 	</configSets>
