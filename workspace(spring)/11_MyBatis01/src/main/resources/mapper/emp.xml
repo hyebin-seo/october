@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 명은 패키지 포함해서 인터페이스 이름으로 작성을 해 주어야 함.
+     namespace는 mapper 둘을 구분하는 식별자로 매우 중요함. -->
+<mapper namespace="com.spring.model.EmpDAO">
+
+   <select id="allList" resultType="com.spring.model.EmpDTO">
+   		select * from emp order by empno
+   </select>
+   
+   <select id="deptList" resultType="com.spring.model.DeptDTO">
+   		select * from dept order by deptno
+   </select>
+   
+   <select id="mgrList" resultType="com.spring.model.EmpDTO">
+   		select * from emp where job = 'MANAGER' order by empno 
+   </select>
+   
+   <insert id="add" parameterType="com.spring.model.EmpDTO">
+   		insert into emp values(#{empno}, #{ename}, #{job}, #{mgr},
+   				sysdate, #{sal}, #{comm}, #{deptno})
+   </insert>
+   
+</mapper>
