@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace 명은 패키지 포함해서 인터페이스 이름으로 작성
+	 namespace는 mapper 툴을 구분하는 식별자로 매우 중요
+	 속성의 id는 중복 불가
+	 resultType은 반환할 객체 타입명(제너릭) -->
+
+<mapper namespace="com.board.model.BoardDAO">
+
+	<select id="count" resultType="int">
+		select count(*) from board
+	</select>
+	
+	<select id="list" parameterType="com.board.model.PageDTO" resultType="com.board.model.BoardDTO">
+		<![CDATA[
+			select * from
+				(select b.*, row_number() over(order by board_no desc) rnum
+				 from board b) 
+		    where rnum >= #{startNo} and rnum <= #{endNo}
+		]]>
+	</select>
+	
+	<insert id="add" parameterType="com.board.model.BoardDTO">
+		<selectKey resultType="int" keyProperty="board_no" order="BEFORE">
+			select count(*) + 1 from board
+		</selectKey>
+		insert into board values(#{board_no}, #{board_writer}, #{board_title}, #{board_cont},
+			#{board_pwd}, default, sysdate)
+	</insert>
+	
+	<update id="read" parameterType="int">
+		update board set board_hit = board_hit + 1 where board_no = #{no}	
+	</update>
+	
+	<select id="content" parameterType="int" resultType="com.board.model.BoardDTO">
+		select * from board where board_no = #{no}
+	</select>
+	
+	<update id="modify" parameterType="com.board.model.BoardDTO">
+		update board set board_title = #{board_title}, board_cont = #{board_cont} where board_no = #{board_no}	
+	</update>
+	
+	<delete id="del" parameterType="int">
+		delete from board where board_no = #{no}
+	</delete>
+	
+	<update id="reSeq" parameterType="int">
+		<![CDATA[
+			update board 
+			   set board_no = board_no - 1
+			   where board_no > #{no}
+		]]>
+	</update>
+</mapper>
